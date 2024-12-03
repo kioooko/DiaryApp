@@ -63,7 +63,7 @@ struct WeatherSelect: View {
                     Button(actionWithHapticFB: {
                         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
                     }) {
-                        Text("「現在位置から取得」するにはこちらをタップして、設定アプリから位置情報を許可してください")
+                        Text("要获取当前位置，请点击此处并通过设置应用允许访问位置服务。")
                             .multilineTextAlignment(.leading)
                             .font(.system(size: 12))
                     }
@@ -92,7 +92,7 @@ struct WeatherSelect: View {
             .padding(.top, 20)
         }
         .scrollIndicators(.hidden)
-        .navigationTitle("天気")
+        .navigationTitle("天气")
         .navigationBarTitleDisplayMode(.inline)
         .task {
             weatherAttribution = try? await weatherService.attribution
@@ -121,7 +121,7 @@ private extension WeatherSelect {
         }) {
             weatherItem(
                 imageName: "arrow.2.squarepath",
-                title: "現在位置から取得"
+                title: "获取当前位置"
             )
         }
     }

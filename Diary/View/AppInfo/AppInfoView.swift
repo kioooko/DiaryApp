@@ -34,7 +34,7 @@ struct AppInfoView: View {
                 .padding(.vertical)
 
             Form {
-                Section("日記") {
+                Section("日记") {
                     streak
                     totalCount
                     bookMark
@@ -42,12 +42,12 @@ struct AppInfoView: View {
                     reminder
                 }
 
-                Section("サポート") {
+                Section("支持") {
                     inquiry
                     version
                 }
             }
-            .navigationTitle("アプリについて")
+            .navigationTitle("关于应用")
         }
         .onAppear {
             fetchConsecutiveDays()
@@ -68,8 +68,8 @@ private extension AppInfoView {
     var attention: some View {
         if !isiCloudEnabled {
             warning(
-                title: "iCloudがオフです",
-                message: "iCloudがオフのため、アプリを削除したり機種変更するとデータがなくなります。データを引き継げるようにオンにしましょう👋"
+                title: "iCloud已关闭",
+                message: "iCloud已关闭，因此如果删除应用程序或更改设备，数据将丢失。建议将其打开，以便数据可以继续👋"
             )
         } else {
             connectedToiCloud
@@ -87,10 +87,10 @@ private extension AppInfoView {
 
             HStack(spacing: 6) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("iCloud連携済み")
+                    Text("iCloud已连接")
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .bold()
-                    Text("iCloudにデータが保存されています。アプリを削除したたり機種変更の際は同じApple IDをご利用下さい。")
+                    Text("iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。")
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.system(size: 14))
                         .foregroundColor(.gray)
@@ -148,12 +148,12 @@ private extension AppInfoView {
 
     var streak: some View {
         HStack {
-            rowTitle(symbolName: "flame", iconColor: .orange, title: "現在の継続日数")
+            rowTitle(symbolName: "flame", iconColor: .orange, title: "已经连续记录了")
             Spacer()
             if let consecutiveDays {
                 Text("\(consecutiveDays)日")
             } else {
-                Text("データの取得に失敗しました")
+                Text("数据获取失败啦")
                     .font(.system(size: 12))
             }
         }
@@ -166,7 +166,7 @@ private extension AppInfoView {
             if let diaryCount {
                 Text("\(diaryCount)件")
             } else {
-                Text("データの取得に失敗しました")
+                Text("数据获取失败啦")
                     .font(.system(size: 12))
             }
         }
@@ -176,7 +176,7 @@ private extension AppInfoView {
         NavigationLink {
             BookmarkListView()
         } label: {
-            rowTitle(symbolName: "bookmark", iconColor: .cyan, title: "ブックマークした日記")
+            rowTitle(symbolName: "bookmark", iconColor: .cyan, title: "收藏了的日记")
         }
     }
 
@@ -184,7 +184,7 @@ private extension AppInfoView {
         NavigationLink {
             TextOptionsView()
         } label: {
-            rowTitle(symbolName: "text.quote", iconColor: .gray, title: "テキストの設定")
+            rowTitle(symbolName: "text.quote", iconColor: .gray, title: "文本设定")
         }
     }
 
@@ -197,10 +197,10 @@ private extension AppInfoView {
                 Spacer()
                 Group {
                     if notificationSetting.isSetNotification {
-                        Text("オン")
+                        Text("开")
                         Text(notificationSetting.setNotificationDate!, formatter: timeFormatter)
                     } else {
-                        Text("オフ")
+                        Text("关")
                     }
                 }
                 .foregroundColor(.gray)
@@ -213,23 +213,23 @@ private extension AppInfoView {
         Button(actionWithHapticFB: {
             isInquiryViewPresented = true
         }) {
-            rowTitle(symbolName: "mail", iconColor: .green, title: "お問い合わせ")
+            rowTitle(symbolName: "mail", iconColor: .green, title: "和我联系")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $isInquiryViewPresented) {
-            SafariView(url: .init(string: "https://docs.google.com/forms/d/e/1FAIpQLSfe2lnVGuDDifgdPE_0LqmWHT4lOzFQIqx6NMmPCKetHQ6JWg/viewform?usp=sf_link")!)
+            SafariView(url: .init(string: "https://forms.gle/QdZ439j5ZuTBADzLA")!)
         }
     }
 
     var version: some View {
         Button(actionWithHapticFB: {
             UIPasteboard.general.string = appVersion.versionText
-            bannerState.show(of: .success(message: "バージョン情報をコピーしました"))
+            bannerState.show(of: .success(message: "版本已复制"))
         }) {
             HStack {
-                rowTitle(symbolName: "iphone.homebutton", iconColor: .orange, title: "バージョン")
+                rowTitle(symbolName: "iphone.homebutton", iconColor: .orange, title: "版本")
                 Spacer()
                 Text(appVersion.versionText)
             }

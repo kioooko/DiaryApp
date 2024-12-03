@@ -86,32 +86,32 @@ struct Buttons_Previews: PreviewProvider {
         let view = NavigationStack {
             VStack {
                 Section(header: Text("Active")) {
-                    Button("ぼたん") {}
-                    NavigationLink("りんく", destination: EmptyView())
+                    Button("按钮") {}
+                    NavigationLink("链接", destination: EmptyView())
                 }
                 .buttonStyle(ActionButtonStyle())
 
                 Section(header: Text("Active with Color")) {
-                    Button("ぼたん") {}
-                    NavigationLink("りんく", destination: EmptyView())
+                    Button("按钮") {}
+                    NavigationLink("链接", destination: EmptyView())
                 }
                 .buttonStyle(ActionButtonStyle(backgroundColor: .orange))
 
                 Section(header: Text("Active, small")) {
-                    Button("ぼたん") {}
-                    NavigationLink("りんく", destination: EmptyView())
+                    Button("按钮") {}
+                    NavigationLink("链接", destination: EmptyView())
                 }
                 .buttonStyle(ActionButtonStyle(size: .small))
 
                 Section(header: Text("Active, extra small")) {
-                    Button("ぼたん") {}
-                    NavigationLink("りんく", destination: EmptyView())
+                    Button("按钮") {}
+                    NavigationLink("链接", destination: EmptyView())
                 }
                 .buttonStyle(ActionButtonStyle(size: .extraSmall))
 
                 Section(header: Text("In-active")) {
-                    Button("ぼたん") {}
-                    NavigationLink("りんく", destination: EmptyView())
+                    Button("按钮") {}
+                    NavigationLink("链接", destination: EmptyView())
                 }
                 .buttonStyle(ActionButtonStyle(isActive: false))
                 .disabled(true)

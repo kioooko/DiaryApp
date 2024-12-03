@@ -17,7 +17,7 @@ struct DiaryText: View {
                     .contentShape(.rect)
 
                 if text.isEmpty {
-                    Text("日記の本文") .foregroundColor(Color(uiColor: .placeholderText))
+                    Text("日记内容") .foregroundColor(Color(uiColor: .placeholderText))
                         .padding(.vertical, 8)
                         .padding(.horizontal, 4)
                         .textOption(textOptions)
@@ -28,12 +28,12 @@ struct DiaryText: View {
     }
 }
 
-#Preview("textなし") {
+#Preview("没有文字") {
     DiaryText(text: "") {}
     .environmentObject(TextOptions.preview)
 }
 
-#Preview("textあり") {
+#Preview("有文字") {
     DiaryText(text: "place holder") {}
     .environmentObject(TextOptions.preview)
 }

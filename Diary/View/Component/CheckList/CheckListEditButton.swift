@@ -11,7 +11,7 @@ struct CheckListEditButton: View {
 
     var body: some View {
         HStack {
-            Text("チェックリストを編集する")
+            Text("管理你的检查清单")
                 .font(.system(size: 14))
                 .foregroundColor(.adaptiveWhite)
         }

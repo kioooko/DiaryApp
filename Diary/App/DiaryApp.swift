@@ -84,7 +84,7 @@ private extension DiaryApp {
                 try CoreDataProvider.shared.container.viewContext.save()
                 reSyncPerformed = true
             } catch {
-                print("⚠️: Failed to re-sync data.")
+                print("⚠️ : Failed to re-sync data.")
             }
         } else {
             reSyncPerformed = true

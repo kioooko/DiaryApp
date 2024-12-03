@@ -147,7 +147,7 @@ private extension CreateDiaryView {
     func createItemFromInput() {
         do {
             try diaryDataStore.create()
-            bannerState.show(of: .success(message: "新しい日記を追加しました🎉"))
+            bannerState.show(of: .success(message: "恭喜！你已成功添加新的日记。🎉"))
             dismiss()
         } catch {
             bannerState.show(with: error)

@@ -15,7 +15,7 @@ struct IconWithRoundedBackground: View {
     var body: some View {
         Image(systemName: systemName)
             .foregroundColor(.white)
-            .frame(width: 30, height: 30)
+            .frame(width: 34, height: 34)
             .bold()
             .background {
                 RoundedRectangle(cornerRadius: 8)

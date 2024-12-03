@@ -78,22 +78,22 @@ private extension WelcomeView {
 
     var appIntroduction: some View {
         VStack(spacing: 40) {
-            title("ようこそ！", description: "Shizukuはあなたの経験を振り返るシンプルな日記アプリです")
+            title("你好哇👋！", description: "编织日记是一款用文字记录生活的简单应用")
 
             featureRow(
                 icon: "book",
                 color: .orange,
-                description: "「Shizuku」は直感的でシンプルな日記アプリです。毎日の出来事を簡単に記録し、特別な瞬間を残しましょう。"
+                description: "「编织日记」是一款直观且简洁的日记应用，帮助你用文字和图片编织自己的生活。"
             )
             featureRow(
                 icon: "checkmark",
                 color: .green,
-                description: "日々の習慣の追跡に役立つチェックリスト。目標を視覚化し、毎日の成果を確認しましょう。"
+                description: "帮助追踪日常习惯的检查清单。通过可视化目标，查看每天的微小进步。"
             )
             featureRow(
                 icon: "icloud",
                 color: .blue,
-                description: "iCloudと完全に同期。すべてのデバイスで簡単にアクセス可能です。大切な記録はいつでも安全に保管されます。")
+                description: "与 iCloud 完全同步。您可以轻松访问所有设备上的内容。重要的记录将始终安全存储。")
 
         }
         .frame(maxHeight: .infinity)
@@ -124,14 +124,14 @@ private extension WelcomeView {
     var requestLocation: some View {
         VStack(spacing: 40) {
             title(
-                "位置情報の許可",
-                description: "位置情報を許可してよりリッチな日記体験を開始しましょう。"
+                "请允许访问您的位置信息",
+                description: "允许位置访问，开始更加丰富的日记体验吧！"
             )
 
             HStack(spacing: 24) {
                 IconWithRoundedBackground(systemName: "mappin", backgroundColor: .green)
 
-                Text("「Shizuku」では自動的に天気情報を追加します。\n位置情報は天気情報の取得のみに使用されます。いつでも設定を変更することが可能です。")
+                Text("在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
                     .foregroundColor(.adaptiveBlack.opacity(0.8))
                     .font(.system(size: 18))
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -144,13 +144,13 @@ private extension WelcomeView {
     var setReminder: some View {
         VStack(spacing: 40) {
             title(
-                "リマインダーの設定",
-                description: "日記を書くのを習慣化しましょう。面倒な通知は一切しません"
+                "设置提醒事项",
+                description: "让写日记成为一种习惯。我们不会发送任何烦人的通知。"
             )
 
             HStack {
                 IconWithRoundedBackground(systemName: "alarm", backgroundColor: .red)
-                Text("面倒な通知は一切しません")
+                Text("我们不会发送任何垃圾信息")
             }
 
             hourAndMinutePicker

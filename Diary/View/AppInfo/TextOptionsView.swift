@@ -19,7 +19,7 @@ struct TextOptionsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("日記のテキスト設定を変更できます😄")
+                Text("日记的文本设置可以修改调整哦😄")
                     .font(.system(size: 16))
                 previousSettingsDemo
                 downImage
@@ -34,7 +34,7 @@ struct TextOptionsView: View {
             fontSize = textOptions.fontSize
             lineSpacing = textOptions.lineSpacing
         }
-        .navigationTitle("テキスト設定")
+        .navigationTitle("文本设置")
     }
 }
 
@@ -44,7 +44,7 @@ private extension TextOptionsView {
     // MARK: View
 
     var previousSettingsDemo: some View {
-        Text("これは現在の設定の設定です。\n日記の本文はこのように表示されています。\n下部のスライダーを動かしてみてください🦈")
+        Text("这里是目前的设置哦！\n日记内容会以这样的方式呈现。\n快试着滑动下方的滑块看看吧🦈")
             .textOption(
                 .init(
                     fontSize: textOptions.fontSize,
@@ -55,7 +55,7 @@ private extension TextOptionsView {
     }
 
     var newSettingsDemo: some View {
-        Text("これはデモ用のテキストです。\n変更後の日記の本文はこのように表示されます。\n設定を保存するには下部のボタンを押してください🦄")
+        Text("这是示例文本哦！\n调整后的日记内容会像这样显示。\n想保存设置的话记得按下下方的按钮🦄")
             .textOption(
                 .init(
                     fontSize: fontSize,
@@ -99,16 +99,16 @@ private extension TextOptionsView {
         ) {
             Text("line spacing")
         } minimumValueLabel: {
-            Text("狭")
+            Text("窄")
         } maximumValueLabel: {
-            Text("広")
+            Text("宽")
         }
     }
 
     var saveButton: some View {
         Button("保存") {
             textOptions.save(fontSize: fontSize, lineSpacing: lineSpacing)
-            bannerState.show(of: .success(message: "テキストの設定を更新しました🎉"))
+            bannerState.show(of: .success(message: "文本设置更新啦🎉"))
         }
         .buttonStyle(ActionButtonStyle())
     }

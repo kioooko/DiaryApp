@@ -67,9 +67,9 @@ struct NotificationService {
         deleteAllNotification()
 
         let content = UNMutableNotificationContent()
-        content.title = "日記を書いてみませんか？👋"
+        content.title = "来编织今天的故事吧吧！👋"
         content.subtitle = ""
-        content.body = "日々を描く、それはあなただけの物語です"
+        content.body = "每一天，都是你自己的故事"
         content.sound = UNNotificationSound.default
 
         let calendar = Calendar.current

@@ -35,15 +35,15 @@ enum WeatherSymbol: Equatable {
     var name: String {
         switch self {
         case .sun:
-            return "晴れ"
+            return "晴天"
         case .cloud:
-            return "曇り"
+            return "多云"
         case .rain:
-            return "雨"
+            return "雨天"
         case .snow:
-            return "雪"
+            return "下雪啦"
         case .wind:
-            return "強風"
+            return "有风"
         case .custom(_, let name):
             return name
         }

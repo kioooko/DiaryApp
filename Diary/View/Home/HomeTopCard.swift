@@ -49,15 +49,15 @@ private extension HomeTopCard {
         Group {
             if Item.hasTodayItem {
                 callToActionContent(
-                    title: "Nice！今日は日記を記録できました",
+                    title: "Nice！今天也有认真记录生活",
                     subTitle: feedbackPhrase.praisePhrase,
-                    bottomMessage: "今月の日記数: \(Item.thisMonthItemsCount) 件"
+                    bottomMessage: "这个月的日記数: \(Item.thisMonthItemsCount) 件"
                 )
             } else {
                 callToActionContent(
-                    title: "出来事を振り返ってみませんか？",
+                    title: "你想回顾一下过去发生的事件吗？",
                     subTitle: feedbackPhrase.motivationalPhrase,
-                    bottomMessage: "現在の継続日数: \(consecutiveDays) 日"
+                    bottomMessage: "现在位置的持续天数: \(consecutiveDays) 日"
                 )
             }
         }

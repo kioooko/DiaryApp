@@ -71,14 +71,14 @@ public enum NotificationSettingError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .requiredPermissionInSettingsApp:
-            return "権限がないため通知設定ができません。"
+            return "没有权限，无法设置通知"
         }
     }
 
     public var recoverySuggestion: String? {
         switch self {
         case .requiredPermissionInSettingsApp:
-            return "設定アプリより、通知をオンにしてください。"
+            return "请在设置应用中打开通知"
         }
     }
 }
