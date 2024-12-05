@@ -19,7 +19,7 @@ struct DiaryDateButton: View {
           }, label: {
               HStack(spacing: 4) {
                   HStack {
-                      Image(systemName: "calendar")
+                      Image(systemName: "日历")
                           .foregroundColor(.adaptiveBlack)
                       Text(selectedDate, style: .date)
                           .bold()
@@ -27,7 +27,7 @@ struct DiaryDateButton: View {
                   }
                   .padding(.vertical, 12)
 
-                  Text("の日記")
+                  Text("的日记")
                       .foregroundColor(.adaptiveBlack)
               }
               .font(.system(size: 20))

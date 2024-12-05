@@ -132,7 +132,7 @@ private extension ShareImageRender {
         VStack(spacing: 12) {
             if let itemsCount = item.checkListItems?.count,
                itemsCount >= 2 {
-                Text("合計\(itemsCount)個のチェックリストを達成しました")
+                Text("合计完成啦\(itemsCount)个CheckList")
                     .font(.system(size: 14))
                     .foregroundColor(.gray)
             }

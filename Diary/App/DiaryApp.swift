@@ -14,7 +14,7 @@ struct DiaryApp: App {
     @StateObject private var bannerState = BannerState()
     @StateObject private var coreDataProvider = CoreDataProvider.shared
     @StateObject private var textOptions: TextOptions = .makeUserOptions()
-    @StateObject private var notificationSetting: NotificationSetting = NotificationSetting()
+    @StateObject private var notificationSetting = NotificationSetting()
     @StateObject private var weatherData = WeatherData()
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
@@ -24,18 +24,13 @@ struct DiaryApp: App {
     private var reSyncPerformed: Bool = false
 
     init() {
-//        let now = Date()
-//        for i in -3 ... 0 {
-//            let targetDate = Calendar.current.date(byAdding: .month, value: i, to: now)!
-//            let item = Item.makeRandom(date: targetDate)
-//            let item2 = Item.makeRandom(date: targetDate)
-//            try! item.save()
-//        }
-
         reSyncData()
     }
 
     var body: some Scene {
+        WindowGroup {
+            WelcomeView()
+        }
         WindowGroup {
             HomeView()
                 .environmentObject(bannerState)
@@ -84,7 +79,7 @@ private extension DiaryApp {
                 try CoreDataProvider.shared.container.viewContext.save()
                 reSyncPerformed = true
             } catch {
-                print("⚠️: Failed to re-sync data.")
+                print("⚠️ : Failed to re-sync data.")
             }
         } else {
             reSyncPerformed = true

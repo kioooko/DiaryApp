@@ -26,7 +26,7 @@ struct CheckListTextEditor: View {
                     Button(actionWithHapticFB: {
                         delete(item)
                     }) {
-                        Text("削除")
+                        Text("删除")
                     }
                 }
                 inputProgress
@@ -132,7 +132,7 @@ private extension CheckListTextEditor {
         do {
             try item.delete()
             isPresented = false
-            bannerState.show(of: .success(message: "削除しました"))
+            bannerState.show(of: .success(message: "已删除"))
         } catch {
             bannerState.show(with: error)
         }
@@ -146,7 +146,7 @@ private extension CheckListTextEditor {
         do {
             try CheckListItem.create(title: title)
             isPresented = false
-            bannerState.show(of: .success(message: "新しいチェックリストを追加しました"))
+            bannerState.show(of: .success(message: "追加了新的CheckList"))
         } catch {
             print(error.localizedDescription)
             bannerState.show(with: error)
@@ -161,7 +161,7 @@ private extension CheckListTextEditor {
         do {
             try item.update(title: title)
             isPresented = false
-            bannerState.show(of: .success(message: "更新しました"))
+            bannerState.show(of: .success(message: "更新啦"))
         } catch {
             print(error.localizedDescription)
             bannerState.show(with: error)

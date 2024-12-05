@@ -12,9 +12,9 @@ enum DiaryContentType: CaseIterable {
     var name: String {
         switch self {
         case .text:
-            return "テキスト"
+            return "文本"
         case .checkList:
-            return "毎日チェックリスト"
+            return "每天的CheckList"
         }
     }
 }

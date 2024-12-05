@@ -68,9 +68,9 @@ public enum BaseModelError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .databaseOperationError:
-            return "処理に失敗しました"
+            return "失败啦☹️"
         case .needToCheckSpace:
-            return "処理に失敗しました"
+            return "失败啦☹️"
         }
     }
 
@@ -78,9 +78,9 @@ public enum BaseModelError: Error, LocalizedError {
         switch self {
         case .databaseOperationError(let error):
             print(error?.localizedDescription ?? "")
-            return "エラーが発生しました、再度お試しください"
+            return "发生了一些问题、麻烦再试一次吧"
         case .needToCheckSpace:
-            return "iCloud連携ができませんでした。設定やiCloudの容量をご確認ください。"
+            return "iCloud没有关联成功。请确认一下设置和iCloud的储存容量。"
         }
     }
 }

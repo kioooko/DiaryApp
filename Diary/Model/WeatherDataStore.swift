@@ -89,18 +89,18 @@ public enum WeatherDataError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .notFoundTodayWeatherError:
-            return "今日の天気を取得できませんでした"
+            return "无法获取今日天气"
         case .noLocationAuth:
-            return "位置情報の取得が許可されていません"
+            return "没有权限，无法获取位置信息"
         }
     }
 
     public var recoverySuggestion: String? {
         switch self {
         case .notFoundTodayWeatherError:
-            return "エラーが発生しました、再度お試しください"
+            return "发生错误，请重试"
         case .noLocationAuth:
-            return "位置情報の取得が許可されていません"
+            return "没有权限，所以无法获取位置信息"
         }
     }
 }

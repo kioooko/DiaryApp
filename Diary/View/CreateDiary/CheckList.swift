@@ -20,7 +20,7 @@ struct CheckList: View {
     var body: some View {
         VStack(spacing: 12) {
             if checkListItems.count == 0 {
-                Text("現在チェックリストはありません。")
+                Text("现在没有CheckList，快来创建一个吧！")
                     .font(.system(size: 16))
                     .padding(.top, 16)
             } else {

@@ -13,11 +13,11 @@ enum ShareContentPattern {
     var name: String {
         switch self {
         case .imageAndText:
-            return "画像とテキスト"
+            return "画像和文字"
         case .text:
-            return "テキスト"
+            return "文字"
         case .checkList:
-            return "チェックリスト"
+            return "CheckList"
         }
     }
 }

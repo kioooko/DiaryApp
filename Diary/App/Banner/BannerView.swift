@@ -81,17 +81,17 @@ private extension BannerView {
 struct BannerView_Previews: PreviewProvider {
     static var bannerState01: BannerState = {
         let state = BannerState()
-        state.mode = .success(message: "this is success mode")
+        state.mode = .success(message: "成啦～")
         return state
     }()
     static var bannerState02: BannerState = {
         let state = BannerState()
-        state.mode = .warning(message: "this is alert mode")
+        state.mode = .warning(message: "再检查一次吧")
         return state
     }()
     static var bannerState03: BannerState = {
         let state = BannerState()
-        state.mode = .error(message: "入力情報をご確認の上、再度お試しください")
+        state.mode = .error(message: "出了问题，再试一次吧")
         return state
     }()
 
@@ -106,7 +106,7 @@ struct BannerView_Previews: PreviewProvider {
                     .environmentObject(bannerState03)
 
                 Button("change") {
-                    bannerState01.show(of: .error(message: "update error"))
+                    bannerState01.show(of: .error(message: "哪里出了问题，再试一次吧"))
                 }
             }
             .padding(.top, 80)

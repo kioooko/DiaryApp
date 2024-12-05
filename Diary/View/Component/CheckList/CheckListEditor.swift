@@ -45,7 +45,7 @@ struct CheckListEditor: View {
                 )
             }
         }
-        .navigationTitle("チェックリスト")
+        .navigationTitle("CheckList")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -64,7 +64,7 @@ private extension CheckListEditor {
             editState = .createNewItem
             isPresentedTextEditor = true
         }) {
-            Text("新しいチェックリストを追加")
+            Text("追加新的CheckList")
                 .font(.system(size: 16))
                 .foregroundColor(.adaptiveBlack)
                 .multilineTextAlignment(.leading)
@@ -84,7 +84,7 @@ private extension CheckListEditor {
             isPresentedTextEditor = true
         }) {
             HStack {
-                Text(item.title ?? "no title")
+                Text(item.title ?? "无标题")
                     .font(.system(size: 20))
                     .frame(maxWidth: .infinity, alignment: .leading)
 

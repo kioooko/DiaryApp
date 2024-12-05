@@ -17,7 +17,7 @@ struct ReminderSettingView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("日記を書く時間を通知して、習慣にしましょう👋")
+                Text("让文字记录成为你的习惯吧👋")
                     .font(.system(size: 16))
                 hourAndMinutePicker
                     .padding(.top, 50)
@@ -52,8 +52,8 @@ private extension ReminderSettingView {
 
     var requestPermissionAlert: Alert {
         Alert(
-            title: Text("設定アプリで通知をオンにしてください"),
-            message: Text("通知をオンにすることで設定できるようになります。"),
+            title: Text("请打开手机的设置通知"),
+            message: Text("请开启通知功能，这样就可以完成设置了哦！"),
             dismissButton: .default(
                 Text("OK"),
                 action: {
@@ -67,7 +67,7 @@ private extension ReminderSettingView {
         Button(actionWithHapticFB: {
             save()
         }, label: {
-            Text("設定する")
+            Text("设置")
         })
         .buttonStyle(ActionButtonStyle())
     }
@@ -77,9 +77,9 @@ private extension ReminderSettingView {
             Task {
                 await notificationSetting.delete()
             }
-            bannerState.show(of: .success(message: "通知を未設定にしました🗑️"))
+            bannerState.show(of: .success(message: "通知已被设为未启用状态🗑️"))
         }, label: {
-            Text("未設定にする")
+            Text("未启用")
         })
         .buttonStyle(ActionButtonStyle(backgroundColor: .red))
     }
@@ -90,7 +90,7 @@ private extension ReminderSettingView {
         Task {
             do {
                 try await notificationSetting.setNotification(date: selectedDate)
-                bannerState.show(of: .success(message: "通知を設定しました🎉"))
+                bannerState.show(of: .success(message: "通知已打开🎉"))
             } catch NotificationSettingError.requiredPermissionInSettingsApp {
                 showRequestNotificationPermissionAlert = true
             } catch {

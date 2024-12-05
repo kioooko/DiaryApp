@@ -120,7 +120,7 @@ private extension DiaryDetailView {
                 isShareViewPresented = true
             }, label: {
                 HStack {
-                    Text("共有する")
+                    Text("分享")
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 16))
                         .foregroundColor(.primary)
@@ -130,8 +130,8 @@ private extension DiaryDetailView {
             Button(actionWithHapticFB: {
                 showDeleteAlert = true
             }, label: {
-                Text("削除する")
-                Image(systemName: "trash")
+                Text("删除")
+                Image(systemName: "垃圾箱")
                     .font(.system(size: 16))
                     .foregroundColor(.primary)
             })
@@ -143,10 +143,10 @@ private extension DiaryDetailView {
     }
 
     var deleteAlert: Alert {
-        Alert(title: Text("この日記を削除します"),
-              message: Text("削除すると復元することはできません。"),
-              primaryButton: .cancel(Text("キャンセル")),
-              secondaryButton: .destructive(Text("削除する"), action: { delete() }))
+        Alert(title: Text("删除这篇日记"),
+              message: Text("请注意，删除后无法还原哦！"),
+              primaryButton: .cancel(Text("取消")),
+              secondaryButton: .destructive(Text("删除"), action: { delete() }))
     }
 
     @ViewBuilder
@@ -301,19 +301,19 @@ struct DiaryDetailView_Previews: PreviewProvider {
         Group {
             content(withImage: true)
                 .environment(\.colorScheme, .light)
-                .previewDisplayName("light, 画像あり")
+                .previewDisplayName("light, 有图片")
             content(withImage: true)
                 .environment(\.colorScheme, .dark)
-                .previewDisplayName("dark, 画像あり")
+                .previewDisplayName("dark, 有图片")
         }
 
         Group {
             content(withImage: false)
                 .environment(\.colorScheme, .light)
-                .previewDisplayName("light, 画像なし")
+                .previewDisplayName("light, 没有图片")
             content(withImage: false)
                 .environment(\.colorScheme, .dark)
-                .previewDisplayName("dark, 画像なし")
+                .previewDisplayName("dark, 没有图片")
         }
     }
 }

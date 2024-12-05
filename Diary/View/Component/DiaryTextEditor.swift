@@ -28,7 +28,7 @@ struct DiaryTextEditor: View {
                     .padding(.horizontal, 4)
 
                 if bodyText.isEmpty {
-                    Text("日記の本文") .foregroundColor(Color(uiColor: .placeholderText))
+                    Text("日記的文字") .foregroundColor(Color(uiColor: .placeholderText))
                         .padding(.vertical, 8)
                         .padding(.horizontal, 8)
                         .allowsHitTesting(false)

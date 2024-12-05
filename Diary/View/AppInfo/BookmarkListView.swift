@@ -29,7 +29,7 @@ struct BookmarkListView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("ブックマーク")
+            .navigationTitle("收藏")
         }
     }
 }
@@ -39,7 +39,7 @@ private extension BookmarkListView {
     // MARK: View
 
     var streak: some View {
-        NavigationLink("継続日数") {
+        NavigationLink("持续天数") {
             TextOptionsView()
         }
     }
@@ -51,13 +51,13 @@ private extension BookmarkListView {
     }
 
     var textOption: some View {
-        NavigationLink("テキストの設定") {
+        NavigationLink("文本设定") {
             TextOptionsView()
         }
     }
 
     var bookMark: some View {
-        NavigationLink("ブックマークした日記") {
+        NavigationLink("收藏的日记") {
             TextOptionsView()
         }
     }

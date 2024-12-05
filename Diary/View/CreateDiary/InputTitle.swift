@@ -12,12 +12,12 @@ struct InputTitle: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            TextField("タイトル（1~100文字）", text: $title)
+            TextField("起个题目吧（1~100文字）", text: $title)
                 .font(.system(size: 20))
                 .multilineTextAlignment(.leading)
 
             if title.count > Item.titleRange.upperBound {
-                Text("タイトルは100文字以内で設定しましょう")
+                Text("标题请控制在100个字符以内，简洁更好！")
                     .invalidInput()
                     .font(.system(size: 12))
             }
@@ -34,8 +34,8 @@ struct InputTitle_Previews: PreviewProvider {
         NavigationStack {
             VStack(spacing: 50) {
                 InputTitle(title: .constant(""))
-                InputTitle(title: .constant("あいうえお123abcdefg"))
-                InputTitle(title: .constant("あいうえお"))
+                InputTitle(title: .constant("窗前明月光123abcdefg"))
+                InputTitle(title: .constant("窗前明月光"))
             }
         }
     }

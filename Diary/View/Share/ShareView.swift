@@ -188,7 +188,7 @@ private extension ShareView {
     func saveImage() {
         let imageSaver = ImageSaver()
         imageSaver.writeToPhotoAlbum(image: renderedImage) {
-            bannerState.show(of: .success(message: "保存しました 🎉"))
+            bannerState.show(of: .success(message: "保存成功啦 🎉"))
         }
     }
 }

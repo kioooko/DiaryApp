@@ -7,6 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B262D01B2B200D9AB42 /* WelcomeView.swift */; };
+		07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */; };
+		07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
+		07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
+		07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
+		07414B2C2D01B2B200D9AB42 /* nectarine.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B222D01B2B200D9AB42 /* nectarine.splineswift */; };
+		07414B2D2D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */; };
+		07414B2E2D01B2B200D9AB42 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B262D01B2B200D9AB42 /* WelcomeView.swift */; };
+		07414B2F2D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */; };
+		07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
+		07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
+		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
+		07414B332D01B2B200D9AB42 /* nectarine.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B222D01B2B200D9AB42 /* nectarine.splineswift */; };
+		07414B342D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */; };
+		0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 0758BA022CFF20F50080DEF2 /* SplineRuntime */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
 		F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CA429F52467005FD6C8 /* DiaryApp.swift */; };
 		F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CA829F52468005FD6C8 /* Assets.xcassets */; };
@@ -55,7 +70,6 @@
 		F54395E22A45C40600C74D59 /* CreateDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54395E12A45C40600C74D59 /* CreateDiaryView.swift */; };
 		F54395E42A47F43400C74D59 /* DiaryTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54395E32A47F43300C74D59 /* DiaryTextEditor.swift */; };
 		F549A54F2A57970C003E7F68 /* Binding+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F549A54E2A57970C003E7F68 /* Binding+Extension.swift */; };
-		F549A5512A57A496003E7F68 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F549A5502A57A495003E7F68 /* GoogleService-Info.plist */; };
 		F549A5542A57A581003E7F68 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = F549A5532A57A581003E7F68 /* FirebaseAnalytics */; };
 		F550BC952A0E499600BCB0F2 /* ReminderSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F550BC942A0E499600BCB0F2 /* ReminderSettingView.swift */; };
 		F550BC992A0E58BD00BCB0F2 /* NotificationSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = F550BC982A0E58BD00BCB0F2 /* NotificationSetting.swift */; };
@@ -104,6 +118,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAnimationView.swift; sourceTree = "<group>"; };
+		07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = mosstr_0.splineswift; sourceTree = "<group>"; };
+		07414B222D01B2B200D9AB42 /* nectarine.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = nectarine.splineswift; sourceTree = "<group>"; };
+		07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplineLaunchAnimationView.swift; sourceTree = "<group>"; };
+		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
+		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
+		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListEditButton.swift; sourceTree = "<group>"; };
 		F51446522A5C1B20002DA8CC /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		F5358CA129F52467005FD6C8 /* Diary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Diary.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,7 +178,6 @@
 		F54395E12A45C40600C74D59 /* CreateDiaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateDiaryView.swift; sourceTree = "<group>"; };
 		F54395E32A47F43300C74D59 /* DiaryTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryTextEditor.swift; sourceTree = "<group>"; };
 		F549A54E2A57970C003E7F68 /* Binding+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+Extension.swift"; sourceTree = "<group>"; };
-		F549A5502A57A495003E7F68 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F54C58392CC6A680001DBD7B /* Diary 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Diary 2.xcdatamodel"; sourceTree = "<group>"; };
 		F550BC942A0E499600BCB0F2 /* ReminderSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSettingView.swift; sourceTree = "<group>"; };
 		F550BC982A0E58BD00BCB0F2 /* NotificationSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSetting.swift; sourceTree = "<group>"; };
@@ -199,6 +219,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */,
 				F549A5542A57A581003E7F68 /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -254,7 +275,6 @@
 				F5358CB829F53BB5005FD6C8 /* Diary.entitlements */,
 				F5358CA829F52468005FD6C8 /* Assets.xcassets */,
 				F5358CB229F52468005FD6C8 /* Info.plist */,
-				F549A5502A57A495003E7F68 /* GoogleService-Info.plist */,
 				F5358CAA29F52468005FD6C8 /* Preview Content */,
 			);
 			path = Diary;
@@ -487,6 +507,13 @@
 			isa = PBXGroup;
 			children = (
 				F5BF44452A557E8600217119 /* WelcomeView.swift */,
+				07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */,
+				07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */,
+				07414B222D01B2B200D9AB42 /* nectarine.splineswift */,
+				07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */,
+				07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */,
+				07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */,
+				07414B262D01B2B200D9AB42 /* WelcomeView.swift */,
 			);
 			path = Welcome;
 			sourceTree = "<group>";
@@ -509,6 +536,7 @@
 			name = Diary;
 			packageProductDependencies = (
 				F549A5532A57A581003E7F68 /* FirebaseAnalytics */,
+				0758BA022CFF20F50080DEF2 /* SplineRuntime */,
 			);
 			productName = Diary;
 			productReference = F5358CA129F52467005FD6C8 /* Diary.app */;
@@ -566,6 +594,7 @@
 			mainGroup = F5358C9829F52467005FD6C8;
 			packageReferences = (
 				F549A5522A57A581003E7F68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				0758BA012CFF20F50080DEF2 /* XCRemoteSwiftPackageReference "spline-ios" */,
 			);
 			productRefGroup = F5358CA229F52467005FD6C8 /* Products */;
 			projectDirPath = "";
@@ -582,9 +611,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07414B332D01B2B200D9AB42 /* nectarine.splineswift in Resources */,
+				07414B342D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */,
 				F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */,
 				F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */,
-				F549A5512A57A496003E7F68 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -592,6 +622,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07414B2C2D01B2B200D9AB42 /* nectarine.splineswift in Resources */,
+				07414B2D2D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -614,6 +646,11 @@
 				F5562C472A6D3358006AECC5 /* ShareView.swift in Sources */,
 				F5358D0C29F8BB86005FD6C8 /* AsyncState.swift in Sources */,
 				F568BB6B2A3B88E2000330E1 /* DiaryContentType.swift in Sources */,
+				07414B2E2D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
+				07414B2F2D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
+				07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
+				07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
+				07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
 				F5BE688B2A72913300A92F00 /* ActivityView.swift in Sources */,
 				F5358D3C2A00D5CF005FD6C8 /* ActionButtonStyle.swift in Sources */,
 				F5BF44362A4C747900217119 /* CheckListEditor.swift in Sources */,
@@ -686,6 +723,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
+				07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
+				07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
+				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
+				07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
 				F5358D0829F8B602005FD6C8 /* MockCoreData.swift in Sources */,
 				F5358D0129F80879005FD6C8 /* DiaryItemTests.swift in Sources */,
 			);
@@ -967,6 +1009,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0758BA012CFF20F50080DEF2 /* XCRemoteSwiftPackageReference "spline-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/splinetool/spline-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		F549A5522A57A581003E7F68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -978,6 +1028,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0758BA022CFF20F50080DEF2 /* SplineRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0758BA012CFF20F50080DEF2 /* XCRemoteSwiftPackageReference "spline-ios" */;
+			productName = SplineRuntime;
+		};
 		F549A5532A57A581003E7F68 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F549A5522A57A581003E7F68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

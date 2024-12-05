@@ -99,14 +99,14 @@ struct AddPhoto_Previews: PreviewProvider {
                     DiaryImageView(
                         selectedImage: .constant(nil)
                     )
-                    Text("画像設定なし")
+                    Text("没有图片")
                 }
 
                 VStack {
                     DiaryImageView(
                         selectedImage: .constant(sampleImage)
                     )
-                    Text("画像設定あり")
+                    Text("有图片")
                 }
             }
         }

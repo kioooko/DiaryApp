@@ -13,7 +13,7 @@ extension CheckListItem: BaseModel {
         context: NSManagedObjectContext = CoreDataProvider.shared.container.viewContext,
         date: Date = Date()
     ) -> CheckListItem {
-        let titleSourceString = "あ漢1"
+        let titleSourceString = "窗前明月光"
         var title = ""
         let repeatCountForTitle = Int.random(in: 1...3)
         for _ in 1...repeatCountForTitle {
@@ -64,14 +64,14 @@ public enum CheckListItemError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .validationError:
-            return "入力内容が不正です"
+            return "输入的内容格式好像有问题诶"
         }
     }
 
     public var recoverySuggestion: String? {
         switch self {
         case .validationError:
-            return "入力内容をご確認の上、再度お試しください"
+            return "请确认好内容格式后、再试一次吧"
         }
     }
 }
