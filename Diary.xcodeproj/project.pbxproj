@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
+		07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
 		07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B262D01B2B200D9AB42 /* WelcomeView.swift */; };
 		07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */; };
 		07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
@@ -118,6 +120,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07207D322D06CC50003E3019 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAnimationView.swift; sourceTree = "<group>"; };
 		07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = mosstr_0.splineswift; sourceTree = "<group>"; };
 		07414B222D01B2B200D9AB42 /* nectarine.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = nectarine.splineswift; sourceTree = "<group>"; };
@@ -274,6 +277,7 @@
 				F5358CBA29F6027A005FD6C8 /* View */,
 				F5358CB829F53BB5005FD6C8 /* Diary.entitlements */,
 				F5358CA829F52468005FD6C8 /* Assets.xcassets */,
+				07207D322D06CC50003E3019 /* GoogleService-Info.plist */,
 				F5358CB229F52468005FD6C8 /* Info.plist */,
 				F5358CAA29F52468005FD6C8 /* Preview Content */,
 			);
@@ -613,6 +617,7 @@
 			files = (
 				07414B332D01B2B200D9AB42 /* nectarine.splineswift in Resources */,
 				07414B342D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */,
+				07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
 				F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */,
 				F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */,
 			);
@@ -624,6 +629,7 @@
 			files = (
 				07414B2C2D01B2B200D9AB42 /* nectarine.splineswift in Resources */,
 				07414B2D2D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */,
+				07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,7 +9,7 @@ struct LaunchAnimationView: View {
                 WelcomeSplineView()
                 // 这里可以切换到主视图
             //    ContentView()
-            } else {
+           // } else {
                 // 这里是启动动画的内容
                 Text("欢迎")
                     .font(.largeTitle)

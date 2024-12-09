@@ -12,7 +12,7 @@ struct SplineLaunchAnimationView: View {
                 Text("Spline 动画")
                     .font(.largeTitle)
                     .opacity(isActive ? 0 : 1)
-                    .animation(.easeIn(duration: 1.5))
+                    .animation(.easeIn(duration: 0))
             }
         }
         .onAppear {

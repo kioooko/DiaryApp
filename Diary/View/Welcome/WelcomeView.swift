@@ -26,8 +26,6 @@ struct WelcomeView: View {
 
     var body: some View {
         VStack {
-            SplineLaunchAnimationView()
-            WelcomeSplineView()
 
             TabView(selection: $selectedPage) {
                 Group {

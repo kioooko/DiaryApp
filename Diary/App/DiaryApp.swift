@@ -36,7 +36,8 @@ struct DiaryApp: App {
 
     var body: some Scene {
         WindowGroup {
-            WelcomeView()
+            WelcomeSplineAnimationView()
+           // WelcomeView()
         }
         WindowGroup {
             HomeView()
