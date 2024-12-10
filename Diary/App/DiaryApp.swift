@@ -17,6 +17,9 @@ struct DiaryApp: App {
    //@StateObject private var notificationSetting: NotificationSetting = NotificationSetting()
     @StateObject private var weatherData = WeatherData()
   @StateObject private var notificationSetting = NotificationSetting()
+    // 添加一个状态变量来控制视图的显示
+    @State private var showHomeView = false
+
 
   
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
@@ -36,24 +39,45 @@ struct DiaryApp: App {
         reSyncData()
     }
 
-    var body: some Scene {
-      //  WindowGroup {
-      //      WelcomeSplineAnimationView()
-      //      WelcomeView()
-      //  }
+   var body: some Scene {
         WindowGroup {
             WelcomeSplineAnimationView()
             WelcomeView()
-            HomeView()
-                .environmentObject(bannerState)
-                .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
-                .environmentObject(textOptions)
-                .environmentObject(notificationSetting)
-                .environmentObject(weatherData)
         }
-    }
-}
+     }   
+    //    WindowGroup {
+    //        HomeView()
+    //            .environmentObject(bannerState)
+    //            .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+    //            .environmentObject(textOptions)
+    //            .environmentObject(notificationSetting)
+    //            .environmentObject(weatherData)
+    //    }
+    //}
+//}
 
+// var body: some Scene {
+//        WindowGroup {
+//            if showHomeView {
+//                HomeView()
+//                    .environmentObject(bannerState)
+//                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+//                    .environmentObject(textOptions)
+//                    .environmentObject(notificationSetting)
+//                    .environmentObject(weatherData)
+//            } else {
+//                WelcomeSplineAnimationView()
+//                    .onAppear {
+//                        // 模拟欢迎视图完成后的延迟
+                     //   DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//                            showHomeView = true
+//                        }
+//                    }
+//                WelcomeView()
+//            }
+//        }
+//    }
+  }
 private extension DiaryApp {
 
     /**

@@ -14,7 +14,8 @@ import SwiftUI
  3. リマインダー設定
  */
 struct WelcomeView: View {
-     @State private var navigateToNextPage = false
+    @State private var navigateToNextPage = false // 确保变量声明正确
+    @State private var navigateToHomeView = false // 确保变量声明正确
     @EnvironmentObject private var notificationSetting: NotificationSetting
     @EnvironmentObject private var weatherData: WeatherData
 
@@ -23,11 +24,10 @@ struct WelcomeView: View {
     @State private var selectedPage = 1
     @State private var selectedDate: Date = Date()
 
-    private let maxPageCount = 3
+    private let maxPageCount = 4
 
     var body: some View {
         VStack {
-
             TabView(selection: $selectedPage) {
                 Group {
                     appIntroduction
@@ -35,7 +35,9 @@ struct WelcomeView: View {
                     requestLocation
                         .tag(2)
                     setReminder
-                        .tag(3)
+                        .tag(3)  
+                    localImageView // 使用自定义视图展示本地图片
+                            .tag(4)
                 }
                 .contentShape(Rectangle()).gesture(DragGesture()) // スワイプでのページ遷移をしない
             }
@@ -43,11 +45,12 @@ struct WelcomeView: View {
 
             nextButton
                 .padding(.bottom)
-
-                 // 使用 NavigationLink 进行页面跳转
-// NavigationLink(destination: HomeView(), isActive: $navigateToNextPage) {
-  //  HomeView()
-//}
+              
+        }
+         .fullScreenCover(isPresented: $navigateToHomeView) {
+            HomeView()
+                .environmentObject(notificationSetting)
+                .environmentObject(weatherData)
         }
     }
 }
@@ -68,23 +71,24 @@ private extension WelcomeView {
                      //   try await notificationSetting.setNotification(date: selectedDate)
                //     try await notificationSetting.setNotification(date: selectedDate)
 //} catch {
-//    print("Failed to set notification: \(error)")
-                   
-                   
+//    print("Failed to set notification: \(error)")                        
                     }
                 }
             }
+           
+          
 
-            if selectedPage >= maxPageCount {
+   if selectedPage >= maxPageCount {
                 hasBeenLaunchedBefore = true
-                return
+                navigateToNextPage = true // 设置为 true 以触发导航
             } else {
                 withAnimation {
                     selectedPage += 1
                 }
             }
         }) {
-            Text("OK")
+              Text(selectedPage == maxPageCount ? "完成" : "下一步")
+         //   Text("OK")
         }
         .buttonStyle(ActionButtonStyle(size: .medium))
     }
@@ -176,6 +180,17 @@ private extension WelcomeView {
         DatePicker("", selection: $selectedDate, displayedComponents: .hourAndMinute)
             .datePickerStyle(WheelDatePickerStyle())
     }
+       var localImageView: some View {
+        // 使用UIImage加载本地图片
+        if let uiImage = UIImage(contentsOfFile: "/Users/kokio/DiaryApp/Diary/View/Welcome/Nextimg.png") {
+            return AnyView(Image(uiImage: uiImage)
+                .resizable()
+                .scaledToFit())
+        } else {
+            return AnyView(Text("无法加载图片"))
+        }
+    }
+  
 }
 
 #if DEBUG
@@ -185,7 +200,6 @@ struct WelcomeView_Previews: PreviewProvider {
     static var content: some View {
         NavigationStack {
             WelcomeView()
-          //  LaunchAnimationView()
         }
     }
 

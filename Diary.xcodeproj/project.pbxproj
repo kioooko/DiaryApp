@@ -11,6 +11,8 @@
 		07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
 		072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
 		072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
+		072082B02D081FE9001AAE75 /* Nextimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 072082AF2D081FE9001AAE75 /* Nextimg.png */; };
+		072082B12D081FE9001AAE75 /* Nextimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 072082AF2D081FE9001AAE75 /* Nextimg.png */; };
 		07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B262D01B2B200D9AB42 /* WelcomeView.swift */; };
 		07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */; };
 		07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
@@ -120,6 +122,7 @@
 /* Begin PBXFileReference section */
 		07207D322D06CC50003E3019 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		072082AC2D06DDD7001AAE75 /* meeet.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = meeet.splineswift; sourceTree = "<group>"; };
+		072082AF2D081FE9001AAE75 /* Nextimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Nextimg.png; sourceTree = "<group>"; };
 		07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAnimationView.swift; sourceTree = "<group>"; };
 		07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplineLaunchAnimationView.swift; sourceTree = "<group>"; };
 		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
@@ -507,6 +510,7 @@
 		F5BF44442A557E6E00217119 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
+				072082AF2D081FE9001AAE75 /* Nextimg.png */,
 				072082AC2D06DDD7001AAE75 /* meeet.splineswift */,
 				F5BF44452A557E8600217119 /* WelcomeView.swift */,
 				07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */,
@@ -613,6 +617,7 @@
 			files = (
 				07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
 				072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
+				072082B02D081FE9001AAE75 /* Nextimg.png in Resources */,
 				F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */,
 				F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */,
 			);
@@ -622,6 +627,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				072082B12D081FE9001AAE75 /* Nextimg.png in Resources */,
 				07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
 				072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
 			);

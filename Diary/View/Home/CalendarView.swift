@@ -53,13 +53,10 @@ extension CalendarView {
         init(parent: CalendarView) {
             self.parent = parent
         }
-
         // MARK: Delegate
-
         func calendarView(_ calendarView: UICalendarView, didChangeVisibleDateComponentsFrom previousDateComponents: DateComponents) {
             parent.didChangeVisibleDateComponents(calendarView.visibleDateComponents)
         }
-
         func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
             if let date = dateComponents?.date {
                 parent.didSelectDate(date)
