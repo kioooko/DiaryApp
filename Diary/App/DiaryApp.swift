@@ -37,11 +37,13 @@ struct DiaryApp: App {
     }
 
     var body: some Scene {
+      //  WindowGroup {
+      //      WelcomeSplineAnimationView()
+      //      WelcomeView()
+      //  }
         WindowGroup {
             WelcomeSplineAnimationView()
             WelcomeView()
-        }
-        WindowGroup {
             HomeView()
                 .environmentObject(bannerState)
                 .environment(\.managedObjectContext, coreDataProvider.container.viewContext)

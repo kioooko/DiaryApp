@@ -45,9 +45,9 @@ struct WelcomeView: View {
                 .padding(.bottom)
 
                  // 使用 NavigationLink 进行页面跳转
- NavigationLink(destination: HomeView(), isActive: $navigateToNextPage) {
-    HomeView()
-}
+// NavigationLink(destination: HomeView(), isActive: $navigateToNextPage) {
+  //  HomeView()
+//}
         }
     }
 }
