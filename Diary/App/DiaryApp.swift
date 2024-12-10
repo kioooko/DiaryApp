@@ -14,9 +14,11 @@ struct DiaryApp: App {
     @StateObject private var bannerState = BannerState()
     @StateObject private var coreDataProvider = CoreDataProvider.shared
     @StateObject private var textOptions: TextOptions = .makeUserOptions()
-    @StateObject private var notificationSetting: NotificationSetting = NotificationSetting()
+   //@StateObject private var notificationSetting: NotificationSetting = NotificationSetting()
     @StateObject private var weatherData = WeatherData()
+  @StateObject private var notificationSetting = NotificationSetting()
 
+  
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
     private var hasBeenLaunchedBefore: Bool = false
 
@@ -37,7 +39,7 @@ struct DiaryApp: App {
     var body: some Scene {
         WindowGroup {
             WelcomeSplineAnimationView()
-           // WelcomeView()
+            WelcomeView()
         }
         WindowGroup {
             HomeView()

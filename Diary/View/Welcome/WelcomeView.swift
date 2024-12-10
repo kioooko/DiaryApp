@@ -14,6 +14,7 @@ import SwiftUI
  3. リマインダー設定
  */
 struct WelcomeView: View {
+     @State private var navigateToNextPage = false
     @EnvironmentObject private var notificationSetting: NotificationSetting
     @EnvironmentObject private var weatherData: WeatherData
 
@@ -42,6 +43,11 @@ struct WelcomeView: View {
 
             nextButton
                 .padding(.bottom)
+
+                 // 使用 NavigationLink 进行页面跳转
+ NavigationLink(destination: HomeView(), isActive: $navigateToNextPage) {
+    HomeView()
+}
         }
     }
 }
@@ -59,7 +65,12 @@ private extension WelcomeView {
             if selectedPage == 3 {
                 Task {
                     do {
-                        try await notificationSetting.setNotification(date: selectedDate)
+                     //   try await notificationSetting.setNotification(date: selectedDate)
+               //     try await notificationSetting.setNotification(date: selectedDate)
+//} catch {
+//    print("Failed to set notification: \(error)")
+                   
+                   
                     }
                 }
             }
@@ -174,7 +185,7 @@ struct WelcomeView_Previews: PreviewProvider {
     static var content: some View {
         NavigationStack {
             WelcomeView()
-            LaunchAnimationView()
+          //  LaunchAnimationView()
         }
     }
 

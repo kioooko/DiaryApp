@@ -4,7 +4,7 @@
 //
 //  Created by Higashihara Yoki on 2023/05/08.
 //
-
+import SplineRuntime
 import UIKit
 import SwiftUI
 
@@ -36,6 +36,30 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         windowScene = scene as? UIWindowScene
+              guard let windowScene = scene as? UIWindowScene else { return }
+
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = UIHostingController(rootView: WelcomeSplineAnimationView())
+        window.makeKeyAndVisible()
+
+        self.windowScene = windowScene
+        self.bannerWindow = window
+
+        // 设置3秒后切换到主界面
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.switchToWelcomeView()
+        }
+    }
+
+    private func switchToWelcomeView() {
+        guard let windowScene = windowScene else { return }
+
+        let mainView = WelcomeView() // 确保 MainView 已定义
+        let mainWindow = UIWindow(windowScene: windowScene)
+        mainWindow.rootViewController = UIHostingController(rootView: mainView)
+        mainWindow.makeKeyAndVisible()
+
+        self.bannerWindow = mainWindow
     }
 
     func setupBannerWindow() {

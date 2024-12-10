@@ -11,7 +11,7 @@ import SwiftUI
 struct WelcomeSplineView: View {
     var body: some View {
         // fetching from local
-        let url = Bundle.main.url(forResource: "nectarine", withExtension: "splineswift")!
+        let url = Bundle.main.url(forResource: "meeet", withExtension: "splineswift")!
         if #available(iOS 16.0, *) {
             SplineView(sceneFileURL: url).ignoresSafeArea(.all)
         } 

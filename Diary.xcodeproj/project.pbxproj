@@ -9,20 +9,18 @@
 /* Begin PBXBuildFile section */
 		07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
 		07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
+		072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
+		072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
 		07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B262D01B2B200D9AB42 /* WelcomeView.swift */; };
 		07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */; };
 		07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
 		07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
 		07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
-		07414B2C2D01B2B200D9AB42 /* nectarine.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B222D01B2B200D9AB42 /* nectarine.splineswift */; };
-		07414B2D2D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */; };
 		07414B2E2D01B2B200D9AB42 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B262D01B2B200D9AB42 /* WelcomeView.swift */; };
 		07414B2F2D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */; };
 		07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
 		07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
 		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
-		07414B332D01B2B200D9AB42 /* nectarine.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B222D01B2B200D9AB42 /* nectarine.splineswift */; };
-		07414B342D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */; };
 		0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 0758BA022CFF20F50080DEF2 /* SplineRuntime */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
 		F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CA429F52467005FD6C8 /* DiaryApp.swift */; };
@@ -121,9 +119,8 @@
 
 /* Begin PBXFileReference section */
 		07207D322D06CC50003E3019 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		072082AC2D06DDD7001AAE75 /* meeet.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = meeet.splineswift; sourceTree = "<group>"; };
 		07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAnimationView.swift; sourceTree = "<group>"; };
-		07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = mosstr_0.splineswift; sourceTree = "<group>"; };
-		07414B222D01B2B200D9AB42 /* nectarine.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = nectarine.splineswift; sourceTree = "<group>"; };
 		07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplineLaunchAnimationView.swift; sourceTree = "<group>"; };
 		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
 		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
@@ -510,10 +507,9 @@
 		F5BF44442A557E6E00217119 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
+				072082AC2D06DDD7001AAE75 /* meeet.splineswift */,
 				F5BF44452A557E8600217119 /* WelcomeView.swift */,
 				07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */,
-				07414B212D01B2B200D9AB42 /* mosstr_0.splineswift */,
-				07414B222D01B2B200D9AB42 /* nectarine.splineswift */,
 				07414B232D01B2B200D9AB42 /* SplineLaunchAnimationView.swift */,
 				07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */,
 				07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */,
@@ -615,9 +611,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07414B332D01B2B200D9AB42 /* nectarine.splineswift in Resources */,
-				07414B342D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */,
 				07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
+				072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
 				F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */,
 				F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */,
 			);
@@ -627,9 +622,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07414B2C2D01B2B200D9AB42 /* nectarine.splineswift in Resources */,
-				07414B2D2D01B2B200D9AB42 /* mosstr_0.splineswift in Resources */,
 				07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
+				072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
