@@ -19,7 +19,7 @@ struct LaunchAnimationView: View {
         }
         .onAppear {
             // 延迟切换到主视图
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 withAnimation {
                     self.isActive = true
                 }

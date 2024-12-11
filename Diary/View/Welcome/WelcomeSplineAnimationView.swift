@@ -18,7 +18,7 @@ struct WelcomeSplineAnimationView: View {
                     .bold() // 添加粗体效果
                     .foregroundColor(.black) // 添加文本颜色
                     .opacity(isActive ? 0 : 1)
-                    .animation(.easeIn(duration: 1), value: isActive)
+                    .animation(.easeIn(duration: 1.5), value: isActive)
                                   .onTapGesture {
                                       isActive.toggle()
                                   }
@@ -27,7 +27,7 @@ struct WelcomeSplineAnimationView: View {
         }
         .onAppear {
             // 延迟切换到主视图
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 withAnimation {
                     self.isActive = true
                 }

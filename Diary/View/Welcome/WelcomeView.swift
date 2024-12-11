@@ -16,6 +16,8 @@ import SwiftUI
 struct WelcomeView: View {
     @State private var navigateToNextPage = false // 确保变量声明正确
     @State private var navigateToHomeView = false // 确保变量声明正确
+     @State private var navigateToDiaryAppSceneDelegate = false // 确保变量声明正确
+    
     @EnvironmentObject private var notificationSetting: NotificationSetting
     @EnvironmentObject private var weatherData: WeatherData
 
@@ -37,7 +39,7 @@ struct WelcomeView: View {
                     setReminder
                         .tag(3)  
                     localImageView // 使用自定义视图展示本地图片
-                            .tag(4)
+                        .tag(4)
                 }
                 .contentShape(Rectangle()).gesture(DragGesture()) // スワイプでのページ遷移をしない
             }
@@ -46,12 +48,9 @@ struct WelcomeView: View {
             nextButton
                 .padding(.bottom)
               
-        }
-         .fullScreenCover(isPresented: $navigateToHomeView) {
-            HomeView()
-                .environmentObject(notificationSetting)
-                .environmentObject(weatherData)
-        }
+        }           
+       //  .fullScreenCover(isPresented: $navigateToHomeView) {
+       //    HomeView() }
     }
 }
 
@@ -81,6 +80,10 @@ private extension WelcomeView {
    if selectedPage >= maxPageCount {
                 hasBeenLaunchedBefore = true
                 navigateToNextPage = true // 设置为 true 以触发导航
+                navigateToDiaryAppSceneDelegate = true // 跳转到 DiaryAppSceneDelegate
+
+
+
             } else {
                 withAnimation {
                     selectedPage += 1
@@ -88,9 +91,12 @@ private extension WelcomeView {
             }
         }) {
               Text(selectedPage == maxPageCount ? "完成" : "下一步")
-         //   Text("OK")
+       
         }
         .buttonStyle(ActionButtonStyle(size: .medium))
+      //  .fullScreenCover(isPresented: $navigateToDiaryAppSceneDelegate) {
+      //      DiaryAppSceneDelegate() // 跳转的目标页面
+      //  }
     }
 
     var appIntroduction: some View {

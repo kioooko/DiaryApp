@@ -45,21 +45,27 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
         self.windowScene = windowScene
         self.bannerWindow = window
 
-        // 设置3秒后切换到主界面
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        // 设置5秒后切换到主界面
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             self.switchToWelcomeView()
         }
+    
     }
+
+
+
+
+
 
     private func switchToWelcomeView() {
         guard let windowScene = windowScene else { return }
 
-        let mainView = WelcomeView() // 确保 MainView 已定义
-        let mainWindow = UIWindow(windowScene: windowScene)
-        mainWindow.rootViewController = UIHostingController(rootView: mainView)
-        mainWindow.makeKeyAndVisible()
+        let welcomeView = WelcomeView() // 确保 welcomeView 已定义
+        let welcomeWindow = UIWindow(windowScene: windowScene)
+        welcomeWindow.rootViewController = UIHostingController(rootView:WelcomeView())
+        welcomeWindow.makeKeyAndVisible()
 
-        self.bannerWindow = mainWindow
+        self.bannerWindow = welcomeWindow
     }
 
     func setupBannerWindow() {

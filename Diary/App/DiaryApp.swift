@@ -38,6 +38,7 @@ struct DiaryApp: App {
         }
         reSyncData()
     }
+    
 
    var body: some Scene {
         WindowGroup {
@@ -61,23 +62,23 @@ struct DiaryApp: App {
 //            if showHomeView {
 //                HomeView()
 //                    .environmentObject(bannerState)
-//                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+  //                       .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
 //                    .environmentObject(textOptions)
 //                    .environmentObject(notificationSetting)
 //                    .environmentObject(weatherData)
 //            } else {
-//                WelcomeSplineAnimationView()
-//                    .onAppear {
+  //                      WelcomeSplineAnimationView()
+  //                        .onAppear {
 //                        // 模拟欢迎视图完成后的延迟
-                     //   DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//                            showHomeView = true
-//                        }
-//                    }
-//                WelcomeView()
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+    //                        showHomeView = true
+  //                     }
+   //                 }
+                //WelcomeView()
 //            }
-//        }
-//    }
-  }
+  //     }
+ //   }
+ }
 private extension DiaryApp {
 
     /**
