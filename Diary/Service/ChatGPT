@@ -1,0 +1,43 @@
+import Foundation
+
+func sendToChatGPT(prompt: String) {
+    let apiKey = "xai-q53JV3Pyqz7ZV0QfdnetFkcf8jnI6aXor3hjGkA7N4SX1AoLzM5RHwYwTZChRdxHdsRA1ZfOzx3MEaFv"
+    let url = URL(string: "https://api.x.ai/v1/chat/completions")!
+
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+    request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+    
+    let body: [String: Any] = [
+        "model": "grok-beta",
+         "messages": [
+    {
+      "role": "system",
+      "content": "You are a nice mental health assistant."
+    },
+    {
+      "role": "user",
+      "content": "Testing. Please be nice and say hi and try to help me do meditation."
+    }
+  ],
+     //  "max_tokens": 150
+          "stream": false,
+  "temperature": 0
+    ]
+    let jsonData = try! JSONSerialization.data(withJSONObject: body)
+    request.httpBody = jsonData
+
+    let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        if let error = error {
+            print("Error: \(error)")
+            return
+        }
+        if let data = data {
+            let response = try! JSONSerialization.jsonObject(with: data) as! [String: Any]
+            let message = response["choices"] as! [[String: Any]]
+            print(message[0]["message"] as! String)
+        }
+    }
+    task.resume()
+}
