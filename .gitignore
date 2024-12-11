@@ -10,6 +10,7 @@ DerivedData/
 
 ##chat APIkey
 *.Chatapi.txt
+!default.Chatapi.txt
 ## Various settings
 *.pbxuser
 !default.pbxuser
