@@ -10,6 +10,7 @@ DerivedData/
 
 ##chat APIkey
 *.txt
+*.Chatapi.txt
 
 
 ## Various settings
