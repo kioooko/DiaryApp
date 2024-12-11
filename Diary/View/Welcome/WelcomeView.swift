@@ -21,7 +21,16 @@ struct WelcomeView: View {
 
     // 修改后的 sendToChatGPT 方法，包含实际 API 请求
     func sendToChatGPT(prompt: String) {
-  let apiKey = "xai-q53JV3Pyqz7ZV0QfdnetFkcf8jnI6aXor3hjGkA7N4SX1AoLzM5RHwYwTZChRdxHdsRA1ZfOzx3MEaFv"
+    let filePath = "/Users/kokio/DiaryApp/Chatapi.txt"
+    var apiKey: String = ""
+
+    do {
+        apiKey = try String(contentsOfFile: filePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
+    } catch {
+        print("无法读取API密钥: \(error)")
+        return
+    }
+
     let url = URL(string: "https://api.x.ai/v1/chat/completions")!
 
         let parameters: [String: Any] = [
