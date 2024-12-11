@@ -8,6 +8,9 @@
 build/
 DerivedData/
 
+##chat APIkey
+xai-q53JV3Pyqz7ZV0QfdnetFkcf8jnI6aXor3hjGkA7N4SX1AoLzM5RHwYwTZChRdxHdsRA1ZfOzx3MEaFv
+
 ## Various settings
 *.pbxuser
 !default.pbxuser

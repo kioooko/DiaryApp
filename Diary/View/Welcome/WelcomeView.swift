@@ -43,6 +43,11 @@ struct WelcomeView: View {
             return
         }
         
+        // 立即将用户输入添加到聊天记录中
+        DispatchQueue.main.async {
+            chatHistory.append("You: \(prompt)")
+        }
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("API 请求错误: \(error)")
@@ -56,7 +61,7 @@ struct WelcomeView: View {
             
             // 打印原始响应数据
             if let responseString = String(data: data, encoding: .utf8) {
-                print("服务��响应: \(responseString)")
+                print("服务器响应: \(responseString)")
             }
             
             do {
@@ -66,7 +71,6 @@ struct WelcomeView: View {
                    let message = firstChoice["message"] as? [String: Any],
                    let content = message["content"] as? String {
                     DispatchQueue.main.async {
-                        chatHistory.append("You: \(prompt)")
                         chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
                     }
                 }
@@ -164,7 +168,7 @@ private extension WelcomeView {
             title("请允许访问您的位置信息", description: "允许位置访问，开始更加丰富的日记体验吧！")
             HStack(spacing: 24) {
                 IconWithRoundedBackground(systemName: "mappin", backgroundColor: .green)
-                Text("在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设��。")
+                Text("在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
                     .foregroundColor(.adaptiveBlack.opacity(0.8))
                     .font(.system(size: 18))
                     .frame(maxWidth: .infinity, alignment: .leading)
