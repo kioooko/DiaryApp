@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
-		07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 07207D322D06CC50003E3019 /* GoogleService-Info.plist */; };
+		0717EE8A2D0983F200C19355 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0717EE892D0983F200C19355 /* GoogleService-Info.plist */; };
+		0717EE8B2D0983F200C19355 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0717EE892D0983F200C19355 /* GoogleService-Info.plist */; };
 		072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
 		072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
 		072082B02D081FE9001AAE75 /* Nextimg.png in Resources */ = {isa = PBXBuildFile; fileRef = 072082AF2D081FE9001AAE75 /* Nextimg.png */; };
@@ -120,7 +120,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		07207D322D06CC50003E3019 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0717EE892D0983F200C19355 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		072082AC2D06DDD7001AAE75 /* meeet.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = meeet.splineswift; sourceTree = "<group>"; };
 		072082AF2D081FE9001AAE75 /* Nextimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Nextimg.png; sourceTree = "<group>"; };
 		07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAnimationView.swift; sourceTree = "<group>"; };
@@ -277,7 +277,7 @@
 				F5358CBA29F6027A005FD6C8 /* View */,
 				F5358CB829F53BB5005FD6C8 /* Diary.entitlements */,
 				F5358CA829F52468005FD6C8 /* Assets.xcassets */,
-				07207D322D06CC50003E3019 /* GoogleService-Info.plist */,
+				0717EE892D0983F200C19355 /* GoogleService-Info.plist */,
 				F5358CB229F52468005FD6C8 /* Info.plist */,
 				F5358CAA29F52468005FD6C8 /* Preview Content */,
 			);
@@ -395,10 +395,10 @@
 			isa = PBXGroup;
 			children = (
 				F53E3A7B2A0942590064CB62 /* Banner */,
-				F5358CA429F52467005FD6C8 /* DiaryApp.swift */,
 				F53E3A752A09413F0064CB62 /* DiaryAppDelegate.swift */,
 				F53E3A772A0941850064CB62 /* DiaryAppSceneDelegate.swift */,
 				F53E3A7E2A0944A20064CB62 /* PassThroughWindow.swift */,
+				F5358CA429F52467005FD6C8 /* DiaryApp.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -615,9 +615,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07207D342D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
 				072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
 				072082B02D081FE9001AAE75 /* Nextimg.png in Resources */,
+				0717EE8B2D0983F200C19355 /* GoogleService-Info.plist in Resources */,
 				F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */,
 				F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */,
 			);
@@ -628,8 +628,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				072082B12D081FE9001AAE75 /* Nextimg.png in Resources */,
-				07207D332D06CC50003E3019 /* GoogleService-Info.plist in Resources */,
 				072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
+				0717EE8A2D0983F200C19355 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

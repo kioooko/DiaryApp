@@ -17,7 +17,7 @@ struct WelcomeView: View {
     @State private var selectedPage = 1
     @State private var selectedDate: Date = Date()
 
-    private let maxPageCount = 4
+    private let maxPageCount = 5
 
     // 修改后的 sendToChatGPT 方法，包含实际 API 请求
     func sendToChatGPT(prompt: String) {
@@ -101,6 +101,8 @@ struct WelcomeView: View {
                         .tag(3)  
                     localImageView
                         .tag(4)
+                    DividerWithShadow
+                        .tag(5)
                 }
                 .contentShape(Rectangle()).gesture(DragGesture()) // 禁止滑动切换页面
             }
@@ -143,7 +145,7 @@ private extension WelcomeView {
 
     var appIntroduction: some View {
         VStack(spacing: 40) {
-            title("你好哇👋！", description: "编织日记是一款用文字记录生活的简单应用")
+            title("你好哇👋！", description: "编织��记是一款用文字记录生活的简单应用")
             featureRow(icon: "book", color: .orange, description: "「编织日记」是一款直观且简洁的日记应用，帮助你用文字和图片编织自己的生活。")
             featureRow(icon: "checkmark", color: .green, description: "帮助追踪日常习惯的CheckList。通过可视化目标，查看每天的微小进步。")
             featureRow(icon: "icloud", color: .blue, description: "与 iCloud 完全同步。您可以轻松访问所有设备上的内容。重要记录将始终安全存储。")
@@ -211,8 +213,24 @@ private extension WelcomeView {
             ScrollView {
                 VStack(alignment: .leading) {
                     ForEach(chatHistory, id: \.self) { message in
-                        Text(message)
-                            .padding(.vertical, 4)
+                        HStack {
+                            if message.hasPrefix("You:") {
+                                Spacer() // 将用户消息推到右边
+                                Text(message)
+                                    .padding()
+                                    .background(Color.purple.opacity(0.2))
+                                    .cornerRadius(6)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                            } else {
+                                Text(message)
+                                    .padding()
+                                    .background(Color.gray.opacity(0.2))
+                                    .cornerRadius(6)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Spacer() // 将助手消息推到左边
+                            }
+                        }
+                        .padding(.vertical, 2)
                     }
                 }
                 .padding()
@@ -233,15 +251,46 @@ private extension WelcomeView {
                     userInput = ""  // 清空输入框
                 }) {
                     Text("发送")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                     
                 }
+                 .buttonStyle(ActionButtonStyle(size: .small))
                 .padding()
             }
         }
         .padding()
+    }
+
+     var DividerWithShadow: some View {
+        VStack(spacing: 20) {
+            Text("上方内容")
+                .font(.title)
+                .padding()
+            
+            // 阴影分割线
+            Rectangle()
+                .fill(Color.clear)
+                .frame(height: 1)
+                .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 4)
+                .padding(.horizontal)
+            
+            Text("下方内容")
+                .font(.title)
+                .padding()
+            
+            // 卡片视图
+            VStack {
+                Text("卡片内容")
+                    .font(.headline)
+                Text("一些描述文字...")
+                    .font(.subheadline)
+            }
+            .padding()
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 6)
+        }
+        .padding()
+        .background(Color(.systemGroupedBackground))
     }
 }
 
