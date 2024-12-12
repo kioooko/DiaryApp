@@ -1,6 +1,7 @@
 import SplineRuntime
 import SwiftUI
 import Foundation
+import Neumorphic
 
 struct WelcomeView: View {
     @State private var userInput: String = ""
@@ -261,36 +262,81 @@ private extension WelcomeView {
     }
 
      var DividerWithShadow: some View {
-        VStack(spacing: 20) {
-            Text("上方内容")
-                .font(.title)
-                .padding()
-            
-            // 阴影分割线
-            Rectangle()
-                .fill(Color.clear)
-                .frame(height: 1)
-                .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 4)
-                .padding(.horizontal)
-            
-            Text("下方内容")
-                .font(.title)
-                .padding()
-            
-            // 卡片视图
-            VStack {
-                Text("卡片内容")
-                    .font(.headline)
-                Text("一些描述文字...")
-                    .font(.subheadline)
+         let cornerRadius : CGFloat = 15
+        let mainColor = Color.Neumorphic.main
+        let secondaryColor = Color.Neumorphic.secondary
+        
+        return ZStack {
+            mainColor.edgesIgnoringSafeArea(.all)
+            VStack(alignment: .center, spacing: 30) {
+                Text("Neumorphic Soft UI").font(.headline).foregroundColor(secondaryColor)
+                //Create simple shapes with soft inner shadow
+                HStack(spacing: 40){
+                    RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 150, height: 150)
+                        .softInnerShadow(RoundedRectangle(cornerRadius: cornerRadius))
+                    
+                    Circle().fill(mainColor).frame(width: 150, height: 150)
+                        .softInnerShadow(Circle())
+                }
+                //You can customize shadow by changing its color, spread, and shadow radius.
+                HStack(spacing: 40) {
+                    ZStack {
+                        Circle().fill(mainColor)
+                            .softInnerShadow(Circle(), spread: 0.6)
+                        
+                        Circle().fill(mainColor).frame(width: 80, height: 80)
+                            .softOuterShadow(offset: 8, radius: 8)
+                    }.frame(width: 150, height: 150)
+                    
+                    ZStack {
+                        Circle().fill(mainColor)
+                            .softOuterShadow()
+                        
+                        Circle().fill(mainColor).frame(width: 80, height: 80)
+                            .softInnerShadow(Circle(), radius: 5)
+                    }.frame(width: 150, height: 150)
+                }
+                //Rectanlges with soft outer shadow
+                HStack(spacing: 30) {
+                    RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 90, height: 90)
+                        .softOuterShadow()
+                    
+                    RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 90, height: 90)
+                        .softInnerShadow(RoundedRectangle(cornerRadius: cornerRadius))
+                    
+                    Rectangle().fill(mainColor).frame(width: 90, height: 90)
+                        .softOuterShadow()
+                    
+                }
+                
+                //You can simply create soft button with softButtonStyle method.
+                Button(action: {}) {
+                    Text("Soft Button").fontWeight(.bold)
+                }.softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
+                
+                HStack(spacing: 20) {
+                    //Circle Button
+                    Button(action: {}) {
+                        Image(systemName: "heart.fill")
+                    }.softButtonStyle(Circle())
+                    
+                    
+                    //Ellipse Button
+                    Button(action: {}) {
+                        Text("Thanks").fontWeight(.bold).frame(width: 150, height: 20)
+                    }.softButtonStyle(Ellipse())
+                        
+                    //Circle Button
+                    Button(action: {}) {
+                        Image(systemName: "heart.fill")
+                    }.softButtonStyle(Circle(), mainColor: Color.red, textColor: Color.white, darkShadowColor: Color("redButtonDarkShadow"), lightShadowColor:Color("redButtonLightShadow"))
+                    
+                }
+                 
+                Text("Twitter @costachung").font(.footnote).foregroundColor(secondaryColor)
+                
             }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(12)
-            .shadow(color: Color.black.opacity(0.2), radius: 12, x: 0, y: 6)
         }
-        .padding()
-        .background(Color(.systemGroupedBackground))
     }
 }
 
@@ -311,3 +357,5 @@ struct WelcomeView_Previews: PreviewProvider {
     }
 }
 #endif
+
+

@@ -10,7 +10,6 @@ import SwiftUI
 
 /**
  Use to manage windows
-
  ---
  UIWindows are associated with and managed by UIScenes, which representing a UI instance of our app.
  We use a UISceneDelegate/UIWindowSceneDelegate to respond to various events related to our UIScene (and associated UISceneSession).
