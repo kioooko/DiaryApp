@@ -1,5 +1,5 @@
 {
-  "originHash" : "0288f9e0277ef7ecab7037f43739e80503d688e7662849398c8650afa58be1d5",
+  "originHash" : "ea5eea85e017caa2934b3d9bb21b951491f7b4f7709a9ff89cd155a5dfa0a88d",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -98,6 +98,15 @@
       "state" : {
         "revision" : "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
         "version" : "2.30910.0"
+      }
+    },
+    {
+      "identity" : "neumorphic",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/costachung/neumorphic/",
+      "state" : {
+        "branch" : "master",
+        "revision" : "aae74c3e39fba485a540927e8050f288eff1228c"
       }
     },
     {
