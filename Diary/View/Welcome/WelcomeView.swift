@@ -112,6 +112,7 @@ struct WelcomeView: View {
             nextButton
                 .padding(.bottom)
         }
+        .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -140,8 +141,10 @@ private extension WelcomeView {
             }
         }) {
             Text(selectedPage == maxPageCount ? "完成" : "下一步")
+                .fontWeight(.bold)
         }
-        .buttonStyle(ActionButtonStyle(size: .medium))
+        .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+        .frame(width: 120, height: 44)
     }
 
     var appIntroduction: some View {
@@ -157,9 +160,14 @@ private extension WelcomeView {
 
     func featureRow(icon: String, color: Color, description: String) -> some View {
         HStack(spacing: 24) {
-            IconWithRoundedBackground(systemName: icon, backgroundColor: color)
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .padding()
+                .background(Color.Neumorphic.main)
+                .clipShape(Circle())
+                .softOuterShadow()
             Text(description)
-                .foregroundColor(.adaptiveBlack.opacity(0.8))
+                .foregroundColor(.primary.opacity(0.8))
                 .font(.system(size: 18))
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -209,26 +217,25 @@ private extension WelcomeView {
     }
 
     var localImageView: some View {
-        VStack {      
-            // 聊天记录
+        VStack {
             ScrollView {
                 VStack(alignment: .leading) {
                     ForEach(chatHistory, id: \.self) { message in
                         HStack {
                             if message.hasPrefix("You:") {
-                                Spacer() // 将用户消息推到右边
+                                Spacer()
                                 Text(message)
                                     .padding()
-                                    .background(Color.purple.opacity(0.2))
-                                    .cornerRadius(6)
+                                    .background(Color.Neumorphic.main)
+                                    .softOuterShadow()
                                     .frame(maxWidth: .infinity, alignment: .trailing)
                             } else {
                                 Text(message)
                                     .padding()
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(6)
+                                    .background(Color.Neumorphic.main)
+                                    .softInnerShadow(RoundedRectangle(cornerRadius: 12))
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                Spacer() // 将助手消息推到左边
+                                Spacer()
                             }
                         }
                         .padding(.vertical, 2)
@@ -237,28 +244,30 @@ private extension WelcomeView {
                 .padding()
             }
 
-            // 输入框发送按钮
             HStack {
                 TextField("分享今天的心情吧", text: $userInput)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(PlainTextFieldStyle())
                     .padding()
-                    .onChange(of: userInput) { newValue in
-                        // 在这里监听输入框变化（可选）
-                        print("当前输入: \(newValue)")
-                    }
-
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.Neumorphic.main)
+                            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+                    )
+                    .accentColor(.primary)
+                
                 Button(action: {
                     sendToChatGPT(prompt: userInput)
-                    userInput = ""  // 清空输入框
+                    userInput = ""
                 }) {
                     Text("发送")
-                     
+                        .fontWeight(.bold)
                 }
-                 .buttonStyle(ActionButtonStyle(size: .small))
-                .padding()
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+                .frame(width: 80, height: 44)
             }
+            .padding()
         }
-        .padding()
+        .background(Color.Neumorphic.main)
     }
 
      var DividerWithShadow: some View {
@@ -269,7 +278,7 @@ private extension WelcomeView {
         return ZStack {
             mainColor.edgesIgnoringSafeArea(.all)
             VStack(alignment: .center, spacing: 30) {
-                Text("Neumorphic Soft UI").font(.headline).foregroundColor(secondaryColor)
+               
                 //Create simple shapes with soft inner shadow
                 HStack(spacing: 40){
                     RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 150, height: 150)
@@ -326,12 +335,7 @@ private extension WelcomeView {
                         Text("Thanks").fontWeight(.bold).frame(width: 150, height: 20)
                     }.softButtonStyle(Ellipse())
                         
-                    //Circle Button
-                    Button(action: {}) {
-                        Image(systemName: "heart.fill")
-                    }.softButtonStyle(Circle(), mainColor: Color.red, textColor: Color.white, darkShadowColor: Color("redButtonDarkShadow"), lightShadowColor:Color("redButtonLightShadow"))
-                    
-                }
+}
                   
             }
         }
