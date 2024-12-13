@@ -3,6 +3,7 @@ import SplineRuntime
 import SwiftUI
 import Foundation
 import Neumorphic
+import Combine
 
 // MARK: - WelcomeView
 struct WelcomeView: View {
@@ -15,6 +16,7 @@ struct WelcomeView: View {
     @State private var navigateToNextPage = false
     @State private var navigateToHomeView = false
     @State private var navigateToDiaryAppSceneDelegate = false
+
     
     // Environment Properties
     @EnvironmentObject private var notificationSetting: NotificationSetting
@@ -88,7 +90,7 @@ struct WelcomeView: View {
                    let message = firstChoice["message"] as? [String: Any],
                    let content = message["content"] as? String {
                     DispatchQueue.main.async {
-                        chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
+                    chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
                     }
                 }
             } catch {
@@ -97,8 +99,9 @@ struct WelcomeView: View {
         }.resume()
     }
     
-    // MARK: - Body
-    var body: some View {
+// MARK: - Body
+var body: some View {
+    NavigationView {
         VStack {
             TabView(selection: $selectedPage) {
                 Group {
@@ -113,66 +116,77 @@ struct WelcomeView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            HStack(spacing: 60) {
+            // HStack 包含跳过和下一步按钮
+            HStack(spacing: 20) { // 设置按钮之间的间距为20
+                // 跳过按钮
                 Button(action: {
                     hasBeenLaunchedBefore = true
-                    navigateToNextPage = true
-                    navigateToDiaryAppSceneDelegate = true
+                    navigateToHomeView = true
                 }) {
                     Text("跳过")
-                        .fontWeight(.medium)
+                        .fontWeight(.bold)
                         .foregroundColor(.gray)
                 }
                 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
-                .frame(width: 120, height: 44)
+                .frame(width: 80, height: 44) // 设置跳过按钮的宽度为80，高度为44
+                .background(
+                    NavigationLink(destination: HomeView(), isActive: $navigateToHomeView) {
+                        EmptyView()
+                    }
+                    .hidden()
+                  
+                )
                 
+                // 原有的下一步按钮
                 nextButton
             }
-            .padding(.bottom)
+            .padding(.bottom, 80) // 为按钮组添加底部内边距50像素
         }
         .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all))
+        .onAppear {
+            // print("WelcomeView appeared with weatherData: \(weatherData)")
+        }
     }
 }
 
-// MARK: - WelcomeView Components
-private extension WelcomeView {
-    // MARK: Navigation Button
-    var nextButton: some View {
-        Button(action: {
-            if selectedPage == 2 {
-                // weatherData.requestLocationAuth()
-            }
-
-            if selectedPage == 3 {
-                Task {
-                    // try await notificationSetting.setNotification(date: selectedDate)
-                }
-            }
-
-            if selectedPage >= maxPageCount {
-                hasBeenLaunchedBefore = true
-                navigateToNextPage = true
-                navigateToDiaryAppSceneDelegate = true
-            } else {
-                withAnimation {
-                    selectedPage += 1
-                }
-            }
-        }) {
-            Text(selectedPage == maxPageCount ? "完成" : "下一步")
-                .fontWeight(.bold)
+// MARK: Navigation Button
+var nextButton: some View {
+    Button(action: {
+        if selectedPage == 2 {
+          //   weatherData.requestLocationAuth()
         }
-        .softButtonStyle(RoundedRectangle(cornerRadius: 12))
-        .frame(width: 120, height: 44)
+
+        if selectedPage == 3 {
+            Task {
+              //  do {
+                       // try await notificationSetting.setNotification(date: selectedDate)
+                //    }
+            }
+        }
+
+        if selectedPage >= maxPageCount {
+            hasBeenLaunchedBefore = true
+            navigateToNextPage = true
+            navigateToDiaryAppSceneDelegate = true
+        } else {
+            withAnimation {
+                selectedPage += 1
+            }
+        }
+    }) {
+        Text(selectedPage == maxPageCount ? "完成" : "保存")
+            .fontWeight(.bold)
     }
-    
+    .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+    .frame(width: 120, height: 44) // 设置下一步按钮的宽度为120，高度为44
+}
     // MARK: Introduction Page
     var appIntroduction: some View {
         VStack(spacing: 40) {
             title("你好哇👋！", description: "编织日记是一款用文字记录生活的简单应用")
             featureRow(icon: "book", color: .orange, description: "「编织日记」是一款直观且简洁的日记应用，帮助你用文字和图片编织自己的生活。")
             featureRow(icon: "checkmark", color: .green, description: "帮助追踪日常习惯的CheckList。通过可视化目标，查看每天的微小进步。")
-            featureRow(icon: "icloud", color: .blue, description: "与 iCloud ��全同步。您可以轻松访问所有设备上的内容。重要记录将始终安全存储。")
+            featureRow(icon: "icloud", color: .blue, description: "与iCloud全同步。您可以轻松访问所有设备上的内容。重要记录将始终安全存储。")
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal)

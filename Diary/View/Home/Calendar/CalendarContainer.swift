@@ -1,5 +1,5 @@
 import SwiftUI
-
+import Neumorphic
 struct CalendarContainer<Content: View>: View {
     @Binding var selectedMonth: Date
     @State private var selectedDate: Date = .now
@@ -141,7 +141,8 @@ struct CalendarContainer<Content: View>: View {
                     cornerRadius: (1 - progress) * 24,
                     style: .continuous
                 )
-                .fill(.white)
+               // .fill(Color.red) 
+                .fill(Color.Neumorphic.main)
             )
             .offset(y: -minY) // 「-」に設定することでカレンダーのメイン部分を常に上部に設定する
             .compositingGroup()

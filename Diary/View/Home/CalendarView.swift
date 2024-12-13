@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Neumorphic
 
 struct CalendarView: UIViewRepresentable {
 
@@ -22,6 +23,15 @@ struct CalendarView: UIViewRepresentable {
         let calendarStartDate = DateComponents(calendar: self.calendar, year: 2014, month: 9, day: 1).date!
         let calendarViewDateRange = DateInterval(start: calendarStartDate, end: Date())
         view.availableDateRange = calendarViewDateRange
+
+        // 设置背景颜色为 Neumorphic 风格
+        view.backgroundColor = UIColor(Color.Neumorphic.main)
+
+        // 添加阴影效果
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOffset = CGSize(width: 5, height: 5)
+        view.layer.shadowRadius = 10
 
         // Viewの表示サイズを規定サイズより変更可能にするためのワークアラウンド
         view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)

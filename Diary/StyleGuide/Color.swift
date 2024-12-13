@@ -6,31 +6,33 @@
 //
 
 import SwiftUI
+import Neumorphic
 
 extension Color {
 
-    /// lightモードの場合に、白を設定し且つカラーテーマに対応する
+    /// Neumorphic 风格的白色
     public static let adaptiveWhite = Self {
-        $0.userInterfaceStyle == .dark ? appBlack : .white
+        $0.userInterfaceStyle == .dark ? appDarkGray : appLightGray
     }
 
-    /// lightモードの場合に、黒を設定し且つカラーテーマに対応する
+    /// Neumorphic 风格的黑色
     public static let adaptiveBlack = Self {
-        $0.userInterfaceStyle == .dark ? .white : appBlack
+        $0.userInterfaceStyle == .dark ? appLightGray : appDarkGray
     }
 
-    /// lightモードの場合に、白を設定し且つカラーテーマに対応する
+   
+
+    /// Neumorphic 风格的背景
     public static let adaptiveBackground = Self {
-        $0.userInterfaceStyle == .dark ? .black : .white
+        $0.userInterfaceStyle == .dark ? appDarkGray : appLightGray
     }
 
     public static let appBlack = hex(0x2C2C2E)
+    public static let appLightGray = hex(0xE0E0E0)
+    public static let appDarkGray = hex(0x3A3A3C)
+    public static let safetyYellow = hex(0xEDFA00)
+    public static let greenLight = hex(0x69E147)
 
-    /*
-     primary: 頻繁に仕様される、アプリの基調となる色。
-     secondary: 強調したり他と区別するために仕様する色。多様してこの色が目立ちすぎないように注意。
-     primary/secondary valiant: dark/light 同系統の色にしたいが、UI要素の違いがある場合にvaliantを作成し色の差異をつける。
-     */
     public static let appPrimary = Self {
         $0.userInterfaceStyle == .dark ? hex(0xf5f5f5) : appBlack
     }
@@ -109,8 +111,6 @@ struct DemoColorView_Previews: PreviewProvider {
                         Text("appSecondary")
                     }
                 }
-
-
             }
             .shadow(radius: 10)
             .padding(.horizontal)

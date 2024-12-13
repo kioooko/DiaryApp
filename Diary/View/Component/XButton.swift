@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Neumorphic
 
 struct XButton: View {
 
@@ -23,6 +24,11 @@ struct XButton: View {
                 .foregroundStyle(
                     Color.adaptiveWhite,
                     Color.adaptiveBlack
+                )
+                .background(
+                    Circle()
+                        .fill(Color.Neumorphic.main)
+                        .softOuterShadow()
                 )
         })
     }

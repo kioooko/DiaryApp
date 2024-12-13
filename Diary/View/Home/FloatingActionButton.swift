@@ -16,20 +16,22 @@ struct FloatingButton: View {
                 Image(systemName: "plus")
                     .bold()
                     .font(.system(size: 20))
-                    .foregroundColor(.adaptiveWhite)
+                    .foregroundColor(.greenLight)
+                    .padding(1)
+                   
                 Text("作成")
                     .font(.system(size: 16))
                     .bold()
-                    .foregroundStyle(Color.adaptiveWhite)
+                    .foregroundColor(.gray)
             }
             .padding(.vertical, 16)
             .padding(.horizontal, 20)
-            .background {
+            .background(
                 Capsule()
-                    .fill(Color.adaptiveBlack)
-            }
+                    .fill(Color.Neumorphic.main)
+                    .softOuterShadow()
+            )
         }
-        .adaptiveShadow()
     }
 }
 

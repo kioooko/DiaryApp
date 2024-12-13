@@ -105,7 +105,7 @@ private extension CreateDiaryView {
             .asyncState(
                 weatherData.phase,
                 loadingContent:
-                    ProgressView()
+                ProgressView()
                     .frame(width: WeatherIcon.size.width, height: WeatherIcon.size.height)
             )
     }

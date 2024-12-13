@@ -68,9 +68,10 @@ private extension DiaryList {
     var empty: some View {
         VStack {
             Text("只需点击「+」按钮，就可以开始你的日记啦！")
-                .foregroundColor(.adaptiveBlack)
+                .foregroundColor(.gray)
                 .font(.system(size: 20))
                 .frame(height: 100)
+                .multilineTextAlignment(.center) // 设置文本居中对齐
         }
     }
 

@@ -16,7 +16,7 @@ struct WelcomeSplineAnimationView: View {
                 Text("深呼吸\n让我们开始今天的\n编织日记\n")
                     .font(.largeTitle)
                     .bold() // 添加粗体效果
-                    .foregroundColor(.black) // 添加文本颜色
+                    .foregroundColor(.gray) // 添加文本颜色
                     .opacity(isActive ? 0 : 1)
                     .animation(.easeIn(duration: 1.5), value: isActive)
                                   .onTapGesture {
