@@ -1,38 +1,45 @@
+// MARK: - Imports
 import SplineRuntime
 import SwiftUI
 import Foundation
 import Neumorphic
 
+// MARK: - WelcomeView
 struct WelcomeView: View {
+    // MARK: - Properties
+    // State Properties
     @State private var userInput: String = ""
     @State private var chatHistory: [String] = ["你的正念助手: 你好！我是正念引导助手，准备开始今天的练习吗？"]
+    @State private var selectedPage = 1
+    @State private var selectedDate: Date = Date()
     @State private var navigateToNextPage = false
     @State private var navigateToHomeView = false
     @State private var navigateToDiaryAppSceneDelegate = false
     
+    // Environment Properties
     @EnvironmentObject private var notificationSetting: NotificationSetting
     @EnvironmentObject private var weatherData: WeatherData
     
+    // App Storage
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
     private var hasBeenLaunchedBefore: Bool = false
-    @State private var selectedPage = 1
-    @State private var selectedDate: Date = Date()
-
+    
+    // Constants
     private let maxPageCount = 5
-
-    // 修改后的 sendToChatGPT 方法，包含实际 API 请求
+    
+    // MARK: - Chat GPT Integration
     func sendToChatGPT(prompt: String) {
-    let filePath = "/Users/kokio/DiaryApp/Chatapi.txt"
-    var apiKey: String = ""
+        let filePath = "/Users/kokio/DiaryApp/Chatapi.txt"
+        var apiKey: String = ""
 
-    do {
-        apiKey = try String(contentsOfFile: filePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
-    } catch {
-        print("无法读取API密钥: \(error)")
-        return
-    }
+        do {
+            apiKey = try String(contentsOfFile: filePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
+        } catch {
+            print("无法读取API密钥: \(error)")
+            return
+        }
 
-    let url = URL(string: "https://api.x.ai/v1/chat/completions")!
+        let url = URL(string: "https://api.x.ai/v1/chat/completions")!
 
         let parameters: [String: Any] = [
             "model": "grok-beta",
@@ -90,34 +97,46 @@ struct WelcomeView: View {
         }.resume()
     }
     
+    // MARK: - Body
     var body: some View {
         VStack {
             TabView(selection: $selectedPage) {
                 Group {
-                    appIntroduction
-                        .tag(1)
-                    requestLocation
-                        .tag(2)
-                    setReminder
-                        .tag(3)  
-                    localImageView
-                        .tag(4)
-                    DividerWithShadow
-                        .tag(5)
+                    appIntroduction.tag(1)
+                    requestLocation.tag(2)
+                    setReminder.tag(3)  
+                    localImageView.tag(4)
+                    DividerWithShadow.tag(5)
                 }
-                .contentShape(Rectangle()).gesture(DragGesture()) // 禁止滑动切换页面
+                .contentShape(Rectangle())
+                .gesture(DragGesture())
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            nextButton
-                .padding(.bottom)
+            HStack(spacing: 60) {
+                Button(action: {
+                    hasBeenLaunchedBefore = true
+                    navigateToNextPage = true
+                    navigateToDiaryAppSceneDelegate = true
+                }) {
+                    Text("跳过")
+                        .fontWeight(.medium)
+                        .foregroundColor(.gray)
+                }
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+                .frame(width: 120, height: 44)
+                
+                nextButton
+            }
+            .padding(.bottom)
         }
         .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all))
     }
 }
 
+// MARK: - WelcomeView Components
 private extension WelcomeView {
-
+    // MARK: Navigation Button
     var nextButton: some View {
         Button(action: {
             if selectedPage == 2 {
@@ -146,18 +165,19 @@ private extension WelcomeView {
         .softButtonStyle(RoundedRectangle(cornerRadius: 12))
         .frame(width: 120, height: 44)
     }
-
+    
+    // MARK: Introduction Page
     var appIntroduction: some View {
         VStack(spacing: 40) {
             title("你好哇👋！", description: "编织日记是一款用文字记录生活的简单应用")
             featureRow(icon: "book", color: .orange, description: "「编织日记」是一款直观且简洁的日记应用，帮助你用文字和图片编织自己的生活。")
             featureRow(icon: "checkmark", color: .green, description: "帮助追踪日常习惯的CheckList。通过可视化目标，查看每天的微小进步。")
-            featureRow(icon: "icloud", color: .blue, description: "与 iCloud 完全同步。您可以轻松访问所有设备上的内容。重要记录将始终安全存储。")
+            featureRow(icon: "icloud", color: .blue, description: "与 iCloud ��全同步。您可以轻松访问所有设备上的内容。重要记录将始终安全存储。")
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal)
     }
-
+    
     func featureRow(icon: String, color: Color, description: String) -> some View {
         HStack(spacing: 24) {
             Image(systemName: icon)
@@ -172,7 +192,7 @@ private extension WelcomeView {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
-
+    
     func title(_ text: String, description: String) -> some View {
         VStack(spacing: 16) {
             Text(text)
@@ -182,40 +202,48 @@ private extension WelcomeView {
                 .font(.system(size: 18))
         }
     }
-
+    
+    // MARK: Location Page
     var requestLocation: some View {
         VStack(spacing: 40) {
             title("请允许访问您的位置信息", description: "允许位置访问，开始更加丰富的日记体验吧！")
             HStack(spacing: 24) {
-                IconWithRoundedBackground(systemName: "mappin", backgroundColor: .green)
-                Text("在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
-                    .foregroundColor(.adaptiveBlack.opacity(0.8))
-                    .font(.system(size: 18))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                featureRow(icon: "mappin", color: .orange, description: "在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
             }
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal)
     }
-
+    
+    // MARK: Reminder Page
     var setReminder: some View {
         VStack(spacing: 40) {
-            title("设置提醒事项", description: "让写日记成为一种习惯。我们不会发送任何烦人的通知。")
-            HStack {
-                IconWithRoundedBackground(systemName: "alarm", backgroundColor: .red)
-                Text("我们不会发送任何垃圾信息")
+            Spacer()  // 添加顶部空间
+            VStack(spacing: 40) {
+                title("设置提醒事项", description: "让写日记成为一种习惯。我们不会发送任何烦人的垃圾通知。")
+                    .multilineTextAlignment(.center)  // 文本居中
+                
+                HStack {
+                    featureRow(icon: "alarm", color: .red, description: "设置你每日的编织时间吧")
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
             }
-            hourAndMinutePicker
+            
+            hourAndMinutePicker 
+                .frame(maxWidth: .infinity, alignment: .center)
+            
+            Spacer()  // 添加底部空间
         }
-        .frame(maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)  // 使用最大宽度和高度
         .padding(.horizontal)
     }
-
+    
     var hourAndMinutePicker: some View {
         DatePicker("", selection: $selectedDate, displayedComponents: .hourAndMinute)
             .datePickerStyle(WheelDatePickerStyle())
     }
-
+    
+    // MARK: Chat View
     var localImageView: some View {
         VStack {
             ScrollView {
@@ -269,9 +297,10 @@ private extension WelcomeView {
         }
         .background(Color.Neumorphic.main)
     }
-
-     var DividerWithShadow: some View {
-          let cornerRadius : CGFloat = 15
+    
+    // MARK: Shadow Demo
+    var DividerWithShadow: some View {
+        let cornerRadius : CGFloat = 15
         let mainColor = Color.Neumorphic.main
         let secondaryColor = Color.Neumorphic.secondary
         
@@ -339,9 +368,10 @@ private extension WelcomeView {
                   
             }
         }
-     }
+    }
 }
 
+// MARK: - Preview
 #if DEBUG
 struct WelcomeView_Previews: PreviewProvider {
     static var content: some View {
