@@ -15,7 +15,6 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
     @StateObject private var bannerState = BannerState() // 创建 BannerState 的状态对象
     @StateObject private var coreDataProvider = CoreDataProvider.shared // 创建 CoreDataProvider 的共享实例
     @StateObject private var textOptions: TextOptions = .makeUserOptions() // 创建 TextOptions 的状态对象
-    @StateObject private var weatherData = WeatherData() // 创建 WeatherData 的状态对象
     @StateObject private var notificationSetting = NotificationSetting() // 创建 NotificationSetting 的状态对象
     @State private var animationCompleted = false // 创建动画完成状态变量
 
@@ -45,7 +44,6 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
                     .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
                     .environmentObject(textOptions)
                     .environmentObject(notificationSetting)
-                    .environmentObject(weatherData)
             } else {
                 WelcomeSplineAnimationView()
                     .onAppear {

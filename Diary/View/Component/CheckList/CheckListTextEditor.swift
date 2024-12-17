@@ -3,9 +3,10 @@
 //  Diary
 //
 //  Created by Higashihara Yoki on 2023/07/01.
-//
+//  Change by KIOOOKO on 2024/12/17
 
 import SwiftUI
+import Neumorphic
 
 struct CheckListTextEditor: View {
     @EnvironmentObject private var bannerState: BannerState
@@ -28,6 +29,12 @@ struct CheckListTextEditor: View {
                     }) {
                         Text("删除")
                     }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.Neumorphic.main)
+                            .softOuterShadow()
+                    )
                 }
                 inputProgress
                 Spacer(minLength: 24).fixedSize()
@@ -37,9 +44,9 @@ struct CheckListTextEditor: View {
             .padding(.bottom)
             .background {
                 Rectangle()
-                    .fill(Color.adaptiveBackground)
+                    .fill(Color.Neumorphic.main)
+                 //   .softInnerShadow()
             }
-
         }
         .ignoresSafeArea(.container, edges: [.bottom]) // .container を指定しキーボードを回避
         .onAppear {
@@ -80,6 +87,12 @@ private extension CheckListTextEditor {
         )
         .accentColor(progressColor)
         .foregroundColor(.gray)
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.Neumorphic.main)
+                .softOuterShadow()
+        )
     }
 
     var itemEditor: some View {
@@ -88,10 +101,11 @@ private extension CheckListTextEditor {
                 .focused($focused)
                 .foregroundStyle(Color.adaptiveBlack)
                 .padding()
-                .background {
+                .background(
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.gray.opacity(0.2))
-                }
+                        .fill(Color.Neumorphic.main)
+                        .softInnerShadow(RoundedRectangle(cornerRadius: 10))
+                )
                 .ignoresSafeArea(.container, edges: [.bottom]) // .container を指定しキーボードを回避
                 .onAppear {
                     focused = true
@@ -102,6 +116,12 @@ private extension CheckListTextEditor {
             }) {
                 Text("OK")
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.Neumorphic.main)
+                 //   .softOuterShadow()
+            )
         }
     }
 

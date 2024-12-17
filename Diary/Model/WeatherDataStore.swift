@@ -3,10 +3,9 @@
 //  Diary
 //
 //  Created by Higashihara Yoki on 2023/04/26.
-//
+// 
 
 import Combine
-import CoreLocation
 import WeatherKit
 
 /**
@@ -17,81 +16,31 @@ public class WeatherData: ObservableObject {
 
     @Published public var phase: AsyncStatePhase = .initial
     @Published public var todayWeather: DayWeather?
-    public var hasTodayWeather: Bool {
-        guard let todayWeather else {
-            return false
-        }
-        return Calendar.current.isDateInToday(todayWeather.date)
-    }
-
-    private var location: CLLocation?
 
     private let service = WeatherService.shared
-    private let locationService = LocationService.shared
     private var cancellables = Set<AnyCancellable>()
 
     public init() {
-        locationService.$location
-            .sink { location in
-                if self.locationService.authStatus == .authorizedAlways || self.locationService.authStatus == .authorizedWhenInUse, let location = location {
-                    self.location = location
-                    Task.detached(priority: .userInitiated) {
-                        await self.loadDailyForecast(for: location)
-                    }
-                } else {
-                    // 位置情報を許可していない等で位置情報を利用できない場合
-                    self.phase = .success(Date())
-                }
-            }
-            .store(in: &cancellables)
+        // 初始化时不再请求位置服务
     }
 
-    public func load() throws {
-        let authorized = locationService.authStatus == .authorizedAlways || locationService.authStatus == .authorizedWhenInUse
-        if let location, authorized {
-            Task.detached(priority: .userInitiated) {
-                await self.loadDailyForecast(for: location)
-            }
-        } else if !authorized {
-            throw WeatherDataError.noLocationAuth
-        }
-    }
-
-    public func requestLocationAuth() {
-        locationService.requestWhenInUseAuthorization()
-    }
-
-    private func loadDailyForecast(for location: CLLocation) async {
+    public func loadWeather(for symbolName: String) async {
         phase = .loading
-        let dailyForecast = await Task.detached(priority: .userInitiated) {
-            let forecast = try? await self.service.weather(
-                for: location,
-                including: .daily
-            )
-            return forecast
-        }.value
-
-        if let todayWeather = dailyForecast?.first(where: { weather in
-            Calendar.current.isDateInToday(weather.date)
-        }) {
-            self.todayWeather = todayWeather
-            phase = .success(Date())
-        } else {
-            phase = .failure(WeatherDataError.notFoundTodayWeatherError)
-        }
+        // 模拟从符号名称加载天气数据
+        let simulatedWeather = DayWeather(date: Date(), symbolName: symbolName)
+        await Task.sleep(1_000_000_000) // 模拟网络延迟
+        self.todayWeather = simulatedWeather
+        phase = .success(Date())
     }
 }
 
 public enum WeatherDataError: Error, LocalizedError {
     case notFoundTodayWeatherError
-    case noLocationAuth
 
     public var errorDescription: String? {
         switch self {
         case .notFoundTodayWeatherError:
             return "无法获取今日天气"
-        case .noLocationAuth:
-            return "没有权限，无法获取位置信息"
         }
     }
 
@@ -99,8 +48,6 @@ public enum WeatherDataError: Error, LocalizedError {
         switch self {
         case .notFoundTodayWeatherError:
             return "发生错误，请重试"
-        case .noLocationAuth:
-            return "没有权限，所以无法获取位置信息"
         }
     }
 }
