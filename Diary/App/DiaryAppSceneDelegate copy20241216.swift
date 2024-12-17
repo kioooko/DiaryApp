@@ -1,3 +1,10 @@
+//
+//  DiaryAppSceneDelegate.swift
+//  Diary
+//
+//  Created by Higashihara Yoki on 2023/05/08.
+//
+import SplineRuntime
 import UIKit
 import SwiftUI
 
@@ -14,40 +21,61 @@ import SwiftUI
  sceneを取得しそこにBannerなどの最前面に出したいWindowを用意している。
  */
 final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, ObservableObject {
-    // 用于显示横幅的窗口
     var bannerWindow: UIWindow?
-    // 弱引用的窗口场景，避免循环引用
     weak var windowScene: UIWindowScene?
 
-    // 横幅状态，当状态改变时设置横幅窗口
     var bannerState: BannerState? {
         didSet {
             setupBannerWindow()
         }
     }
 
-    // 当场景将要连接到会话时调用
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        // 将场景转换为 UIWindowScene
         windowScene = scene as? UIWindowScene
+              guard let windowScene = scene as? UIWindowScene else { return }
+
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = UIHostingController(rootView: WelcomeSplineAnimationView())
+        window.makeKeyAndVisible()
+
+        self.windowScene = windowScene
+        self.bannerWindow = window
+
+        // 设置5秒后切换到主界面
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            self.switchToWelcomeView()
+        }
+    
     }
 
-    // 设置横幅窗口
+
+
+
+
+
+    private func switchToWelcomeView() {
+        guard let windowScene = windowScene else { return }
+
+        let welcomeView = WelcomeView() // 确保 welcomeView 已定义
+        let welcomeWindow = UIWindow(windowScene: windowScene)
+        welcomeWindow.rootViewController = UIHostingController(rootView:WelcomeView())
+        welcomeWindow.makeKeyAndVisible()
+
+        self.bannerWindow = welcomeWindow
+    }
+
     func setupBannerWindow() {
-        // 确保 windowScene 和 bannerState 都存在
         guard let windowScene = windowScene, let bannerState else {
             return
         }
 
-        // 创建一个 UIHostingController 以显示 BannerView，并将其背景设置为透明
         let bannerViewController = UIHostingController(rootView: BannerView().environmentObject(bannerState))
         bannerViewController.view.backgroundColor = .clear
 
-        // 创建一个新的 PassThroughWindow 并设置其根视图控制器为 bannerViewController
         let bannerWindow = PassThroughWindow(windowScene: windowScene)
         bannerWindow.rootViewController = bannerViewController
         bannerWindow.isHidden = false

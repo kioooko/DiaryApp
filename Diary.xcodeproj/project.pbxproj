@@ -24,6 +24,8 @@
 		07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
 		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
 		0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 0758BA022CFF20F50080DEF2 /* SplineRuntime */; };
+		07754F912D0C400B0055EC0F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07754F902D0C400B0055EC0F /* Launch Screen.storyboard */; };
+		07754F922D0C400C0055EC0F /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07754F902D0C400B0055EC0F /* Launch Screen.storyboard */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
 		F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CA429F52467005FD6C8 /* DiaryApp.swift */; };
@@ -129,6 +131,7 @@
 		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
 		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
 		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		07754F902D0C400B0055EC0F /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListEditButton.swift; sourceTree = "<group>"; };
 		F51446522A5C1B20002DA8CC /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		F5358CA129F52467005FD6C8 /* Diary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Diary.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -329,6 +332,7 @@
 				F549A54E2A57970C003E7F68 /* Binding+Extension.swift */,
 				F550BC9B2A111C0B00BCB0F2 /* Button+Haptic.swift */,
 				F5358CC129F6DFE5005FD6C8 /* Date+Extension.swift */,
+				07754F902D0C400B0055EC0F /* Launch Screen.storyboard */,
 				F5BF44422A54714300217119 /* Locale+Extension.swift */,
 				F5358D1329FAADAC005FD6C8 /* UIImage+Extension.swift */,
 				F5358D0D29F8BBE3005FD6C8 /* View+AsyncState.swift */,
@@ -597,6 +601,7 @@
 				en,
 				Base,
 				ja,
+				"zh-Hans",
 			);
 			mainGroup = F5358C9829F52467005FD6C8;
 			packageReferences = (
@@ -619,6 +624,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07754F912D0C400B0055EC0F /* Launch Screen.storyboard in Resources */,
 				072082AE2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
 				072082B02D081FE9001AAE75 /* Nextimg.png in Resources */,
 				0717EE8B2D0983F200C19355 /* GoogleService-Info.plist in Resources */,
@@ -633,6 +639,7 @@
 			files = (
 				072082B12D081FE9001AAE75 /* Nextimg.png in Resources */,
 				072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
+				07754F922D0C400C0055EC0F /* Launch Screen.storyboard in Resources */,
 				0717EE8A2D0983F200C19355 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -877,12 +884,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Diary/Preview Content\"";
-				DEVELOPMENT_TEAM = CD8XS2J626;
+				DEVELOPMENT_TEAM = D33DA29482;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BianZ;
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = BianZ;
+				INFOPLIST_KEY_CFBundleDisplayName = "编织日记";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = "编织日记";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "日記に自動で正確な天気予報を表示するために利用します。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "日記の画像を保存します。";
@@ -897,7 +904,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kioooko.Diary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -918,11 +925,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Diary/Preview Content\"";
-				DEVELOPMENT_TEAM = CD8XS2J626;
+				DEVELOPMENT_TEAM = D33DA29482;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BianZ;
+				INFOPLIST_KEY_CFBundleDisplayName = "编织日记";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "日記に自動で正確な天気予報を表示するために利用します。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "日記の画像を保存します。";
@@ -937,7 +944,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kioooko.Diary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -976,7 +983,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CD8XS2J626;
+				DEVELOPMENT_TEAM = D33DA29482;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MARKETING_VERSION = 1.0;

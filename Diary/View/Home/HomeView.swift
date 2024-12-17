@@ -90,7 +90,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
                 .interactiveDismissDisabled() // 禁用交互式关闭
         }
         .onAppear {
-          //  sceneDelegate.bannerState = bannerState // 设置 bannerState
+          sceneDelegate.bannerState = bannerState // 设置 bannerState
         }
         .onChange(of: diaryListInterval) { _, newValue in // 监听 diaryListInterval 的变化
             loadItems(of: newValue) // 加载新日期间隔的条目
@@ -161,7 +161,7 @@ private extension HomeView { // HomeView 的私有扩展
                         .fill(Color.Neumorphic.main)
                         .softOuterShadow()
                 )
-                .offset(y: -40) // 向上移动图标
+                .offset(y: -10) // 向上移动图标
         }
     }
 

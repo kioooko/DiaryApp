@@ -27,60 +27,52 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
 
     init() { // 初始化方法
         print("DiaryApp initialized") // 确认应用程序初始化
-        let now = Date() // 获取当前日期
-        for i in -3 ... 0 { // 循环创建过去三个月的随机数据
-            let targetDate = Calendar.current.date(byAdding: .month, value: i, to: now)!
-            let item = Item.makeRandom(date: targetDate)
-            let item2 = Item.makeRandom(date: targetDate)
-            try! item.save() // 保存生成的随机数据
-        }
+ //       let now = Date() // 获取当前日期
+ //       for i in -3 ... 0 { // 循环创建过去三个月的随机数据
+ //           let targetDate = Calendar.current.date(byAdding: .month, value: i, to: now)!
+ //           let item = Item.makeRandom(date: targetDate)
+ //           let item2 = Item.makeRandom(date: targetDate)
+ //           try! item.save() // 保存生成的随机数据
+ //       }
         reSyncData() // 调用重新同步数据的方法
     }
 
-    var body: some Scene { // 定义应用程序的场景
-        WindowGroup { // 创建一个窗口组
-            if animationCompleted {
-                WelcomeView()
-                    .environmentObject(bannerState)
-                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
-                    .environmentObject(textOptions)
-                    .environmentObject(notificationSetting)
-                    .environmentObject(weatherData)
-            } else {
-                WelcomeSplineAnimationView()
-                    .onAppear {
-                        // 模拟动画完成后的延迟
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            animationCompleted = true
-                        }
-                    }
-            }
+  //  var body: some Scene { // 定义应用程序的场景
+   //     WindowGroup { // 创建一个窗口组
+   //         if animationCompleted {
+   //             WelcomeView()
+     //               .environmentObject(bannerState)
+       //             .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+         //           .environmentObject(textOptions)
+           //         .environmentObject(notificationSetting)
+             //       .environmentObject(weatherData)//注入 WeatherData 实例将weatherData传递给WelcomeView
+       //     } else {
+         //       WelcomeSplineAnimationView()
+           //         .onAppear {
+             //           // 模拟动画完成后的延迟
+               //         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                 //           animationCompleted = true
+                   //     }
+    //                }
+      //      }
+     //   }
+   //}
+
+
+    var body: some Scene {
+        WindowGroup {
+            WelcomeView()
+            HomeView()
+                .environmentObject(bannerState)
+                .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+                .environmentObject(textOptions)
+                .environmentObject(notificationSetting)
+                .environmentObject(weatherData)
         }
     }
+
 }
 
-// 下面是一些注释掉的代码，可能用于切换到 HomeView
-// var body: some Scene {
-//        WindowGroup {
-//            if showHomeView {
-//                HomeView()
-//                    .environmentObject(bannerState)
-//                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
-//                    .environmentObject(textOptions)
-//                    .environmentObject(notificationSetting)
-//                    .environmentObject(weatherData)
-//            } else {
-//                WelcomeSplineAnimationView()
-//                .onAppear {
-//                    // 模拟欢迎视图完成后的延迟
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        showHomeView = true
-//                    }
-//                }
-//                WelcomeView()
-//            }
-//        }
-//    }
 
 private extension DiaryApp { // 定义 DiaryApp 的私有扩展
 

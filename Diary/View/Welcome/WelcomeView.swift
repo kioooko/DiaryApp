@@ -8,6 +8,15 @@ import Combine
 // MARK: - WelcomeView
 struct WelcomeView: View {
     // MARK: - Properties
+
+    // Environment Properties
+    @EnvironmentObject private var notificationSetting: NotificationSetting
+    @EnvironmentObject private var weatherData: WeatherData
+
+    // App Storage
+    @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
+    private var hasBeenLaunchedBefore: Bool = false
+    
     // State Properties
     @State private var userInput: String = ""
     @State private var chatHistory: [String] = ["你的正念助手: 你好！我是正念引导助手，准备开始今天的练习吗？"]
@@ -18,13 +27,7 @@ struct WelcomeView: View {
     @State private var navigateToDiaryAppSceneDelegate = false
 
     
-    // Environment Properties
-    @EnvironmentObject private var notificationSetting: NotificationSetting
-    @EnvironmentObject private var weatherData: WeatherData
-    
-    // App Storage
-    @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
-    private var hasBeenLaunchedBefore: Bool = false
+
     
     // Constants
     private let maxPageCount = 5
@@ -134,33 +137,38 @@ var body: some View {
                         EmptyView()
                     }
                     .hidden()
-                  
+                
                 )
                 
                 // 原有的下一步按钮
                 nextButton
             }
             .padding(.bottom, 80) // 为按钮组添加底部内边距50像素
+           
         }
+            .onAppear {
+          //   print("WelcomeView appeared with weatherData: \(weatherData)")
+        }
+          .frame(maxWidth: .infinity, alignment: .center) // 确保 HStack 水平居中
         .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all))
-        .onAppear {
-            // print("WelcomeView appeared with weatherData: \(weatherData)")
-        }
+    
+      
     }
 }
 
 // MARK: Navigation Button
 var nextButton: some View {
-    Button(action: {
+  //  Button(action: {
+            Button(actionWithHapticFB: {
         if selectedPage == 2 {
           //   weatherData.requestLocationAuth()
         }
 
         if selectedPage == 3 {
             Task {
-              //  do {
-                       // try await notificationSetting.setNotification(date: selectedDate)
-                //    }
+                do {
+                        try await notificationSetting.setNotification(date: selectedDate)
+                    }
             }
         }
 

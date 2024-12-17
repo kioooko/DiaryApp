@@ -1,68 +1,144 @@
 //
-//  WelcomeView.swift
-//  Diary
+//  ChatAI.swift
+//  Chat
 //
-//  Created by Higashihara Yoki on 2023/07/05.
+//  Created by KIOOOKO on 2024/12/16.
 //
 
-import SplineRuntime
+// MARK: - Imports
 import SwiftUI
 import Foundation
+import Neumorphic
+import Combine
 
-/*
- 1. アプリ全体の機能紹介
- 2. 位置情報取得依頼
- 3. リマインダー設定
- */
-struct WelcomeView: View {
+
+struct ChatAIView: View {
   @State private var userInput: String = ""
     @State private var chatHistory: [String] = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
-    
-
-    @State private var navigateToNextPage = false // 确保变量声明正确
-    @State private var navigateToHomeView = false // 确保变量声明正确
-     @State private var navigateToDiaryAppSceneDelegate = false // 确保变量声明正确
-    
-    @EnvironmentObject private var notificationSetting: NotificationSetting
-    @EnvironmentObject private var weatherData: WeatherData
-
-    @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
-    private var hasBeenLaunchedBefore: Bool = false
-    @State private var selectedPage = 1
-    @State private var selectedDate: Date = Date()
-
-    private let maxPageCount = 4
+    @State private var navigateToDiaryAppSceneDelegate = false // 确保变量声明正确
+ 
  // 模拟与ChatGPT的对话
+// MARK: - Chat GPT Integration
     func sendToChatGPT(prompt: String) {
-        // 模拟的API请求，替换为实际API调用
-        let response = ？
-        chatHistory.append("You: \(prompt)")
-        chatHistory.append(response)
+        let filePath = "/Users/kokio/DiaryApp/Chatapi.txt"
+        var apiKey: String = ""
+
+        do {
+            apiKey = try String(contentsOfFile: filePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
+        } catch {
+            print("无法读取API密钥: \(error)")
+            return
+        }
+
+        let url = URL(string: "https://api.x.ai/v1/chat/completions")!
+
+        let parameters: [String: Any] = [
+            "model": "grok-beta",
+            "messages": [["role": "user", "content": prompt]],
+            "stream": false,
+            "temperature": 0
+        ]
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+        } catch {
+            print("请求编码错误: \(error)")
+            return
+        }
+         // 立即将用户输入添加到聊天记录中
+        DispatchQueue.main.async {
+            chatHistory.append("You: \(prompt)")
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("API 请求错误: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                print("没有收到数据")
+                return
+            }
+            
+            // 打印原始响应数据
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("服务器响应: \(responseString)")
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let choices = json["choices"] as? [[String: Any]],
+                   let firstChoice = choices.first,
+                   let message = firstChoice["message"] as? [String: Any],
+                   let content = message["content"] as? String {
+                    DispatchQueue.main.async {
+                    chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
+                    }
+                }
+            } catch {
+                print("解析响应错误: \(error)")
+            }
+        }.resume()
     }
-    
+  // MARK: Chat View   
     var body: some View {
         VStack {
-            TabView(selection: $selectedPage) {
-                Group {
-                    appIntroduction
-                        .tag(1)
-                    requestLocation
-                        .tag(2)
-                    setReminder
-                        .tag(3)  
-                    localImageView // 使用自定义视图展示本地图片
-                        .tag(4)
+          ScrollView {
+                VStack(alignment: .leading) {
+                    ForEach(chatHistory, id: \.self) { message in
+                        HStack {
+                            if message.hasPrefix("You:") {
+                                Spacer()
+                                Text(message)
+                                    .padding()
+                                    .background(Color.Neumorphic.main)
+                                    .softOuterShadow()
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                            } else {
+                                Text(message)
+                                    .padding()
+                                    .background(Color.Neumorphic.main)
+                                    .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                Spacer()
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
                 }
-                .contentShape(Rectangle()).gesture(DragGesture()) // スワイプでのページ遷移をしない
+                .padding()
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-
-            nextButton
-                .padding(.bottom)
+  HStack {
+                TextField("分享今天的心情吧", text: $userInput)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.Neumorphic.main)
+                            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+                    )
+                    .accentColor(.primary)
+                
+                Button(action: {
+                    sendToChatGPT(prompt: userInput)
+                    userInput = ""
+                }) {
+                    Text("发送")
+                        .fontWeight(.bold)
+                }
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+                .frame(width: 80, height: 44)
+            }
+            .padding()
               
         }           
-       //  .fullScreenCover(isPresented: $navigateToHomeView) {
-       //    HomeView() }
+        .background(Color.Neumorphic.main)
     }
 }
 
@@ -252,11 +328,11 @@ private extension WelcomeView {
 
 #if DEBUG
 
-struct WelcomeView_Previews: PreviewProvider {
+struct ChatAIView_Previews: PreviewProvider {
 
     static var content: some View {
         NavigationStack {
-            WelcomeView()
+            ChatAIView()
         }
     }
 
