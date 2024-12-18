@@ -4,21 +4,13 @@ import Neumorphic
 import Combine
 
 struct ChatAIView: View {
+    @ObservedObject var apiKeyManager: APIKeyManager
     @State private var userInput: String = ""
     @State private var chatHistory: [String] = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
     @State private var navigateToDiaryAppSceneDelegate = false
 
     func sendToChatGPT(prompt: String) {
-        let filePath = "/Users/kokio/DiaryApp/Chatapi.txt"
-        var apiKey: String = ""
-
-        do {
-            apiKey = try String(contentsOfFile: filePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
-        } catch {
-            print("无法读取API密钥: \(error)")
-            return
-        }
-
+        let apiKey = apiKeyManager.apiKey
         let url = URL(string: "https://api.x.ai/v1/chat/completions")!
 
         let parameters: [String: Any] = [
@@ -134,7 +126,7 @@ struct ChatAIView: View {
 struct ChatAIView_Previews: PreviewProvider {
     static var content: some View {
         NavigationStack {
-            ChatAIView()
+            ChatAIView(apiKeyManager: APIKeyManager())
         }
     }
 

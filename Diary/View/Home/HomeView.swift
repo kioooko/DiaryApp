@@ -15,6 +15,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate // 注入 DiaryAppSceneDelegate 对象
     @EnvironmentObject private var bannerState: BannerState // 注入 BannerState 对象
     @EnvironmentObject private var textOptions: TextOptions // 注入 TextOptions 对象
+    @ObservedObject var apiKeyManager: APIKeyManager
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
     private var hasBeenLaunchedBefore: Bool = false // 使用 AppStorage 存储应用是否启动过
@@ -33,6 +34,11 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
         formatter.locale = .appLanguageLocale // 设置语言区域
         return formatter
     }()
+
+    // 确保初始化方法是可访问的
+    init(apiKeyManager: APIKeyManager) {
+        self.apiKeyManager = apiKeyManager
+    }
 
     var body: some View { // 定义视图的主体
         NavigationStack { // 使用 NavigationStack 包裹内容
@@ -91,7 +97,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
                 .interactiveDismissDisabled() // 禁用交互式关闭
         }
         .sheet(isPresented: $hasBeenLaunchedBefore.not) { // 显示欢迎视图
-            WelcomeView()
+            WelcomeView(apiKeyManager: APIKeyManager())
                 .interactiveDismissDisabled() // 禁用交互式关闭
         }
         .onAppear {
@@ -171,7 +177,7 @@ private extension HomeView { // HomeView 的私有扩展
     }
      var ChatAIGuide: some View {
         NavigationLink {
-            ChatAIView() // 导航到ChatAI视图
+            ChatAIView(apiKeyManager: APIKeyManager()) // 导航到ChatAI视图
         } label: {
             Image(systemName: "message")
                 .resizable()
@@ -207,7 +213,7 @@ private extension HomeView { // HomeView 的私有扩展
 struct Home_Previews: PreviewProvider {
 
     static var content: some View {
-        HomeView()
+        HomeView(apiKeyManager: APIKeyManager())
             .environmentObject(DiaryAppSceneDelegate()) // 注入 DiaryAppSceneDelegate
             .environmentObject(BannerState()) // 注入 BannerState
     }

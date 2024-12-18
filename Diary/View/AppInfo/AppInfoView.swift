@@ -209,9 +209,9 @@ private extension AppInfoView { // AppInfoView 的私有扩展
 
     var ChatAIGuide: some View { // 显示ChatAI功能
         NavigationLink {
-            ChatAIView()
+          ChatAISetting(apiKeyManager: APIKeyManager())
         } label: {
-            rowTitle(symbolName: "message", iconColor: .yellow, title: "ChatAI功能")
+            rowTitle(symbolName: "message", iconColor: .yellow, title: "ChatAI设置")
         }
     }
 

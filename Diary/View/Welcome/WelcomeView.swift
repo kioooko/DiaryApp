@@ -14,7 +14,8 @@ struct WelcomeView: View {
     @State private var navigateToNextPage = false
     @State private var navigateToHomeView = false
     @State private var navigateToDiaryAppSceneDelegate = false
-
+    @ObservedObject var apiKeyManager: APIKeyManager
+    @State private var showChatAISetting = false
     
     // Environment Properties
     @EnvironmentObject private var notificationSetting: NotificationSetting
@@ -36,6 +37,7 @@ var body: some View {
                     requestLocation.tag(2)
                     setReminder.tag(3)  
                     DividerWithShadow.tag(4)
+                   // ChatAISetting(apiKeyManager: apiKeyManager).tag(4)
                 }
                 .contentShape(Rectangle())
                 .gesture(DragGesture())
@@ -56,7 +58,7 @@ var body: some View {
                 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44) // 设置跳过按钮的宽度为80，高度为44
                 .background(
-                    NavigationLink(destination: HomeView(), isActive: $navigateToHomeView) {
+                    NavigationLink(destination: HomeView(apiKeyManager: apiKeyManager), isActive: $navigateToHomeView) {
                         EmptyView()
                     }
                     .hidden()
@@ -109,11 +111,11 @@ var nextButton: some View {
     // MARK: Introduction Page
     var appIntroduction: some View {
         VStack(spacing: 40) {
-            title("你好哇👋！", description: "编织日记是一款用文字记录生活的简单应用")
-            featureRow(icon: "book", color: .orange, description: "「编织日记」是一款直观且简洁的日记应用，帮助你用文字和图片编织自己的生活。")
-            featureRow(icon: "message", color: .yellow, description: "ChatAI功能，AI帮助你整理一天的思路，舒缓一天的心情。")
-            featureRow(icon: "checkmark", color: .green, description: "帮助追踪日常习惯的CheckList。通过可视化目标，查看每天的微小进步。")
-            featureRow(icon: "icloud", color: .blue, description: "与iCloud全同步。您可以轻松访问所有设备上的内容。重要记录将始终安全存储。")
+         title("你好哇👋！", description: "编织日记是一款用文字记录生活的简洁应用。")
+featureRow(icon: "book", color: .orange, description: "直观简洁的日记工具，用文字和图片记录生活点滴，编织属于你的故事。")
+featureRow(icon: "message", color: .yellow, description: "与ChatAI对话，理清思路、释放压力，记录一天的心情感悟。支持自定义ChatAI的API接口，打造专属智能体验。")
+featureRow(icon: "checkmark", color: .green, description: "轻松追踪日常习惯的CheckList，通过可视化目标感受每天的进步与成长。")
+featureRow(icon: "icloud", color: .blue, description: "iCloud全同步，重要内容随时访问，多设备切换无缝体验，安心又便捷。")
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal)
@@ -261,7 +263,7 @@ var nextButton: some View {
 struct WelcomeView_Previews: PreviewProvider {
     static var content: some View {
         NavigationStack {
-            WelcomeView()
+            WelcomeView(apiKeyManager: APIKeyManager())
         }
     }
     static var previews: some View {

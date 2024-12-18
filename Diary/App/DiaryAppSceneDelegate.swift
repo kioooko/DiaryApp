@@ -60,9 +60,10 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
     private func switchToWelcomeView() {
         guard let windowScene = windowScene else { return }
 
-        let welcomeView = WelcomeView() // 确保 welcomeView 已定义
+        // 确保传递的是实例
+        let welcomeView = WelcomeView(apiKeyManager: APIKeyManager())
         let welcomeWindow = UIWindow(windowScene: windowScene)
-        welcomeWindow.rootViewController = UIHostingController(rootView:WelcomeView())
+        welcomeWindow.rootViewController = UIHostingController(rootView: welcomeView)
         welcomeWindow.makeKeyAndVisible()
 
         self.bannerWindow = welcomeWindow

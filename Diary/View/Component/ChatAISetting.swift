@@ -1,27 +1,78 @@
 import SwiftUI
-import Foundation
 import Neumorphic
-import Combine
 
-struct ChatAIView: View {
-    @State private var userInput: String = ""
-    @State private var apiKey: String = ""
-    @State private var chatHistory: [String] = []
+struct ChatAISetting: View {
+    @ObservedObject var apiKeyManager: APIKeyManager
     @State private var useCustomAPIKey: Bool = false // 控制是否使用自定义 API 密钥
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
 
-    func sendToChatGPT(prompt: String) {
-        let apiKeyToUse = useCustomAPIKey ? apiKey : "默认的API密钥" // 使用自定义或默认 API 密钥
+    var body: some View {
+        VStack {
+            attention // 显示 ChatAI 提示信息
+                .padding(.horizontal) // 添加水平内边距
+                .padding(.vertical) // 添加垂直内边距
 
-        guard !apiKeyToUse.isEmpty else {
-            print("API 密钥不能为空")
-            return
+            Toggle("使用自定义 API 密钥", isOn: $useCustomAPIKey)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.Neumorphic.main)
+                        .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+                )
+                .padding(.horizontal)
+
+            if useCustomAPIKey {
+                TextField("输入 API 密钥", text: $apiKeyManager.apiKey)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.Neumorphic.main)
+                            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+                    )
+                    .padding(.horizontal)
+
+                if !apiKeyManager.apiKey.isEmpty {
+                    Button(action: {
+                        validateAPIKey(apiKeyManager.apiKey)
+                    }) {
+                        Text("确认")
+                            .fontWeight(.bold)
+                            .frame(width: 150, height: 24)
+                    }
+                    .softButtonStyle(RoundedRectangle(cornerRadius: 12)) // 使用 Neumorphic 风格
+                    .padding(.top, 100)
+                    .padding(.horizontal)
+                }
+            }
+
+            Spacer()
         }
+        .padding()
+        .background(Color.Neumorphic.main.ignoresSafeArea()) // 使用 Neumorphic 风格的背景色
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("API 密钥验证"),
+                  message: Text(alertMessage),
+                  dismissButton: .default(Text("确定")))
+        }
+    }
 
+    @ViewBuilder
+    var attention: some View { // 显示 ChatAI 提示信息
+        Text("您可以灵活配置ChatAI的API接口，轻松切换为您自有的专属API服务\n（*目前仅支持X.AI的API接口）")
+            .padding()
+            .foregroundColor(.gray)
+            .font(.system(size: 14))
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func validateAPIKey(_ key: String) {
         let url = URL(string: "https://api.x.ai/v1/chat/completions")!
 
         let parameters: [String: Any] = [
             "model": "grok-beta",
-            "messages": [["role": "user", "content": prompt]],
+            "messages": [["role": "user", "content": "测试"]],
             "stream": false,
             "temperature": 0
         ]
@@ -29,105 +80,55 @@ struct ChatAIView: View {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(apiKeyToUse)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
         } catch {
-            print("请求编码错误: \(error)")
+            alertMessage = "请求编码错误: \(error.localizedDescription)"
+            showAlert = true
             return
         }
 
-        DispatchQueue.main.async {
-            chatHistory.append("You: \(prompt)")
-        }
-        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("API 请求错误: \(error)")
+                alertMessage = "API 请求错误: \(error.localizedDescription)"
+                showAlert = true
                 return
             }
             
             guard let data = data else {
-                print("没有收到数据")
+                alertMessage = "没有收到数据"
+                showAlert = true
                 return
-            }
-            
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("服务器响应: \(responseString)")
             }
             
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                    let choices = json["choices"] as? [[String: Any]],
-                   let firstChoice = choices.first,
-                   let message = firstChoice["message"] as? [String: Any],
-                   let content = message["content"] as? String {
+                   !choices.isEmpty {
+                    alertMessage = "API 密钥有效，已启用。"
                     DispatchQueue.main.async {
-                        chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
+                        self.apiKeyManager.apiKey = key
                     }
+                } else {
+                    alertMessage = "API 密钥无效，请检查后重试。"
                 }
             } catch {
-                print("解析响应错误: \(error)")
+                alertMessage = "解析响应错误: \(error.localizedDescription)"
             }
+            showAlert = true
         }.resume()
-    }
-
-    var body: some View {
-        VStack {
-            Toggle("使用自定义 API 密钥", isOn: $useCustomAPIKey)
-                .padding()
-
-            if useCustomAPIKey {
-                TextField("输入 API 密钥", text: $apiKey)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-            }
-
-            TextField("输入你的问题", text: $userInput)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            Button(action: {
-                sendToChatGPT(prompt: userInput)
-                userInput = ""
-            }) {
-                Text("发送")
-                    .fontWeight(.bold)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding()
-
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ForEach(chatHistory, id: \.self) { message in
-                        Text(message)
-                            .padding(.vertical, 4)
-                    }
-                }
-                .padding()
-            }
-        }
-        .padding()
     }
 }
 
 #if DEBUG
-struct ChatAIView_Previews: PreviewProvider {
-    static var content: some View {
-        NavigationStack {
-            ChatAIView()
-        }
-    }
-
+struct ChatAISetting_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            content
+            ChatAISetting(apiKeyManager: APIKeyManager())
                 .environment(\.colorScheme, .light)
-            content
+            ChatAISetting(apiKeyManager: APIKeyManager())
                 .environment(\.colorScheme, .dark)
         }
     }

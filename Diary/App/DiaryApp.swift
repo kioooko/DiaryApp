@@ -25,6 +25,8 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
     @AppStorage(UserDefaultsKey.reSyncPerformed.rawValue)
     private var reSyncPerformed: Bool = false // 使用 AppStorage 存储是否已执行重新同步
 
+    @StateObject private var apiKeyManager = APIKeyManager()
+
     init() { // 初始化方法
         print("DiaryApp initialized") // 确认应用程序初始化
         let now = Date() // 获取当前日期
@@ -39,24 +41,26 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
 
     var body: some Scene { // 定义应用程序的场景
         WindowGroup { // 创建一个窗口组
-            if animationCompleted {
-              //  WelcomeView()
-                HomeView()
+            NavigationView {
+                HomeView(apiKeyManager: apiKeyManager)
                     .environmentObject(bannerState)
                     .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
                     .environmentObject(textOptions)
                     .environmentObject(notificationSetting)
                     .environmentObject(weatherData)
-            } else {
-                WelcomeSplineAnimationView()
-                    .onAppear {
-                        // 模拟动画完成后的延迟
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                            animationCompleted = true
-                        }
-                    }
+                    .environmentObject(apiKeyManager)
             }
-        }
+         //   else {
+        //        WelcomeSplineAnimationView()
+        //            .onAppear {
+                        // 模拟动画完成后的延迟
+        //                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+         //                   animationCompleted = true
+        //                }
+       //             }
+      //      }
+           // .environmentObject(apiKeyManager)
+       }
     }
 }
 
