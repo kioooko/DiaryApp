@@ -44,7 +44,10 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
                         .padding(.top, 8) // 顶部内边距
                         .padding(.trailing, 16) // 右侧内边距
                         .zIndex(200) // 设置 Z 索引
-                    ChatAIView()
+                    ChatAIGuide
+                        .padding(.top, 8) // 顶部内边距
+                        .padding(.trailing, 66) // 右侧内边距
+                        .zIndex(200) // 设置 Z 索引
                     GeometryReader { proxy in // 使用 GeometryReader 获取安全区域信息
                         let safeArea = proxy.safeAreaInsets
                         CalendarContainer( // 显示日历容器
@@ -151,6 +154,26 @@ private extension HomeView { // HomeView 的私有扩展
             AppInfoView() // 导航到应用信息视图
         } label: {
             Image(systemName: "gearshape") // 齿轮图标
+                .resizable()
+                .scaledToFit()
+                .foregroundStyle(Color.black)
+                .frame(width: 24)
+                .bold()
+                .padding(.vertical, 8)
+                .padding(.horizontal, 8)
+                .background(
+                    Capsule()
+                        .fill(Color.Neumorphic.main)
+                        .softOuterShadow()
+                )
+                .offset(y: -10) // 向上移动图标
+        }
+    }
+     var ChatAIGuide: some View {
+        NavigationLink {
+            ChatAIView() // 导航到ChatAI视图
+        } label: {
+            Image(systemName: "message")
                 .resizable()
                 .scaledToFit()
                 .foregroundStyle(Color.black)

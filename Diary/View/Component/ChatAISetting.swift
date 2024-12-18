@@ -5,17 +5,15 @@ import Combine
 
 struct ChatAIView: View {
     @State private var userInput: String = ""
-    @State private var chatHistory: [String] = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
-    @State private var navigateToDiaryAppSceneDelegate = false
+    @State private var apiKey: String = ""
+    @State private var chatHistory: [String] = []
+    @State private var useCustomAPIKey: Bool = false // 控制是否使用自定义 API 密钥
 
     func sendToChatGPT(prompt: String) {
-        let filePath = "/Users/kokio/DiaryApp/Chatapi.txt"
-        var apiKey: String = ""
+        let apiKeyToUse = useCustomAPIKey ? apiKey : "默认的API密钥" // 使用自定义或默认 API 密钥
 
-        do {
-            apiKey = try String(contentsOfFile: filePath, encoding: .utf8).trimmingCharacters(in: .whitespacesAndNewlines)
-        } catch {
-            print("无法读取API密钥: \(error)")
+        guard !apiKeyToUse.isEmpty else {
+            print("API 密钥不能为空")
             return
         }
 
@@ -31,7 +29,7 @@ struct ChatAIView: View {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(apiKeyToUse)", forHTTPHeaderField: "Authorization")
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
@@ -77,56 +75,43 @@ struct ChatAIView: View {
 
     var body: some View {
         VStack {
+            Toggle("使用自定义 API 密钥", isOn: $useCustomAPIKey)
+                .padding()
+
+            if useCustomAPIKey {
+                TextField("输入 API 密钥", text: $apiKey)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+            }
+
+            TextField("输入你的问题", text: $userInput)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            Button(action: {
+                sendToChatGPT(prompt: userInput)
+                userInput = ""
+            }) {
+                Text("发送")
+                    .fontWeight(.bold)
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding()
+
             ScrollView {
                 VStack(alignment: .leading) {
                     ForEach(chatHistory, id: \.self) { message in
-                        HStack {
-                            if message.hasPrefix("You:") {
-                                Spacer()
-                                Text(message)
-                                    .padding()
-                                    .background(Color.Neumorphic.main)
-                                    .softOuterShadow()
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                            } else {
-                                Text(message)
-                                    .padding()
-                                    .background(Color.Neumorphic.main)
-                                    .softInnerShadow(RoundedRectangle(cornerRadius: 12))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Spacer()
-                            }
-                        }
-                        .padding(.vertical, 2)
+                        Text(message)
+                            .padding(.vertical, 4)
                     }
                 }
                 .padding()
             }
-            HStack {
-                TextField("分享今天的心情吧", text: $userInput)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.Neumorphic.main)
-                            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
-                    )
-                    .accentColor(.primary)
-                
-                Button(action: {
-                    sendToChatGPT(prompt: userInput)
-                    userInput = ""
-                }) {
-                    Text("发送")
-                        .fontWeight(.bold)
-                }
-                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
-                .frame(width: 80, height: 44)
-            }
-           .padding(.bottom, 80) // 添加底部边距80
-.padding(.horizontal) // 保持水平内边距
         }
-        .background(Color.Neumorphic.main)
+        .padding()
     }
 }
 

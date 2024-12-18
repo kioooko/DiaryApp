@@ -47,6 +47,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                     .listRowBackground(Color.Neumorphic.main) // 设置日记部分的背景颜色
 
                     Section("支持") { // 支持相关信息部分
+                        ChatAIGuide // 显示ChatAI功能
                         inquiry // 显示联系选项
                         version // 显示应用版本
                     }
@@ -203,6 +204,14 @@ private extension AppInfoView { // AppInfoView 的私有扩展
                 .background(Color.Neumorphic.main)
                 .font(.system(size: 14))
             }
+        }
+    }
+
+    var ChatAIGuide: some View { // 显示ChatAI功能
+        NavigationLink {
+            ChatAIView()
+        } label: {
+            rowTitle(symbolName: "message", iconColor: .yellow, title: "ChatAI功能")
         }
     }
 
