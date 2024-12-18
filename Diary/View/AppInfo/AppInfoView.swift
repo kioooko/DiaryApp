@@ -3,20 +3,21 @@
 //  Diary
 //
 //  Created by Higashihara Yoki on 2023/05/10.
-//
+//  Change by kioooko on 2024/12/17
 
-import SwiftUI
+import SwiftUI // 导入 SwiftUI 框架
+import Neumorphic // 导入 Neumorphic 框架
 
-struct AppInfoView: View {
-    @EnvironmentObject private var bannerState: BannerState
-    @EnvironmentObject private var notificationSetting: NotificationSetting
+struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
+    @EnvironmentObject private var bannerState: BannerState // 注入 BannerState 对象
+    @EnvironmentObject private var notificationSetting: NotificationSetting // 注入 NotificationSetting 对象
 
-    @State private var consecutiveDays: Int? = 0
-    @State private var diaryCount: Int? = 0
-    @State private var isReminderOn = false
-    @State private var isInquiryViewPresented = false
+    @State private var consecutiveDays: Int? = 0 // 用于存储连续记录天数的状态
+    @State private var diaryCount: Int? = 0 // 用于存储日记总数的状态
+    @State private var isReminderOn = false // 用于存储提醒状态的布尔值
+    @State private var isInquiryViewPresented = false // 控制是否显示询问视图的状态
 
-    private let timeFormatter: DateFormatter = {
+    private let timeFormatter: DateFormatter = { // 定义时间格式化器
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
@@ -24,92 +25,85 @@ struct AppInfoView: View {
         return formatter
     }()
 
-    private let appVersion = AppVersion.current
+    private let appVersion = AppVersion.current // 获取当前应用版本
 
-    var body: some View {
-        NavigationStack {
+    var body: some View { // 定义视图的主体
+        NavigationStack { // 使用 NavigationStack 包裹内容
+            VStack {
+                attention // 显示 iCloud 状态信息
+                    .padding(.horizontal) // 添加水平内边距
+                    .padding(.vertical) // 添加垂直内边距
 
-            attention
-                .padding(.horizontal)
-                .padding(.vertical)
+                Form { // 使用 Form 组织内容
+                    Section("日记") { // 日记相关信息部分
+                        streak // 显示连续记录天数
+                        totalCount // 显示日记总数
+                        bookMark // 显示书签
+                        textOption // 显示文本选项
+                        reminder // 显示提醒设置
+                    }
+                    .background(Color.Neumorphic.main) // 设置日记部分的背景颜色
+                    .softOuterShadow() // 添加外部阴影
+                    .listRowBackground(Color.Neumorphic.main) // 设置日记部分的背景颜色
 
-            Form {
-                Section("日记") {
-                    streak
-                    totalCount
-                    bookMark
-                    textOption
-                    reminder
+                    Section("支持") { // 支持相关信息部分
+                        inquiry // 显示联系选项
+                        version // 显示应用版本
+                    }
+                    .background(Color.Neumorphic.main) // 设置支持部分的背景颜色    
+                    .softOuterShadow() // 添加外部阴影
+                    .listRowBackground(Color.Neumorphic.main) // 设置支持部分的背景颜色
                 }
-
-                Section("支持") {
-                    inquiry
-                    version
-                }
+                .background(Color.Neumorphic.main) // 设置表单背景颜色
+                .softOuterShadow() // 添加外部阴影
+              //  .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
             }
-            .navigationTitle("关于应用")
+            .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all)) // 设置整个视图的背景颜色
+            .softOuterShadow() // 添加外部阴影
+            .navigationTitle("应用设置") // 设置导航标题
         }
-        .onAppear {
-            fetchConsecutiveDays()
-            fetchDiaryCount()
+        .onAppear { // 当视图出现时执行
+            fetchConsecutiveDays() // 获取连续记录天数
+            fetchDiaryCount() // 获取日记总数
+
         }
     }
 }
 
-private extension AppInfoView {
+private extension AppInfoView { // AppInfoView 的私有扩展
 
-    var isiCloudEnabled: Bool {
+    var isiCloudEnabled: Bool { // 检查 iCloud 是否启用
         (FileManager.default.ubiquityIdentityToken != nil)
     }
 
     // MARK: View
 
     @ViewBuilder
-    var attention: some View {
+    var attention: some View { // 显示 iCloud 状态信息
         if !isiCloudEnabled {
             warning(
                 title: "iCloud已关闭",
                 message: "iCloud已关闭，因此如果删除应用程序或更改设备，数据将丢失。建议将其打开，以便数据可以继续👋"
             )
+          //  .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
         } else {
-            connectedToiCloud
+            connectedToiCloud // 显示 iCloud 已连接信息
         }
+    
     }
 
-    var connectedToiCloud: some View {
-        HStack(spacing: 20) {
-            IconWithRoundedBackground(
-                systemName: "checkmark",
-                backgroundColor: .green
-            )
-            .foregroundColor(.adaptiveWhite)
-            .padding(.leading)
-
-            HStack(spacing: 6) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("iCloud已连接")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .bold()
-                    Text("iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
-                }
+    var connectedToiCloud: some View { // 显示 iCloud 已连接信息
+        featureRow(icon: "checkmark", color: .green, description: "iCloud已连接。iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。")
+            .background {
+                RoundedRectangle(cornerRadius: 16)
+                  //  .fill(.adaptiveWhite)
+                    .fill(Color.Neumorphic.main)
+                  //  .background(Color.Neumorphic.main) // 设置整个视图的背景颜色
+                  // .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
             }
-            .padding(.trailing, 8)
-            .padding(.vertical, 4)
-
-        }
-        .padding(.vertical, 4)
-        .frame(height: 110)
-        .background {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.adaptiveWhite)
-                .adaptiveShadow()
-        }
     }
 
-    func warning(title: String, message: String) -> some View {
+    func warning(title: String, message: String) -> some View { // 显示警告信息
         HStack(spacing: 20) {
             IconWithRoundedBackground(
                 systemName: "exclamationmark",
@@ -141,12 +135,13 @@ private extension AppInfoView {
         .frame(height: 110)
         .background {
             RoundedRectangle(cornerRadius: 16)
-                .fill(Color.adaptiveWhite)
-                .adaptiveShadow()
+                .fill(Color.Neumorphic.main)
+                .softOuterShadow()
+              //  .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
         }
     }
 
-    var streak: some View {
+    var streak: some View { // 显示连续记录天数
         HStack {
             rowTitle(symbolName: "flame", iconColor: .orange, title: "已经连续记录了")
             Spacer()
@@ -157,9 +152,9 @@ private extension AppInfoView {
                     .font(.system(size: 12))
             }
         }
-    }
+  }
 
-    var totalCount: some View {
+    var totalCount: some View { // 显示日记总数
         HStack {
             rowTitle(symbolName: "square.stack", iconColor: .blue, title: "合計")
             Spacer()
@@ -172,15 +167,16 @@ private extension AppInfoView {
         }
     }
 
-    var bookMark: some View {
+    var bookMark: some View { // 显示书签
         NavigationLink {
             BookmarkListView()
         } label: {
             rowTitle(symbolName: "bookmark", iconColor: .cyan, title: "收藏了的日记")
+            
         }
     }
 
-    var textOption: some View {
+    var textOption: some View { // 显示文本选项
         NavigationLink {
             TextOptionsView()
         } label: {
@@ -188,7 +184,7 @@ private extension AppInfoView {
         }
     }
 
-    var reminder: some View {
+    var reminder: some View { // ��示提醒设置
         NavigationLink {
             ReminderSettingView()
         } label: {
@@ -196,20 +192,21 @@ private extension AppInfoView {
                 rowTitle(symbolName: "bell", iconColor: .red, title: "通知")
                 Spacer()
                 Group {
-                    if notificationSetting.isSetNotification {
-                        Text("开")
-                        Text(notificationSetting.setNotificationDate!, formatter: timeFormatter)
-                    } else {
-                        Text("关")
-                    }
+               //     if notificationSetting.isSetNotification {
+                //        Text("开")
+                 //       Text(notificationSetting.setNotificationDate!, formatter: timeFormatter)
+                 //   } else {
+                 //       Text("关")
+                 //   }
                 }
-                .foregroundColor(.gray)
+                //.foregroundColor(.adaptiveWhite)
+                .background(Color.Neumorphic.main)
                 .font(.system(size: 14))
             }
         }
     }
 
-    var inquiry: some View {
+    var inquiry: some View { // 显示联系选项
         Button(actionWithHapticFB: {
             isInquiryViewPresented = true
         }) {
@@ -223,7 +220,7 @@ private extension AppInfoView {
         }
     }
 
-    var version: some View {
+    var version: some View { // 显示应用版本
         Button(actionWithHapticFB: {
             UIPasteboard.general.string = appVersion.versionText
             bannerState.show(of: .success(message: "版本已复制"))
@@ -239,7 +236,7 @@ private extension AppInfoView {
         .buttonStyle(.plain)
     }
 
-    func rowTitle(symbolName: String, iconColor: Color, title: String) -> some View {
+    func rowTitle(symbolName: String, iconColor: Color, title: String) -> some View { // 显示行标题
         HStack {
             IconWithRoundedBackground(
                 systemName: symbolName,
@@ -253,7 +250,7 @@ private extension AppInfoView {
 
     // MARK: Action
 
-    func fetchConsecutiveDays() {
+    func fetchConsecutiveDays() { // 获取连续记录天数
         do {
             let consecutiveDays = try Item.calculateConsecutiveDays()
             self.consecutiveDays = consecutiveDays
@@ -262,7 +259,7 @@ private extension AppInfoView {
         }
     }
 
-    func fetchDiaryCount() {
+    func fetchDiaryCount() { // 获取日记总数
         do {
             let count = try Item.count()
             self.diaryCount = count
@@ -270,24 +267,39 @@ private extension AppInfoView {
             self.diaryCount = nil
         }
     }
+
+    func featureRow(icon: String, color: Color, description: String) -> some View {
+        HStack(spacing: 24) {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .padding()
+                .background(Color.Neumorphic.main)
+                .clipShape(Circle())
+                .softOuterShadow()
+            Text(description)
+                .foregroundColor(.primary.opacity(0.8))
+                .font(.system(size: 18))
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
 }
 
 #if DEBUG
 
-struct AppInfoView_Previews: PreviewProvider {
+struct AppInfoView_Previews: PreviewProvider { // 预览提供者
 
     static var content: some View {
         AppInfoView()
-            .environmentObject(NotificationSetting())
-            .environmentObject(BannerState())
+            .environmentObject(NotificationSetting()) // 注入 NotificationSetting
+            .environmentObject(BannerState()) // 注入 BannerState
     }
 
     static var previews: some View {
         Group {
             content
-                .environment(\.colorScheme, .light)
+                .environment(\.colorScheme, .light) // 测试浅色模式
             content
-                .environment(\.colorScheme, .dark)
+                .environment(\.colorScheme, .dark) // 测试深色模式
         }
     }
 }

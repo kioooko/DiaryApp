@@ -40,7 +40,8 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
     var body: some Scene { // 定义应用程序的场景
         WindowGroup { // 创建一个窗口组
             if animationCompleted {
-                WelcomeView()
+              //  WelcomeView()
+                HomeView()
                     .environmentObject(bannerState)
                     .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
                     .environmentObject(textOptions)
@@ -50,7 +51,7 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
                 WelcomeSplineAnimationView()
                     .onAppear {
                         // 模拟动画完成后的延迟
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                             animationCompleted = true
                         }
                     }
@@ -58,29 +59,6 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
         }
     }
 }
-
-// 下面是一些注释掉的代码，可能用于切换到 HomeView
-// var body: some Scene {
-//        WindowGroup {
-//            if showHomeView {
-//                HomeView()
-//                    .environmentObject(bannerState)
-//                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
-//                    .environmentObject(textOptions)
-//                    .environmentObject(notificationSetting)
-//                    .environmentObject(weatherData)
-//            } else {
-//                WelcomeSplineAnimationView()
-//                .onAppear {
-//                    // 模拟欢迎视图完成后的延迟
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-//                        showHomeView = true
-//                    }
-//                }
-//                WelcomeView()
-//            }
-//        }
-//    }
 
 private extension DiaryApp { // 定义 DiaryApp 的私有扩展
 

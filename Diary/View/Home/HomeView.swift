@@ -14,6 +14,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @Environment(\.managedObjectContext) var viewContext // 获取 Core Data 的上下文
     @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate // 注入 DiaryAppSceneDelegate 对象
     @EnvironmentObject private var bannerState: BannerState // 注入 BannerState 对象
+    @EnvironmentObject private var textOptions: TextOptions // 注入 TextOptions 对象
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
     private var hasBeenLaunchedBefore: Bool = false // 使用 AppStorage 存储应用是否启动过
@@ -43,6 +44,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
                         .padding(.top, 8) // 顶部内边距
                         .padding(.trailing, 16) // 右侧内边距
                         .zIndex(200) // 设置 Z 索引
+                    ChatAIView()
                     GeometryReader { proxy in // 使用 GeometryReader 获取安全区域信息
                         let safeArea = proxy.safeAreaInsets
                         CalendarContainer( // 显示日历容器
@@ -161,7 +163,7 @@ private extension HomeView { // HomeView 的私有扩展
                         .fill(Color.Neumorphic.main)
                         .softOuterShadow()
                 )
-                .offset(y: -40) // 向上移动图标
+                .offset(y: -10) // 向上移动图标
         }
     }
 

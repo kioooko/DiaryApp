@@ -41,14 +41,14 @@ struct CreateDiaryView: View {
             }
         }
         .tint(.adaptiveBlack)
-        .onReceive(weatherData.$todayWeather , perform: { todayWeather in
-            guard let todayWeather else { return }
-            diaryDataStore.selectedWeather = .make(from: todayWeather.symbolName)
-        })
+    //    .onReceive(weatherData.$todayWeather , perform: { todayWeather in
+     //       guard let todayWeather else { return }
+      //      diaryDataStore.selectedWeather = .make(from: todayWeather.symbolName)
+       // })
         .sheet(isPresented: $isTextEditorPresented, content: {
-            DiaryTextEditor(bodyText: $diaryDataStore.bodyText) {
-                isTextEditorPresented = false
-            }
+        //    DiaryTextEditor(bodyText: $diaryDataStore.bodyText) {
+          //      isTextEditorPresented = false
+       //     }
         })
     }
 }
@@ -88,7 +88,7 @@ private extension CreateDiaryView {
 
                     HStack {
                         InputTitle(title: $diaryDataStore.title)
-                        weather
+                     //   weather
                     }
                     ContentTypeSegmentedPicker(selectedContentType: $selectedContentType)
                     diaryContent
@@ -99,16 +99,16 @@ private extension CreateDiaryView {
         }
     }
 
-    @ViewBuilder
-    var weather: some View {
-        WeatherSelectButton(selectedWeather: $diaryDataStore.selectedWeather)
-            .asyncState(
-                weatherData.phase,
-                loadingContent:
-                ProgressView()
-                    .frame(width: WeatherIcon.size.width, height: WeatherIcon.size.height)
-            )
-    }
+  //  @ViewBuilder
+ //   var weather: some View {
+  //      WeatherSelectButton(selectedWeather: $diaryDataStore.selectedWeather)
+  //          .asyncState(
+  //              weatherData.phase,
+   //             loadingContent:
+    //            ProgressView()
+   //                 .frame(width: WeatherIcon.size.width, height: WeatherIcon.size.height)
+   //         )
+//    }
 
     @ViewBuilder
     var diaryContent: some View {

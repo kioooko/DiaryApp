@@ -25,6 +25,8 @@ struct BookmarkListView: View {
                         }
                         .padding(.horizontal, 30)
                         .buttonStyle(PlainButtonStyle())
+                      //  .softButtonStyle(RoundedRectangle(cornerRadius: 12)) // 确保 softButtonStyle 应用于 Button
+                      //  .buttonStyle(softButtonStyle(RoundedRectangle(cornerRadius: 12)))
                     }
                 }
                 .padding(.vertical)

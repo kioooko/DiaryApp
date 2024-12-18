@@ -24,6 +24,8 @@
 		07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
 		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
 		0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 0758BA022CFF20F50080DEF2 /* SplineRuntime */; };
+		075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2302D1263B10039A3B9 /* ChatAI.swift */; };
+		075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2302D1263B10039A3B9 /* ChatAI.swift */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
 		F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CA429F52467005FD6C8 /* DiaryApp.swift */; };
@@ -129,6 +131,7 @@
 		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
 		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
 		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		075EB2302D1263B10039A3B9 /* ChatAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAI.swift; sourceTree = "<group>"; };
 		F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListEditButton.swift; sourceTree = "<group>"; };
 		F51446522A5C1B20002DA8CC /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		F5358CA129F52467005FD6C8 /* Diary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Diary.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -493,6 +496,7 @@
 			children = (
 				F58A67E82BEE9CBE00A61070 /* CheckList */,
 				F568BB6C2A3B8A44000330E1 /* ContentTypeSegmentedPicker.swift */,
+				075EB2302D1263B10039A3B9 /* ChatAI.swift */,
 				F5405B932A93BD4B002FA0C9 /* DiaryDateButton.swift */,
 				F5358D502A054D05005FD6C8 /* DiaryDetailView.swift */,
 				F53E3A722A087ADE0064CB62 /* DiaryImageView.swift */,
@@ -591,12 +595,13 @@
 			};
 			buildConfigurationList = F5358C9C29F52467005FD6C8 /* Build configuration list for PBXProject "Diary" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = ja;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 				ja,
+				"zh-Hans",
 			);
 			mainGroup = F5358C9829F52467005FD6C8;
 			packageReferences = (
@@ -698,6 +703,7 @@
 				F5BF44382A4F4B7B00217119 /* CheckListTextEditor.swift in Sources */,
 				F5358D322A000E5D005FD6C8 /* Color.swift in Sources */,
 				F53E3A7F2A0944A20064CB62 /* PassThroughWindow.swift in Sources */,
+				075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				F5BF44432A54714300217119 /* Locale+Extension.swift in Sources */,
 				F550BCAF2A12852C00BCB0F2 /* BlobLayer.swift in Sources */,
 				F5358D0E29F8BBE3005FD6C8 /* View+AsyncState.swift in Sources */,
@@ -734,6 +740,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
+				075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
 				07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
 				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
@@ -881,8 +888,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BianZ;
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = BianZ;
+				INFOPLIST_KEY_CFBundleDisplayName = "编织日记";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = "编织日记";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "日記に自動で正確な天気予報を表示するために利用します。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "日記の画像を保存します。";
@@ -897,7 +904,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kioooko.Diary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -922,7 +929,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BianZ;
+				INFOPLIST_KEY_CFBundleDisplayName = "编织日记";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "日記に自動で正確な天気予報を表示するために利用します。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "日記の画像を保存します。";
@@ -937,7 +944,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.1;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kioooko.Diary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
