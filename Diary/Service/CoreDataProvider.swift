@@ -29,6 +29,7 @@ public class CoreDataProvider: ObservableObject {
                  Check the error message to determine what the actual problem was.
                  */
                 self.coreDataProviderError = .failedToInit(error: error)
+                print("Failed to load persistent stores: \(error), \(error.userInfo)")
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true

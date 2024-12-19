@@ -43,29 +43,25 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                         reminder // 显示提醒设置
                     }
                     .listRowBackground(
-                        RoundedRectangle(cornerRadius: 0)
+                        RoundedRectangle(cornerRadius: 10)
                             .fill(Color.Neumorphic.main)
-                            .softOuterShadow() // 颜色设置
                     )
-     
+                    .listRowSeparator(.hidden) // 隐藏分割线
+
                     Section("支持") { // 支持相关信息部分
                         ChatAIGuide // 显示ChatAI功能
                         inquiry // 显示联系选项
                         version // 显示应用版本
                     }
                     .listRowBackground(
-                        RoundedRectangle(cornerRadius: 0)
+                        RoundedRectangle(cornerRadius: 10)
                             .fill(Color.Neumorphic.main)
                     )
+                    .listRowSeparator(.hidden) // 隐藏分割线
                 }
                 .background(Color.Neumorphic.main) // 颜色设置
+                //.softInnerShadow(RoundedRectangle(cornerRadius: 10)) // 颜色设置
             }
-            .scrollContentBackground(.hidden)
-            .background(Color.Neumorphic.main) // 颜色设置
-          //  RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 90, height: 90)
-                        .softOuterShadow()
-            .softOuterShadow() // 颜色设置
-
             .navigationTitle("应用设置") // 设置导航标题
         }
         .onAppear { // 当视图出现时执行
@@ -74,7 +70,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
 
         }
         .background(Color.Neumorphic.main) // 颜色设置
-       
+        .softOuterShadow() // 颜色设置
     }
 }
 

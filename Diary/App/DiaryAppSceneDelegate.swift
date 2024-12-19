@@ -36,7 +36,7 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         windowScene = scene as? UIWindowScene
-              guard let windowScene = scene as? UIWindowScene else { return }
+        guard let windowScene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = UIHostingController(rootView: WelcomeSplineAnimationView())
@@ -49,19 +49,18 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             self.switchToWelcomeView()
         }
-    
     }
-
-
-
-
-
 
     private func switchToWelcomeView() {
         guard let windowScene = windowScene else { return }
 
         // 确保传递的是实例
         let welcomeView = WelcomeView(apiKeyManager: APIKeyManager())
+            .environmentObject(bannerState ?? BannerState())
+            .environmentObject(NotificationSetting())
+            .environmentObject(WeatherData())
+           // .environmentObject(apiKeyManager)
+
         let welcomeWindow = UIWindow(windowScene: windowScene)
         welcomeWindow.rootViewController = UIHostingController(rootView: welcomeView)
         welcomeWindow.makeKeyAndVisible()

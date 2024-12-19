@@ -20,6 +20,7 @@ struct WelcomeView: View {
     // Environment Properties
     @EnvironmentObject private var notificationSetting: NotificationSetting
     @EnvironmentObject private var weatherData: WeatherData
+    @EnvironmentObject private var bannerState: BannerState
     
     // App Storage
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
@@ -264,6 +265,9 @@ struct WelcomeView_Previews: PreviewProvider {
     static var content: some View {
         NavigationStack {
             WelcomeView(apiKeyManager: APIKeyManager())
+            .environmentObject(BannerState())
+            .environmentObject(NotificationSetting())
+            .environmentObject(WeatherData())
         }
     }
     static var previews: some View {
