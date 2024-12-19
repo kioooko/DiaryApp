@@ -63,7 +63,6 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
             .scrollContentBackground(.hidden)
             .background(Color.Neumorphic.main) // 颜色设置
           //  RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 90, height: 90)
-                        .softOuterShadow()
             .softOuterShadow() // 颜色设置
 
             .navigationTitle("应用设置") // 设置导航标题
@@ -101,10 +100,17 @@ private extension AppInfoView { // AppInfoView 的私有扩展
     }
 
     var connectedToiCloud: some View { // 显示 iCloud 已连接信息
+        HStack(spacing: 20) {
         featureRow(icon: "checkmark", color: .green, description: "iCloud已连接。iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。")
-            .background {
-                RoundedRectangle(cornerRadius: 16)
-            }
+            .modifier(NeumorphicCardModifier())
+    }
+      .padding(.vertical, 4)
+        .frame(height: 110)
+        .background {
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.Neumorphic.main) // 颜色设置
+                .softOuterShadow() // 颜色设置
+        }
     }
 
     func warning(title: String, message: String) -> some View { // 显示警告信息
@@ -135,13 +141,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
             .padding(.vertical, 4)
 
         }
-        .padding(.vertical, 4)
-       .frame(height: 110)
-        .background {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.Neumorphic.main) // 颜色设置
-                .softOuterShadow() // 颜色设置
-        }
+        .modifier(NeumorphicCardModifier())
     }
 
     var streak: some View { // 显示连续记录天数
@@ -290,6 +290,19 @@ private extension AppInfoView { // AppInfoView 的私有扩展
                 .font(.system(size: 18))
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+}
+
+struct NeumorphicCardModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .padding(.vertical, 4)
+            .frame(height: 110)
+            .background {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.Neumorphic.main)
+                    .softOuterShadow()
+            }
     }
 }
 

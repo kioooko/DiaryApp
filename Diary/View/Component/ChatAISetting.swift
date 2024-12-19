@@ -1,3 +1,10 @@
+//
+//  ChatAISetting.swift
+//  Diary
+//
+//  Created by kioooko on 2024/12/18.
+//
+
 import SwiftUI
 import Neumorphic
 
@@ -6,6 +13,7 @@ struct ChatAISetting: View {
     @State private var useCustomAPIKey: Bool = false // 控制是否使用自定义 API 密钥
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @State private var userInputKey: String = ""
 
     var body: some View {
         VStack {
@@ -23,7 +31,7 @@ struct ChatAISetting: View {
                 .padding(.horizontal)
 
             if useCustomAPIKey {
-                TextField("输入 API 密钥", text: $apiKeyManager.apiKey)
+                TextField("输入 API 密钥", text: $userInputKey)
                     .textFieldStyle(PlainTextFieldStyle())
                     .padding()
                     .background(
@@ -33,9 +41,9 @@ struct ChatAISetting: View {
                     )
                     .padding(.horizontal)
 
-                if !apiKeyManager.apiKey.isEmpty {
+                if !userInputKey.isEmpty {
                     Button(action: {
-                        validateAPIKey(apiKeyManager.apiKey)
+                        validateAPIKey(userInputKey)
                     }) {
                         Text("确认")
                             .fontWeight(.bold)
@@ -56,6 +64,9 @@ struct ChatAISetting: View {
                   message: Text(alertMessage),
                   dismissButton: .default(Text("确定")))
         }
+        .onAppear {
+            userInputKey = apiKeyManager.apiKey
+        }
     }
 
     @ViewBuilder
@@ -72,7 +83,7 @@ struct ChatAISetting: View {
 
         let parameters: [String: Any] = [
             "model": "grok-beta",
-            "messages": [["role": "user", "content": "测试"]],
+            "messages": [["role": "user", "content": "你好"]],
             "stream": false,
             "temperature": 0
         ]
@@ -109,7 +120,7 @@ struct ChatAISetting: View {
                    !choices.isEmpty {
                     alertMessage = "API 密钥有效，已启用。"
                     DispatchQueue.main.async {
-                        self.apiKeyManager.apiKey = key
+                        self.apiKeyManager.updateAPIKey(key)
                     }
                 } else {
                     alertMessage = "API 密钥无效，请检查后重试。"

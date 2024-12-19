@@ -1,19 +1,20 @@
-//
-//  ChatAISetting.swift
-//  Diary
-//
-//  Created by kioooko on 2024/12/18.
-//
 import SwiftUI
 import Foundation
 import Neumorphic
 import Combine
 
-struct ChatAIView: View {
+struct ChatAI: View {
     @ObservedObject var apiKeyManager: APIKeyManager
     @State private var userInput: String = ""
-    @State private var chatHistory: [String] = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
+    @State private var chatHistory: [String] = []
     @State private var navigateToDiaryAppSceneDelegate = false
+
+    private let chatHistoryKey = "chatHistory"
+
+    init(apiKeyManager: APIKeyManager) {
+        self.apiKeyManager = apiKeyManager
+        loadChatHistory()
+    }
 
     func sendToChatGPT(prompt: String) {
         let apiKey = apiKeyManager.apiKey
@@ -40,6 +41,7 @@ struct ChatAIView: View {
 
         DispatchQueue.main.async {
             chatHistory.append("You: \(prompt)")
+            saveChatHistory()
         }
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -65,6 +67,7 @@ struct ChatAIView: View {
                    let content = message["content"] as? String {
                     DispatchQueue.main.async {
                         chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
+                        saveChatHistory()
                     }
                 }
             } catch {
@@ -73,32 +76,72 @@ struct ChatAIView: View {
         }.resume()
     }
 
+    private func saveChatHistory() {
+        do {
+            let data = try JSONEncoder().encode(chatHistory)
+            UserDefaults.standard.set(data, forKey: chatHistoryKey)
+        } catch {
+            print("无法保存聊天记录: \(error)")
+        }
+    }
+
+    private func loadChatHistory() {
+        if let data = UserDefaults.standard.data(forKey: chatHistoryKey) {
+            do {
+                chatHistory = try JSONDecoder().decode([String].self, from: data)
+            } catch {
+                print("无法加载聊天记录: \(error)")
+            }
+        } else {
+            chatHistory = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
+        }
+    }
+
+    func createMessageView(message: String, isUser: Bool) -> some View {
+        let text = Text(message)
+            .padding()
+
+        let background = RoundedRectangle(cornerRadius: 12)
+            .fill(Color.Neumorphic.main)
+            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+
+        let textWithBackground = text
+            .background(background)
+
+        return textWithBackground
+            .frame(maxWidth: .infinity, alignment: isUser ? .trailing : .leading)
+    }
+
     var body: some View {
         VStack {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ForEach(chatHistory, id: \.self) { message in
-                        HStack {
-                            if message.hasPrefix("You:") {
-                                Spacer()
-                                Text(message)
-                                    .padding()
-                                    .background(Color.Neumorphic.main)
-                                    .softOuterShadow()
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                            } else {
-                                Text(message)
-                                    .padding()
-                                    .background(Color.Neumorphic.main)
-                                    .softInnerShadow(RoundedRectangle(cornerRadius: 12))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Spacer()
+            ScrollViewReader { scrollViewProxy in
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        ForEach(chatHistory.indices, id: \.self) { index in
+                            let message = chatHistory[index]
+                            HStack {
+                                if message.hasPrefix("You:") {
+                                    Spacer()
+                                    createMessageView(message: message, isUser: true)
+                                } else {
+                                    createMessageView(message: message, isUser: false)
+                                    Spacer()
+                                }
                             }
+                            .padding(.vertical, 2)
+                            .id(index) // 为每个消息设置唯一的 ID
                         }
-                        .padding(.vertical, 2)
+                    }
+                    .padding()
+                }
+                .onChange(of: chatHistory) { _ in
+                    // 当聊天记录更新时，滚动到最新消息
+                    if let lastIndex = chatHistory.indices.last {
+                        withAnimation {
+                            scrollViewProxy.scrollTo(lastIndex, anchor: .bottom)
+                        }
                     }
                 }
-                .padding()
             }
             HStack {
                 TextField("分享今天的心情吧", text: $userInput)
@@ -121,18 +164,18 @@ struct ChatAIView: View {
                 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44)
             }
-           .padding(.bottom, 80) // 添加底部边距80
-.padding(.horizontal) // 保持水平内边距
+            .padding(.bottom, 20)
+            .padding(.horizontal)
         }
         .background(Color.Neumorphic.main)
     }
 }
 
 #if DEBUG
-struct ChatAIView_Previews: PreviewProvider {
+struct ChatAI_Previews: PreviewProvider {
     static var content: some View {
         NavigationStack {
-            ChatAIView(apiKeyManager: APIKeyManager())
+            ChatAI(apiKeyManager: APIKeyManager())
         }
     }
 

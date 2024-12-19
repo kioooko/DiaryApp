@@ -177,7 +177,7 @@ private extension HomeView { // HomeView 的私有扩展
     }
      var ChatAIGuide: some View {
         NavigationLink {
-            ChatAIView(apiKeyManager: APIKeyManager()) // 导航到ChatAI视图
+            ChatAI(apiKeyManager: APIKeyManager()) // 导航到ChatAI视图
         } label: {
             Image(systemName: "message")
                 .resizable()

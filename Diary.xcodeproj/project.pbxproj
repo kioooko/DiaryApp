@@ -30,6 +30,8 @@
 		075EB2352D1291140039A3B9 /* ChatAISetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2332D1291140039A3B9 /* ChatAISetting.swift */; };
 		075EB2372D12A5040039A3B9 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2362D12A5040039A3B9 /* APIKeyManager.swift */; };
 		075EB2382D12A5040039A3B9 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2362D12A5040039A3B9 /* APIKeyManager.swift */; };
+		075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
+		075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
 		F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CA429F52467005FD6C8 /* DiaryApp.swift */; };
@@ -138,6 +140,7 @@
 		075EB2302D1263B10039A3B9 /* ChatAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAI.swift; sourceTree = "<group>"; };
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
+		075EB2392D13B9790039A3B9 /* Chatapi.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chatapi.txt; sourceTree = "<group>"; };
 		F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListEditButton.swift; sourceTree = "<group>"; };
 		F51446522A5C1B20002DA8CC /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		F5358CA129F52467005FD6C8 /* Diary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Diary.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -291,6 +294,7 @@
 				0717EE892D0983F200C19355 /* GoogleService-Info.plist */,
 				F5358CB229F52468005FD6C8 /* Info.plist */,
 				F5358CAA29F52468005FD6C8 /* Preview Content */,
+				075EB2392D13B9790039A3B9 /* Chatapi.txt */,
 			);
 			path = Diary;
 			sourceTree = "<group>";
@@ -637,6 +641,7 @@
 				0717EE8B2D0983F200C19355 /* GoogleService-Info.plist in Resources */,
 				F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */,
 				F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */,
+				075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,6 +652,7 @@
 				072082B12D081FE9001AAE75 /* Nextimg.png in Resources */,
 				072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */,
 				0717EE8A2D0983F200C19355 /* GoogleService-Info.plist in Resources */,
+				075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -896,7 +902,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Diary/Preview Content\"";
-				DEVELOPMENT_TEAM = CD8XS2J626;
+				DEVELOPMENT_TEAM = D33DA29482;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
