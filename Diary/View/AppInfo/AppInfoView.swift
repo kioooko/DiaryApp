@@ -42,6 +42,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                         textOption // 显示文本选项
                         reminder // 显示提醒设置
                     }
+
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 0)
                             .fill(Color.Neumorphic.main)

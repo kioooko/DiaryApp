@@ -3,7 +3,7 @@
 //  Diary
 //
 //  Created by kioooko on 2024/12/18.
-//
+//  Change by kioooko on 2024/12/20
 
 import SwiftUI
 import Neumorphic

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Neumorphic
 
 struct BookmarkListView: View {
 
@@ -30,9 +31,12 @@ struct BookmarkListView: View {
                     }
                 }
                 .padding(.vertical)
+                .background(Color.Neumorphic.main)
+                .softOuterShadow()
             }
             .navigationTitle("收藏")
         }
+        .background(Color.Neumorphic.main)
     }
 }
 
