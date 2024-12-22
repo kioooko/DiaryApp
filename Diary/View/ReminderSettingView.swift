@@ -1,5 +1,3 @@
-//Change by kioooko on 2024/12/19
-
 
 import SwiftUI
 import Neumorphic
@@ -22,7 +20,7 @@ struct ReminderSettingView: View {
             .alert(isPresented: $showRequestNotificationPermissionAlert) {
                 requestPermissionAlert
             }
-            .navigationTitle("通知")
+            .navigationTitle("通知AAA")
     }
 }
 
@@ -35,20 +33,39 @@ private extension ReminderSettingView {
             VStack(spacing: 40) {
                 title("设置提醒事项", description: "让写日记成为一种习惯。我们不会发送任何烦人的垃圾通知。")
                     .multilineTextAlignment(.center)  // 文本居中
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.Neumorphic.main)
+                            .softOuterShadow()
+                    )
                 
                 HStack {
                     featureRow(icon: "alarm", color: .red, description: "设置你每日的编织时间吧")
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.Neumorphic.main)
+                        .softOuterShadow()
+                )
             }
             
-            hourAndMinutePicker 
+            hourAndMinutePicker
                 .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.Neumorphic.main)
+                        .softOuterShadow()
+                )
             
             Spacer()  // 添加底部空间
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)  // 使用最大宽度和高度
         .padding(.horizontal)
+        .background(Color.Neumorphic.main.ignoresSafeArea()) // 使用 Neumorphic 风格的背景色
     }
     
     var hourAndMinutePicker: some View {
@@ -79,12 +96,6 @@ private extension ReminderSettingView {
                 .font(.subheadline)
                 .foregroundColor(.gray)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.Neumorphic.main)
-                .softInnerShadow(RoundedRectangle(cornerRadius: 12))
-        )
     }
 
     func featureRow(icon: String, color: Color, description: String) -> some View {
@@ -94,12 +105,6 @@ private extension ReminderSettingView {
             Text(description)
                 .font(.body)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color.Neumorphic.main)
-                .softInnerShadow(RoundedRectangle(cornerRadius: 12))
-        )
     }
 }
 

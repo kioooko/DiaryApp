@@ -191,12 +191,12 @@ private extension AppInfoView { // AppInfoView 的私有扩展
                 rowTitle(symbolName: "bell", iconColor: .red, title: "通知")
                 Spacer()
                 Group {
-               //     if notificationSetting.isSetNotification {
-                //        Text("开")
-                 //       Text(notificationSetting.setNotificationDate!, formatter: timeFormatter)
-                 //   } else {
-                 //       Text("关")
-                 //   }
+                if notificationSetting.isSetNotification {
+                     Text("开")
+                       Text(notificationSetting.setNotificationDate!, formatter: timeFormatter)
+                    } else {
+                       Text("关")
+                    }
                 }
                 .font(.system(size: 14))
             }

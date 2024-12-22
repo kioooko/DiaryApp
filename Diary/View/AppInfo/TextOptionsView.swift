@@ -45,13 +45,13 @@ private extension TextOptionsView {
 
     var previousSettingsDemo: some View {
         Text("这里是目前的设置哦！\n日记内容会以这样的方式呈现。\n快试着滑动下方的滑块看看吧🦈")
-          //  .textOption(
-          //      .init(
-                  //  fontSize: textOptions.fontSize,
-                   // lineSpacing: textOptions.lineSpacing
-             //   )
-        //    )
-         //   .frame(height: 100)
+           .textOption(
+                .init(
+                    fontSize: textOptions.fontSize,
+                    lineSpacing: textOptions.lineSpacing
+                )
+           )
+           .frame(height: 100)
     }
 
     var newSettingsDemo: some View {

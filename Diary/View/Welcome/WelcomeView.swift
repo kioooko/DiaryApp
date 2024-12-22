@@ -16,6 +16,8 @@ struct WelcomeView: View {
     @State private var navigateToDiaryAppSceneDelegate = false
     @ObservedObject var apiKeyManager: APIKeyManager
     @State private var showChatAISetting = false
+    @State private var ReminderSettingView = false
+
     
     // Environment Properties
     @EnvironmentObject private var notificationSetting: NotificationSetting
@@ -36,9 +38,10 @@ var body: some View {
                 Group {
                     appIntroduction.tag(1)
                     requestLocation.tag(2)
+//ReminderSettingView().tag(3)
                     setReminder.tag(3)  
-                    DividerWithShadow.tag(4)
-                   // ChatAISetting(apiKeyManager: apiKeyManager).tag(4)
+                   // DividerWithShadow.tag(4)
+                    ChatAISetting(apiKeyManager: apiKeyManager).tag(4)
                 }
                 .contentShape(Rectangle())
                 .gesture(DragGesture())

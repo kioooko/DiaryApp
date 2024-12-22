@@ -216,6 +216,7 @@ struct Home_Previews: PreviewProvider {
         HomeView(apiKeyManager: APIKeyManager())
             .environmentObject(DiaryAppSceneDelegate()) // 注入 DiaryAppSceneDelegate
             .environmentObject(BannerState()) // 注入 BannerState
+        //   .environmentObject(textOptions) // 注入 TextOptions 实例
     }
 
     static var previews: some View {

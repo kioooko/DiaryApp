@@ -16,6 +16,8 @@ struct ReminderSettingView: View {
     @State private var selectedDate: Date = Date()
     @State private var showRequestNotificationPermissionAlert = false
 
+    let cornerRadius : CGFloat = 15
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -30,6 +32,7 @@ struct ReminderSettingView: View {
             }
             .padding(20)
         }
+        .background(Color.Neumorphic.main.ignoresSafeArea())
         .onAppear {
             if let date = notificationSetting.setNotificationDate {
                 selectedDate = date
@@ -41,7 +44,6 @@ struct ReminderSettingView: View {
         .navigationTitle("通知")
     }
 }
-
 
 private extension ReminderSettingView {
 
@@ -66,12 +68,13 @@ private extension ReminderSettingView {
     }
 
     var saveButton: some View {
+
         Button(actionWithHapticFB: {
             save()
         }, label: {
-            Text("设置")
+            Text("设置").fontWeight(.bold)
         })
-        .buttonStyle(ActionButtonStyle())
+        .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     var deleteButton: some View {
@@ -81,9 +84,9 @@ private extension ReminderSettingView {
             }
             bannerState.show(of: .success(message: "通知已被设为未启用状态🗑️"))
         }, label: {
-            Text("未启用")
+            Text("关闭通知")
         })
-        .buttonStyle(ActionButtonStyle(backgroundColor: .red))
+        .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
     }
 
     // MARK: Action
