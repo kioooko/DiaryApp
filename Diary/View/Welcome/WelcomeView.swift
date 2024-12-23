@@ -1,3 +1,10 @@
+//
+//  WelcomeView.swift
+//  Diary
+//
+//  Created by Higashihara Yoki on 2023/05/01.
+// Change by kioooko 2024/12/22
+
 // MARK: - Imports
 import SplineRuntime
 import SwiftUI
@@ -66,7 +73,6 @@ var body: some View {
                         EmptyView()
                     }
                     .hidden()
-                  
                 )
                 
                 // 原有的下一步按钮
@@ -84,15 +90,28 @@ var body: some View {
 // MARK: Navigation Button
 var nextButton: some View {
     Button(action: {
+            // 打印当前页面索引
+                    print("Current selectedPage: \(selectedPage)")
+                    
         if selectedPage == 2 {
-          //   weatherData.requestLocationAuth()
+             weatherData.requestLocationAuth()
         }
 
         if selectedPage == 3 {
             Task {
-              //  do {
-                       // try await notificationSetting.setNotification(date: selectedDate)
-                //    }
+                do {
+                        try await notificationSetting.setNotification(date: selectedDate)
+                    }
+            }
+         if selectedPage == 4 {
+             print("Navigating to HomeView: \(navigateToHomeView)")
+                NavigationLink(
+                    destination: HomeView(apiKeyManager: apiKeyManager),
+                    isActive: $navigateToHomeView
+                ) {
+                    EmptyView()
+                }
+                .hidden()
             }
         }
 
@@ -124,21 +143,24 @@ featureRow(icon: "icloud", color: .blue, description: "iCloud全同步，重要�
         .frame(maxHeight: .infinity)
         .padding(.horizontal)
     }
-    
-    func featureRow(icon: String, color: Color, description: String) -> some View {
-        HStack(spacing: 24) {
-            Image(systemName: icon)
-                .foregroundColor(color)
-                .padding()
-                .background(Color.Neumorphic.main)
-                .clipShape(Circle())
-                .softOuterShadow()
-            Text(description)
-                .foregroundColor(.primary.opacity(0.8))
-                .font(.system(size: 18))
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
+
+   // WelcomeView 视图中的辅助方法，用于创建带图标和描述的行
+  func featureRow(icon: String, color: Color, description: String) -> some View {
+    HStack(spacing: 24) {
+        // 图标，带有背景和阴影
+        Image(systemName: icon)
+            .foregroundColor(color) // 设置图标颜色
+            .padding() // 添加内边距
+            .background(Color.Neumorphic.main) // 设置背景颜色
+            .clipShape(Circle()) // 将背景裁剪为圆形
+            .softOuterShadow() // 添加柔和的外部阴影
+        // 描述文本
+        Text(description)
+            .foregroundColor(.primary.opacity(0.8)) // 设置文本颜色和不透明度
+            .font(.system(size: 18)) // 设置字体大小
+            .frame(maxWidth: .infinity, alignment: .leading) // 设置最大宽度和对齐方式
     }
+}
     
     func title(_ text: String, description: String) -> some View {
         VStack(spacing: 16) {

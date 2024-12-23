@@ -33,6 +33,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                 attention // 显示 iCloud 状态信息
                     .padding(.horizontal) // 添加水平内边距
                     .padding(.vertical) // 添加垂直内边距
+                    .background(Color.Neumorphic.main)
 
                 Form { // 使用 Form 组织内容
                     Section("日记") { // 日记相关信息部分
@@ -46,8 +47,8 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                     .listRowBackground(
                         RoundedRectangle(cornerRadius: 0)
                             .fill(Color.Neumorphic.main)
-                            .softOuterShadow() // 颜色设置
                     )
+                    
      
                     Section("支持") { // 支持相关信息部分
                         ChatAIGuide // 显示ChatAI功能
@@ -60,18 +61,14 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                     )
                 }
                 .background(Color.Neumorphic.main) // 颜色设置
+            .softOuterShadow(offset: 2, radius: 8)
             }
             .scrollContentBackground(.hidden)
-            .background(Color.Neumorphic.main) // 颜色设置
-          //  RoundedRectangle(cornerRadius: cornerRadius).fill(mainColor).frame(width: 90, height: 90)
-            .softOuterShadow() // 颜色设置
-
             .navigationTitle("应用设置") // 设置导航标题
         }
         .onAppear { // 当视图出现时执行
             fetchConsecutiveDays() // 获取连续记录天数
             fetchDiaryCount() // 获取日记总数
-
         }
         .background(Color.Neumorphic.main) // 颜色设置
        
@@ -89,65 +86,41 @@ private extension AppInfoView { // AppInfoView 的私有扩展
     @ViewBuilder
     var attention: some View { // 显示 iCloud 状态信息
         if !isiCloudEnabled {
-            warning(
-                title: "iCloud已关闭",
-                message: "iCloud已关闭，因此如果删除应用程序或更改设备，数据将丢失。建议将其打开，以便数据可以继续👋"
-            )
-        
+            HStack {
+                iconImg(
+                    icon: "exclamationmark",
+                    color: .yellow)
+                    .padding()
+                iCloudLayout(
+                    title: "iCloud已关闭",
+                    message: "iCloud已关闭，因此如果删除应用程序或更改设备，数据将丢失。建议将其打开，以便数据可以继续👋"
+                )
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 20)) // 设置图标大小
+                    .foregroundColor(.gray) // 设置图标颜色为灰色
+                    .padding(.trailing, 10) // 为图标添加右侧内边距
+            }
+            .modifier(NeumorphicCardModifier())
         } else {
             connectedToiCloud // 显示 iCloud 已连接信息
         }
-    
     }
 
     var connectedToiCloud: some View { // 显示 iCloud 已连接信息
-        HStack(spacing: 20) {
-        featureRow(icon: "checkmark", color: .green, description: "iCloud已连接。iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。")
-            .modifier(NeumorphicCardModifier())
+        HStack{
+        iconImg(icon: "checkmark", color: .green)
+        .padding()
+        iCloudLayout(
+        title: "iCloud已连接",
+        message: "iCloud已连接。iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。" 
+        )
     }
-      .padding(.vertical, 4)
-        .frame(height: 110)
-        .background {
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.Neumorphic.main) // 颜色设置
-                .softOuterShadow() // 颜色设置
-        }
-    }
-
-    func warning(title: String, message: String) -> some View { // 显示警告信息
-        HStack(spacing: 20) {
-            IconWithRoundedBackground(
-                systemName: "exclamationmark",
-                backgroundColor: .yellow
-            )
-            .foregroundColor(.adaptiveWhite)
-            .padding(.leading)
-
-            HStack(spacing: 6) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .bold()
-                    Text(message)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
-                }
-
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 20))
-                    .foregroundColor(.gray)
-            }
-            .padding(.trailing, 8)
-            .padding(.vertical, 4)
-
-        }
-        .modifier(NeumorphicCardModifier())
+      .modifier(NeumorphicCardModifier())  
     }
 
     var streak: some View { // 显示连续记录天数
         HStack {
-            rowTitle(symbolName: "flame", iconColor: .orange, title: "已经连续记录了")
+            rowTitle(icon: "flame", Color: .orange, description: "已经连续记录了")
             Spacer()
             if let consecutiveDays {
                 Text("\(consecutiveDays)日")
@@ -159,14 +132,15 @@ private extension AppInfoView { // AppInfoView 的私有扩展
   }
 
     var totalCount: some View { // 显示日记总数
-        HStack {
-            rowTitle(symbolName: "square.stack", iconColor: .blue, title: "合計")
+        HStack(spacing: 4) {
+           // iconRectangle(icon: "square.stack", color: .blue,title: "合計")
+            rowTitle(icon: "square.stack", Color: .blue, description: "合計")
             Spacer()
             if let diaryCount {
                 Text("\(diaryCount)件")
             } else {
                 Text("数据获取失败啦")
-                    .font(.system(size: 12))
+                    .font(.system(size: 14))
             }
         }
     }
@@ -175,7 +149,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         NavigationLink {
             BookmarkListView()
         } label: {
-            rowTitle(symbolName: "bookmark", iconColor: .cyan, title: "收藏了的日记")
+            rowTitle(icon: "bookmark", Color: .cyan, description: "收藏了的日记")
             
         }
     }
@@ -184,7 +158,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         NavigationLink {
             TextOptionsView()
         } label: {
-            rowTitle(symbolName: "text.quote", iconColor: .gray, title: "文本设定")
+            rowTitle(icon: "text.quote", Color: .gray, description: "文本设定")
         }
     }
 
@@ -193,7 +167,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
             ReminderSettingView()
         } label: {
             HStack {
-                rowTitle(symbolName: "bell", iconColor: .red, title: "通知")
+                rowTitle(icon: "bell", Color: .red, description: "通知")
                 Spacer()
                 Group {
                     if notificationSetting.isSetNotification {
@@ -212,7 +186,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         NavigationLink {
           ChatAISetting(apiKeyManager: APIKeyManager())
         } label: {
-            rowTitle(symbolName: "message", iconColor: .yellow, title: "ChatAI设置")
+            rowTitle(icon: "message", Color: .yellow, description: "ChatAI设置")
         }
     }
 
@@ -220,7 +194,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         Button(actionWithHapticFB: {
             isInquiryViewPresented = true
         }) {
-            rowTitle(symbolName: "mail", iconColor: .green, title: "和我联系")
+            rowTitle(icon: "mail", Color: .green, description: "和我联系")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
         }
@@ -236,7 +210,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
             bannerState.show(of: .success(message: "版本已复制"))
         }) {
             HStack {
-                rowTitle(symbolName: "iphone.homebutton", iconColor: .orange, title: "版本")
+                rowTitle(icon: "iphone.homebutton", Color: .orange, description: "版本")
                 Spacer()
                 Text(appVersion.versionText)
             }
@@ -246,17 +220,27 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         .buttonStyle(.plain)
     }
 
-    func rowTitle(symbolName: String, iconColor: Color, title: String) -> some View { // 显示行标题
-        HStack {
-            IconWithRoundedBackground(
-                systemName: symbolName,
-                backgroundColor: iconColor
-            )
-            .foregroundColor(.adaptiveWhite)
-            Text(title)
-                .font(.system(size: 14))
+    func rowTitle(icon: String, Color: Color, description: String) -> some View { // 显示行标题
+        HStack (spacing: 4){
+            // 图标，带有背景和阴影
+            Image(systemName: icon)
+                .resizable() // 使图像可调整大小
+                .aspectRatio(contentMode: .fit) // 保持图像的宽高比
+                .frame(width: 14, height: 14) // 设置图像的宽度和高度
+                .foregroundColor(Color) // 设置图标颜色
+                .padding() // 添加内边距
+                .clipShape(Circle()) // 将背景裁剪为圆形
+               // .softOuterShadow(offset: 8, radius: 8) // 添加柔和的外部阴影
+                .softInnerShadow(Circle(), spread: 0.6)
+            // 描述文本
+            Text(description)
+                .foregroundColor(.primary.opacity(0.8)) // 设置文本颜色和不透明度
+                .font(.system(size: 16)) // 设置字体大小
+                .frame(maxWidth: .infinity, alignment: .leading) // 设置最大宽度和对齐方式
         }
     }
+
+   // }
 
     // MARK: Action
 
@@ -278,27 +262,41 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         }
     }
 
-    func featureRow(icon: String, color: Color, description: String) -> some View {
-        HStack(spacing: 24) {
-            Image(systemName: icon)
-                .foregroundColor(color)
-                .padding()
-                .background(Color.Neumorphic.main) // 颜色设置
-                .clipShape(Circle())
-               // .softOuterShadow() // 颜色设置
-            Text(description)
-                .foregroundColor(.primary.opacity(0.8))
-                .font(.system(size: 18))
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
+
+    func iconImg(icon: String, color: Color) -> some View {
+        Image(systemName: icon)
+            .foregroundColor(color)
+            .padding()
+            .background(Color.Neumorphic.main) // 颜色设置
+            .clipShape(Circle())
+            .softOuterShadow() // 颜色设置
     }
+
+    func iCloudLayout(title: String, message: String) -> some View {
+        HStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 6) { // 使用 VStack 垂直排列标题和消息
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading) // 设置最大宽度并左对齐
+                    .bold() // 设置字体为粗体
+                Text(message)
+                    .frame(maxWidth: .infinity, alignment: .leading) // 设置最大宽度并左对齐
+                    .font(.system(size: 14)) // 设置字体大小为 14
+                    .foregroundColor(.gray) // 设置字体颜色为灰色
+            }
+        }
+        .padding(.horizontal) // 为整个 HStack 添加水平外边距
+    }
+
+
+
+
 }
 
 struct NeumorphicCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .padding(.vertical, 4)
-            .frame(height: 110)
+            .padding(.vertical, 8)
+            .frame(height: 100)
             .background {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color.Neumorphic.main)
