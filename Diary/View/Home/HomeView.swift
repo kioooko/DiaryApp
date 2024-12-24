@@ -14,7 +14,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @Environment(\.managedObjectContext) var viewContext // 获取 Core Data 的上下文
     @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate // 注入 DiaryAppSceneDelegate 对象
     @EnvironmentObject private var bannerState: BannerState // 注入 BannerState 对象
-    @EnvironmentObject private var textOptions: TextOptions // 注入 TextOptions 对象
+  //  @EnvironmentObject private var textOptions: TextOptions // 注入 TextOptions 对象
     @ObservedObject var apiKeyManager: APIKeyManager
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
@@ -216,7 +216,7 @@ struct Home_Previews: PreviewProvider {
         HomeView(apiKeyManager: APIKeyManager())
             .environmentObject(DiaryAppSceneDelegate()) // 注入 DiaryAppSceneDelegate
             .environmentObject(BannerState()) // 注入 BannerState
-            .environmentObject(textOptions) // 注入 TextOptions 实例
+           // .environmentObject(textOptions) // 注入 TextOptions 实例
     }
 
     static var previews: some View {

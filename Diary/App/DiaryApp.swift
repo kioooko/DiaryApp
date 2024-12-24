@@ -18,7 +18,6 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
     @StateObject private var weatherData = WeatherData() // 创建 WeatherData 的状态对象
     @StateObject private var notificationSetting = NotificationSetting() // 创建 NotificationSetting 的状态对象
     @StateObject private var apiKeyManager = APIKeyManager() // 确保 apiKeyManager 被声明和初始化
-   // @State private var animationCompleted = false // 创建动画完成状态变量
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
     private var hasBeenLaunchedBefore: Bool = false // 使用 AppStorage 存储应用是否启动过
@@ -27,40 +26,31 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
     private var reSyncPerformed: Bool = false // 使用 AppStorage 存储是否已执行重新同步
 
     init() { // 初始化方法
-        print("DiaryApp initialized") // 确认应用程序初始化
-        let now = Date() // 获取当前日期
-        for i in -3 ... 0 { // 循环创建过去三个月的随机数据
-            let targetDate = Calendar.current.date(byAdding: .month, value: i, to: now)!
-            let item = Item.makeRandom(date: targetDate)
+       print("DiaryApp initialized") // 确认应用程序初始化
+    //    let now = Date() // 获取当前日期
+      //  for i in -3 ... 0 { // 循环创建过去三个月的随机数据
+      //      let targetDate = Calendar.current.date(byAdding: .month, value: i, to: now)!
+       //     let item = Item.makeRandom(date: targetDate)
            // _ = Item.makeRandom(date: targetDate) // 使用 _ 代替未使用的 item2
-            try! item.save() // 保存生成的随机数据
-        }
+      //      try! item.save() // 保存生成的随机数据
+    //    }
         reSyncData() // 调用重新同步数据的方法
-        // 修改 Form 的背景颜色
-        UITableView.appearance().backgroundColor = UIColor(Color.Neumorphic.main)
     }
 
-    var body: some Scene { // 定义应用程序的场景
-        WindowGroup { // 创建一个窗口组
-            NavigationView {
-                Group {
-                    if hasBeenLaunchedBefore {
-                        HomeView(apiKeyManager: apiKeyManager)
-                    } else {
-                        WelcomeView(apiKeyManager: apiKeyManager)
-                    }
-                }
+   var body: some Scene {
+        WindowGroup {
+            HomeView(apiKeyManager: apiKeyManager)
                 .environmentObject(bannerState)
+                .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+                .environmentObject(textOptions)
                 .environmentObject(notificationSetting)
                 .environmentObject(weatherData)
-                .environmentObject(textOptions)
                 .environmentObject(apiKeyManager)
-                .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
                 .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all))
-            }
         }
     }
 }
+
 
 private extension DiaryApp { // 定义 DiaryApp 的私有扩展
 
