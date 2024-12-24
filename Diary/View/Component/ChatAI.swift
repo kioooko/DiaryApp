@@ -9,7 +9,7 @@ struct ChatAI: View {
     @State private var chatHistory: [String] = []
     @State private var navigateToDiaryAppSceneDelegate = false
 
-    private let chatHistoryKey = "chatHistory"
+    let chatHistoryKey = "chatHistory"
 
     init(apiKeyManager: APIKeyManager) {
         self.apiKeyManager = apiKeyManager
@@ -76,7 +76,7 @@ struct ChatAI: View {
         }.resume()
     }
 
-    private func saveChatHistory() {
+   func saveChatHistory() {
         do {
             let data = try JSONEncoder().encode(chatHistory)
             UserDefaults.standard.set(data, forKey: chatHistoryKey)
@@ -117,9 +117,14 @@ struct ChatAI: View {
             ScrollViewReader { scrollViewProxy in
                 ScrollView {
                     VStack(alignment: .leading) {
+                        createMessageView(
+                            message:"正念小助手: 你好！我是你的正念引导小助手，准备开始今天的练习吗？",
+                            isUser: false)
+                            Spacer()
                         ForEach(chatHistory.indices, id: \.self) { index in
                             let message = chatHistory[index]
                             HStack {
+                                
                                 if message.hasPrefix("You:") {
                                     Spacer()
                                     createMessageView(message: message, isUser: true)

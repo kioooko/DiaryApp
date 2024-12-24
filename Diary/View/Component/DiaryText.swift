@@ -1,13 +1,16 @@
 import SwiftUI
 
 struct DiaryText: View {
-    @EnvironmentObject private var textOptions: TextOptions
+    @EnvironmentObject var textOptions: TextOptions
 
     let text: String
     let action: () -> Void
 
     var body: some View {
-        Button(action: {
+             VStack {
+                 Text("Current option") // 正确访问属性
+                .padding()
+             Button(action: {
             action()
         }, label: {
             ZStack(alignment: .topLeading) {
@@ -25,6 +28,7 @@ struct DiaryText: View {
             }
         })
         .buttonStyle(.plain)
+              }
     }
 }
 

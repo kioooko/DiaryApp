@@ -56,7 +56,8 @@ var body: some View {
             .tabViewStyle(.page(indexDisplayMode: .never))
 
             // HStack 包含跳过和下一步按钮
-            HStack(spacing: 20) { // 设置按钮之间的间距为20
+            HStack(spacing: 50) { // 设置按钮之间的间距为20
+            HStack(alignment: .center) { // 设置按钮之间的间距为20
                 // 跳过按钮
                 Button(action: {
                     hasBeenLaunchedBefore = true
@@ -68,21 +69,22 @@ var body: some View {
                 }
                 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44) // 设置跳过按钮的宽度为80，高度为44
-                .background(
+                .padding(.leading, 20) // 向左移动2个像素以补偿阴影
+                 .background(
                     NavigationLink(destination: HomeView(apiKeyManager: apiKeyManager), isActive: $navigateToHomeView) {
                         EmptyView()
                     }
                     .hidden()
                 )
-                
                 // 原有的下一步按钮
                 nextButton
+            }
             }
             .padding(.bottom, 80) // 为按钮组添加底部内边距50像素
         }
         .background(Color.Neumorphic.main.edgesIgnoringSafeArea(.all))
         .onAppear {
-            // print("WelcomeView appeared with weatherData: \(weatherData)")
+             print("WelcomeView appeared with weatherData: \(weatherData)")
         }
     }
 }

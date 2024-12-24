@@ -22,6 +22,7 @@ struct ChatAISetting: View {
                 .padding(.vertical) // 添加垂直内边距
 
             Toggle("使用自定义 API 密钥", isOn: $useCustomAPIKey)
+                .toggleStyle(SwitchToggleStyle(tint:.greenLight))
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 12)
@@ -77,7 +78,7 @@ struct ChatAISetting: View {
             .font(.system(size: 14))
             .frame(maxWidth: .infinity, alignment: .leading)
     }
-
+    
     private func validateAPIKey(_ key: String) {
         let url = URL(string: "https://api.x.ai/v1/chat/completions")!
 
@@ -145,3 +146,4 @@ struct ChatAISetting_Previews: PreviewProvider {
     }
 }
 #endif
+
