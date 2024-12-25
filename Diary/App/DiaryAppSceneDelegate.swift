@@ -21,15 +21,15 @@ import SwiftUI
  sceneを取得しそこにBannerなどの最前面に出したいWindowを用意している。
  */
 final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, ObservableObject {
-    var bannerWindow: UIWindow?
-    weak var windowScene: UIWindowScene?
+    var bannerWindow: UIWindow?// 声明一个可选的 UIWindow 变量，用于存储 bannerWindow，显示横幅
+    weak var windowScene: UIWindowScene?// 声明一个可选的 UIWindowScene 变量，用于存储 windowScene，用于管理窗口场景
 
-    var bannerState: BannerState? {
-        didSet {
-            setupBannerWindow()
+    var bannerState: BannerState? {//定义一个可选的 BannerState
+        didSet {// 当 bannerState 被设置时调用
+            setupBannerWindow()// 调用 setupBannerWindow 方法，设置横幅窗口
         }
     }
-
+//// 定义 scene 方法，用于处理场景连接
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,

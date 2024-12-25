@@ -5,24 +5,23 @@
 //  Created by Higashihara Yoki on 2023/05/08.
 //
 
-import UIKit
+import UIKit // 导入 UIKit 框架，用于构建用户界面
 
 /**
- - Handle user interactions when the interaction touches something shown in that window
- - Pass the interaction to other windows otherwise
+- 当用户交互触及该窗口中显示的某个内容时，处理用户交互
+- 否则，将交互传递给其他窗口
 
- RootVCのviewと
- 同じ → そのまま流す = イベントを透過させる  =  return nil
- 違う → そのViewでイベントを捕捉する = return hitView
+与 RootVC 的视图相同 → 直接传递 = 事件透过 = 返回 nil
+不同 → 在该视图捕获事件 = 返回 hitView
  */
-class PassThroughWindow: UIWindow {
+class PassThroughWindow: UIWindow { // 定义一个名为 PassThroughWindow 的类，继承自 UIWindow
 
     /*
-     タップされたView階層の最も深い位置(root view)からサブビューへ、再帰的に呼び出されることでイベントを受信するViewを見つけるために利用される。
+    从被点击的视图层次结构的最深位置（根视图）开始，递归调用以找到接收事件的视图。
      */
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard let hitView = super.hitTest(point, with: event) else { return nil }
-        let isRootView = rootViewController?.view == hitView
-        return isRootView ? nil : hitView
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? { // 重写 hitTest 方法，用于确定哪个视图应该接收触摸事件
+        guard let hitView = super.hitTest(point, with: event) else { return nil } // 调用父类的 hitTest 方法，获取被点击的视图，如果没有视图被点击，返回 nil
+        let isRootView = rootViewController?.view == hitView // 检查被点击的视图是否是根视图控制器的视图
+        return isRootView ? nil : hitView // 如果被点击的是根视图，返回 nil（事件透过），否则返回被点击的视图
     }
 }
