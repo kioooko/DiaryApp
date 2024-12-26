@@ -256,7 +256,7 @@ struct WelcomeView_Previews: PreviewProvider {
 
     static var content: some View {
         NavigationStack {
-            WelcomeView()
+       //     WelcomeView()
         }
     }
 

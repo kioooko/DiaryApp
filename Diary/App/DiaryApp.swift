@@ -4,7 +4,6 @@
 //
 //  Created by Higashihara Yoki on 2023/04/23.
 //  Change by kioooko 2024/12/13
-//
 
 import SwiftUI // 导入 SwiftUI 框架
 
@@ -31,9 +30,9 @@ struct DiaryApp: App { // 定义应用程序的主结构体，标记为应用程
       //  for i in -3 ... 0 { // 循环创建过去三个月的随机数据
       //      let targetDate = Calendar.current.date(byAdding: .month, value: i, to: now)!
        //     let item = Item.makeRandom(date: targetDate)
-           // _ = Item.makeRandom(date: targetDate) // 使用 _ 代替未使用的 item2
-      //      try! item.save() // 保存生成的随机数据
-    //    }
+       // _ = Item.makeRandom(date: targetDate) // 使用 _ 代替未使用的 item2
+       //      try! item.save() // 保存生成的随机数据
+     //    }
         reSyncData() // 调用重新同步数据的方法
     }
 

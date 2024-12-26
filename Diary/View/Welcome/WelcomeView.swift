@@ -65,7 +65,7 @@ var body: some View {
                 }) {
                     Text("跳过")
                         .fontWeight(.bold)
-                        .foregroundColor(.gray)
+                        //.foregroundColor(.gray)
                 }
                 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44) // 设置跳过按钮的宽度为80，高度为44

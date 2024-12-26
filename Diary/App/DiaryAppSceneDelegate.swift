@@ -10,7 +10,6 @@ import SwiftUI
 
 /**
  Use to manage windows
-
  ---
  UIWindows are associated with and managed by UIScenes, which representing a UI instance of our app.
  We use a UISceneDelegate/UIWindowSceneDelegate to respond to various events related to our UIScene (and associated UISceneSession).
@@ -29,7 +28,7 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
             setupBannerWindow()// 调用 setupBannerWindow 方法，设置横幅窗口
         }
     }
-//// 定义 scene 方法，用于处理场景连接
+// 定义 scene 方法，用于处理场景连接
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
@@ -46,14 +45,13 @@ final class DiaryAppSceneDelegate: UIResponder, UIWindowSceneDelegate, Observabl
         self.bannerWindow = window
 
         // 设置5秒后切换到主界面
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             self.switchToWelcomeView()
         }
     }
 
     private func switchToWelcomeView() {
         guard let windowScene = windowScene else { return }
-
         // 确保传递的是实例
         let welcomeView = WelcomeView(apiKeyManager: APIKeyManager())
             .environmentObject(bannerState ?? BannerState())

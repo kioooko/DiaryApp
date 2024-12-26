@@ -18,7 +18,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @ObservedObject var apiKeyManager: APIKeyManager
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
-    private var hasBeenLaunchedBefore: Bool = false // 使用 AppStorage 存储应用是否启动过
+    private var hasBeenLaunchedBefore: Bool = true // 使用 AppStorage 存储应用是否启动过
 
     @State private var isCreateDiaryViewPresented = false // 控制是否显示创建日记视图的状态
     @State private var isCalendarPresented = false // 控制是否显示日历的状态
