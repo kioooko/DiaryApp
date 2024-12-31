@@ -33,8 +33,19 @@
 		075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
+		07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
+		07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
+		07E13D1A2D1D5322008C13A9 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D192D1D5322008C13A9 /* BannerView.swift */; };
+		07E13D1B2D1D5322008C13A9 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D192D1D5322008C13A9 /* BannerView.swift */; };
+		07E13D1E2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D1D2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift */; };
+		07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */; };
+		07E13D202D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D1D2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift */; };
+		07E13D212D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */; };
+		07E13D232D1D5346008C13A9 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D222D1D5346008C13A9 /* PassThroughWindow.swift */; };
+		07E13D242D1D5346008C13A9 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D222D1D5346008C13A9 /* PassThroughWindow.swift */; };
+		07E13D262D1D5354008C13A9 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D252D1D5354008C13A9 /* DiaryApp.swift */; };
+		07E13D272D1D5354008C13A9 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D252D1D5354008C13A9 /* DiaryApp.swift */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
-		F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CA429F52467005FD6C8 /* DiaryApp.swift */; };
 		F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CA829F52468005FD6C8 /* Assets.xcassets */; };
 		F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CAB29F52468005FD6C8 /* Preview Assets.xcassets */; };
 		F5358CAE29F52468005FD6C8 /* CoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CAD29F52468005FD6C8 /* CoreDataProvider.swift */; };
@@ -67,11 +78,6 @@
 		F53CE9632A153CB400E63078 /* WeatherSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53CE9622A153CB400E63078 /* WeatherSymbol.swift */; };
 		F53CE9682A1B7C4F00E63078 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53CE9672A1B7C4F00E63078 /* CalendarView.swift */; };
 		F53E3A732A087ADE0064CB62 /* DiaryImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A722A087ADE0064CB62 /* DiaryImageView.swift */; };
-		F53E3A762A09413F0064CB62 /* DiaryAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A752A09413F0064CB62 /* DiaryAppDelegate.swift */; };
-		F53E3A782A0941850064CB62 /* DiaryAppSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A772A0941850064CB62 /* DiaryAppSceneDelegate.swift */; };
-		F53E3A7A2A0941F20064CB62 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A792A0941F20064CB62 /* BannerState.swift */; };
-		F53E3A7D2A0942710064CB62 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A7C2A0942710064CB62 /* BannerView.swift */; };
-		F53E3A7F2A0944A20064CB62 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A7E2A0944A20064CB62 /* PassThroughWindow.swift */; };
 		F53E3A852A0A1F510064CB62 /* DiaryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A842A0A1F510064CB62 /* DiaryList.swift */; };
 		F53E3A882A0BB6D50064CB62 /* TextOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A872A0BB6D50064CB62 /* TextOptionsView.swift */; };
 		F53E3A8A2A0BC88E0064CB62 /* AppInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53E3A892A0BC88E0064CB62 /* AppInfoView.swift */; };
@@ -141,10 +147,15 @@
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		075EB2392D13B9790039A3B9 /* Chatapi.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chatapi.txt; sourceTree = "<group>"; };
+		07E13D162D1D530E008C13A9 /* BannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerState.swift; sourceTree = "<group>"; };
+		07E13D192D1D5322008C13A9 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
+		07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppDelegate.swift; sourceTree = "<group>"; };
+		07E13D1D2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppSceneDelegate.swift; sourceTree = "<group>"; };
+		07E13D222D1D5346008C13A9 /* PassThroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughWindow.swift; sourceTree = "<group>"; };
+		07E13D252D1D5354008C13A9 /* DiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryApp.swift; sourceTree = "<group>"; };
 		F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListEditButton.swift; sourceTree = "<group>"; };
 		F51446522A5C1B20002DA8CC /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		F5358CA129F52467005FD6C8 /* Diary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Diary.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5358CA429F52467005FD6C8 /* DiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryApp.swift; sourceTree = "<group>"; };
 		F5358CA829F52468005FD6C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5358CAB29F52468005FD6C8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5358CAD29F52468005FD6C8 /* CoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataProvider.swift; sourceTree = "<group>"; };
@@ -180,11 +191,6 @@
 		F53CE9622A153CB400E63078 /* WeatherSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSymbol.swift; sourceTree = "<group>"; };
 		F53CE9672A1B7C4F00E63078 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		F53E3A722A087ADE0064CB62 /* DiaryImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryImageView.swift; sourceTree = "<group>"; };
-		F53E3A752A09413F0064CB62 /* DiaryAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppDelegate.swift; sourceTree = "<group>"; };
-		F53E3A772A0941850064CB62 /* DiaryAppSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppSceneDelegate.swift; sourceTree = "<group>"; };
-		F53E3A792A0941F20064CB62 /* BannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerState.swift; sourceTree = "<group>"; };
-		F53E3A7C2A0942710064CB62 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
-		F53E3A7E2A0944A20064CB62 /* PassThroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughWindow.swift; sourceTree = "<group>"; };
 		F53E3A842A0A1F510064CB62 /* DiaryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryList.swift; sourceTree = "<group>"; };
 		F53E3A872A0BB6D50064CB62 /* TextOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextOptionsView.swift; sourceTree = "<group>"; };
 		F53E3A892A0BC88E0064CB62 /* AppInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoView.swift; sourceTree = "<group>"; };
@@ -411,10 +417,10 @@
 			isa = PBXGroup;
 			children = (
 				F53E3A7B2A0942590064CB62 /* Banner */,
-				F53E3A752A09413F0064CB62 /* DiaryAppDelegate.swift */,
-				F53E3A772A0941850064CB62 /* DiaryAppSceneDelegate.swift */,
-				F53E3A7E2A0944A20064CB62 /* PassThroughWindow.swift */,
-				F5358CA429F52467005FD6C8 /* DiaryApp.swift */,
+				07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */,
+				07E13D252D1D5354008C13A9 /* DiaryApp.swift */,
+				07E13D1D2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift */,
+				07E13D222D1D5346008C13A9 /* PassThroughWindow.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -422,8 +428,8 @@
 		F53E3A7B2A0942590064CB62 /* Banner */ = {
 			isa = PBXGroup;
 			children = (
-				F53E3A792A0941F20064CB62 /* BannerState.swift */,
-				F53E3A7C2A0942710064CB62 /* BannerView.swift */,
+				07E13D192D1D5322008C13A9 /* BannerView.swift */,
+				07E13D162D1D530E008C13A9 /* BannerState.swift */,
 			);
 			path = Banner;
 			sourceTree = "<group>";
@@ -666,7 +672,6 @@
 				F5358D1429FAADAC005FD6C8 /* UIImage+Extension.swift in Sources */,
 				F5358D0A29F8B8B9005FD6C8 /* WeatherDataStore.swift in Sources */,
 				F5358CAE29F52468005FD6C8 /* CoreDataProvider.swift in Sources */,
-				F53E3A7A2A0941F20064CB62 /* BannerState.swift in Sources */,
 				F53CE9682A1B7C4F00E63078 /* CalendarView.swift in Sources */,
 				F56FF3932BF62B0200C0D1D3 /* CalendarContainer.swift in Sources */,
 				F5358D302A000DCC005FD6C8 /* DiaryItem.swift in Sources */,
@@ -679,15 +684,17 @@
 				07414B2F2D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
 				07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
 				07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
+				07E13D1B2D1D5322008C13A9 /* BannerView.swift in Sources */,
 				07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
 				F5BE688B2A72913300A92F00 /* ActivityView.swift in Sources */,
+				07E13D272D1D5354008C13A9 /* DiaryApp.swift in Sources */,
 				F5358D3C2A00D5CF005FD6C8 /* ActionButtonStyle.swift in Sources */,
 				F5BF44362A4C747900217119 /* CheckListEditor.swift in Sources */,
 				F53E3A882A0BB6D50064CB62 /* TextOptionsView.swift in Sources */,
 				F5BF443D2A52FE8000217119 /* FeedbackPhrase.swift in Sources */,
-				F53E3A7D2A0942710064CB62 /* BannerView.swift in Sources */,
 				F5358D1229F92DDD005FD6C8 /* NotificationService.swift in Sources */,
 				F5562C3F2A5FC379006AECC5 /* ImageViewer.swift in Sources */,
+				07E13D242D1D5346008C13A9 /* PassThroughWindow.swift in Sources */,
 				F5BE68822A6FDF1000A92F00 /* ShareCardBackgroundColorList.swift in Sources */,
 				F5BE688D2A73968C00A92F00 /* ImageSaver.swift in Sources */,
 				F5358D532A0698BE005FD6C8 /* WeatherSelectButton.swift in Sources */,
@@ -696,11 +703,12 @@
 				F56FF3A12C0AB35300C0D1D3 /* DiaryText.swift in Sources */,
 				F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */,
 				F5BF44462A557E8600217119 /* WelcomeView.swift in Sources */,
-				F5358CA529F52467005FD6C8 /* DiaryApp.swift in Sources */,
 				F54395E42A47F43400C74D59 /* DiaryTextEditor.swift in Sources */,
 				F5BF44342A4C2CAE00217119 /* CheckListContent.swift in Sources */,
 				F550BC992A0E58BD00BCB0F2 /* NotificationSetting.swift in Sources */,
 				F550BCAD2A1284EF00BCB0F2 /* FluidGradient.swift in Sources */,
+				07E13D202D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */,
+				07E13D212D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
 				F5737D3A2A28882000D706E8 /* HomeTopCard.swift in Sources */,
 				075EB2382D12A5040039A3B9 /* APIKeyManager.swift in Sources */,
 				F56FF3952BF62C5100C0D1D3 /* Day.swift in Sources */,
@@ -708,21 +716,19 @@
 				F5358D512A054D05005FD6C8 /* DiaryDetailView.swift in Sources */,
 				F5358D3A2A00BB1E005FD6C8 /* FloatingActionButton.swift in Sources */,
 				F5737D4B2A30AE4700D706E8 /* CheckListItem+Extension.swift in Sources */,
-				F53E3A782A0941850064CB62 /* DiaryAppSceneDelegate.swift in Sources */,
 				F5358D1029F8BC5B005FD6C8 /* LocationService.swift in Sources */,
 				F5358D572A069C90005FD6C8 /* InputBodyButton.swift in Sources */,
 				F5358CC229F6DFE5005FD6C8 /* Date+Extension.swift in Sources */,
 				F576D3802A433DC10062650A /* IconWithRoundedBackground.swift in Sources */,
-				F53E3A762A09413F0064CB62 /* DiaryAppDelegate.swift in Sources */,
 				F53E3A732A087ADE0064CB62 /* DiaryImageView.swift in Sources */,
 				F5BF44382A4F4B7B00217119 /* CheckListTextEditor.swift in Sources */,
 				F5358D322A000E5D005FD6C8 /* Color.swift in Sources */,
-				F53E3A7F2A0944A20064CB62 /* PassThroughWindow.swift in Sources */,
 				075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				F5BF44432A54714300217119 /* Locale+Extension.swift in Sources */,
 				F550BCAF2A12852C00BCB0F2 /* BlobLayer.swift in Sources */,
 				F5358D0E29F8BBE3005FD6C8 /* View+AsyncState.swift in Sources */,
 				F550BCA92A1281EC00BCB0F2 /* ResizableLayer.swift in Sources */,
+				07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */,
 				F5358D2E29FF53E6005FD6C8 /* DiaryDataStore.swift in Sources */,
 				F5BE68892A7225DA00A92F00 /* ShareContentPattern.swift in Sources */,
 				F54395E22A45C40600C74D59 /* CreateDiaryView.swift in Sources */,
@@ -756,6 +762,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
+				07E13D1E2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */,
+				07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
+				07E13D262D1D5354008C13A9 /* DiaryApp.swift in Sources */,
 				075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
 				07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
@@ -763,8 +772,11 @@
 				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
 				075EB2342D1291140039A3B9 /* ChatAISetting.swift in Sources */,
 				07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
+				07E13D1A2D1D5322008C13A9 /* BannerView.swift in Sources */,
+				07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */,
 				F5358D0829F8B602005FD6C8 /* MockCoreData.swift in Sources */,
 				F5358D0129F80879005FD6C8 /* DiaryItemTests.swift in Sources */,
+				07E13D232D1D5346008C13A9 /* PassThroughWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -906,8 +918,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "编织日记";
-				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = "编织日记";
+				INFOPLIST_KEY_CFBundleDisplayName = "编织生活";
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=iphoneos*]" = "编织生活";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "日記に自動で正確な天気予報を表示するために利用します。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "日記の画像を保存します。";
@@ -947,7 +959,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Diary/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "编织日记";
+				INFOPLIST_KEY_CFBundleDisplayName = "编织生活";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "日記に自動で正確な天気予報を表示するために利用します。";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "日記の画像を保存します。";

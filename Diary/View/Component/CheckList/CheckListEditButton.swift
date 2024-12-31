@@ -13,13 +13,14 @@ struct CheckListEditButton: View {
         HStack {
             Text("管理你的CheckList")
                 .font(.system(size: 14))
-                .foregroundColor(.adaptiveWhite)
+                .foregroundColor(.adaptiveBlack)
         }
         .padding(.vertical, 12)
         .padding(.horizontal)
         .background {
             RoundedRectangle(cornerRadius: 20)
-                .foregroundColor(.adaptiveBlack)
+                .foregroundColor(.Neumorphic.main)
         }
+        .softOuterShadow()
     }
 }

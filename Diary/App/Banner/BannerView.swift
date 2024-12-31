@@ -81,7 +81,7 @@ private extension BannerView {
 struct BannerView_Previews: PreviewProvider {
     static var bannerState01: BannerState = {
         let state = BannerState()
-        state.mode = .success(message: "成啦～")
+        state.mode = .success(message: "成功啦耶🏅")
         return state
     }()
     static var bannerState02: BannerState = {
@@ -106,7 +106,7 @@ struct BannerView_Previews: PreviewProvider {
                     .environmentObject(bannerState03)
 
                 Button("change") {
-                    bannerState01.show(of: .error(message: "哪里出了问题，再试一次吧"))
+                    bannerState01.show(of: .error(message: "上传失败☹️"))
                 }
             }
             .padding(.top, 80)

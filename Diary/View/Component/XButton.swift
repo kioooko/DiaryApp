@@ -22,8 +22,8 @@ struct XButton: View {
                 .scaledToFit()
                 .frame(width: 30)
                 .foregroundStyle(
-                    Color.adaptiveWhite,
-                    Color.adaptiveBlack
+                   Color.greenLight,
+                   Color.Neumorphic.main
                 )
                 .background(
                     Circle()

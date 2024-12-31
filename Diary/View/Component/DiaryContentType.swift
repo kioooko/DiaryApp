@@ -13,9 +13,9 @@ enum DiaryContentType: CaseIterable {
     var name: String {
         switch self {
         case .text:
-            return "文本"
+            return "日记"
         case .checkList:
-            return "每天的CheckList"
+            return "CheckList"
         }
     }
 }

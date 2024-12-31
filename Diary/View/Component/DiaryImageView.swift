@@ -55,16 +55,17 @@ private extension DiaryImageView {
                 Image(systemName: "photo")
                     .font(.system(size: 14))
                     .foregroundColor(.adaptiveBlack)
-                Text("画像を設定")
+                Text("上传图片")
                     .font(.system(size: 12))
                     .foregroundColor(.adaptiveBlack)
             }
             .padding(.vertical, 8)
-            .padding(.horizontal)
+            .padding(.horizontal,10)
             .background {
                 RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(.appSecondary)
+                    .foregroundColor(.Neumorphic.main)
             }
+            .softOuterShadow()
         }
         .onChange(of: selectedPickerItem) { pickerItem in
             updateSelectedImage(to: pickerItem)

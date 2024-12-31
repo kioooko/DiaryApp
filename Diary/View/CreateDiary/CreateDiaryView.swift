@@ -31,6 +31,9 @@ struct CreateDiaryView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                  Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
+                .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
+
                 VStack {
                     dismissButton
                         .padding(.top)
@@ -41,14 +44,14 @@ struct CreateDiaryView: View {
             }
         }
         .tint(.adaptiveBlack)
-    //    .onReceive(weatherData.$todayWeather , perform: { todayWeather in
-     //       guard let todayWeather else { return }
-      //      diaryDataStore.selectedWeather = .make(from: todayWeather.symbolName)
-       // })
+        .onReceive(weatherData.$todayWeather , perform: { todayWeather in
+            guard let todayWeather else { return }
+            diaryDataStore.selectedWeather = .make(from: todayWeather.symbolName)
+        })
         .sheet(isPresented: $isTextEditorPresented, content: {
-        //    DiaryTextEditor(bodyText: $diaryDataStore.bodyText) {
-          //      isTextEditorPresented = false
-       //     }
+            DiaryTextEditor(bodyText: $diaryDataStore.bodyText) {
+                isTextEditorPresented = false
+            }
         })
     }
 }
@@ -99,16 +102,16 @@ private extension CreateDiaryView {
         }
     }
 
-  //  @ViewBuilder
- //   var weather: some View {
-  //      WeatherSelectButton(selectedWeather: $diaryDataStore.selectedWeather)
-  //          .asyncState(
-  //              weatherData.phase,
-   //             loadingContent:
-    //            ProgressView()
-   //                 .frame(width: WeatherIcon.size.width, height: WeatherIcon.size.height)
-   //         )
-//    }
+    @ViewBuilder
+    var weather: some View {
+        WeatherSelectButton(selectedWeather: $diaryDataStore.selectedWeather)
+            .asyncState(
+                weatherData.phase,
+                loadingContent:
+                    ProgressView()
+                        .frame(width: WeatherIcon.size.width, height: WeatherIcon.size.height)
+           )
+    }
 
     @ViewBuilder
     var diaryContent: some View {
@@ -137,7 +140,8 @@ private extension CreateDiaryView {
             createItemFromInput()
         }) {
             Text("作成")
-        }
+        }  
+        //.buttonStyle(softButtonStyle)
         .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }

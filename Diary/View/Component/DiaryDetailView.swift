@@ -29,6 +29,9 @@ struct DiaryDetailView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                            Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
+                .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
                         DiaryDateButton(selectedDate: $diaryDataStore.selectedDate)
@@ -131,7 +134,7 @@ private extension DiaryDetailView {
                 showDeleteAlert = true
             }, label: {
                 Text("删除")
-                Image(systemName: "垃圾箱")
+                Image(systemName: "trash")
                     .font(.system(size: 16))
                     .foregroundColor(.primary)
             })

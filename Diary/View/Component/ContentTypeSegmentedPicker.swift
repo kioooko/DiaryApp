@@ -17,5 +17,14 @@ struct ContentTypeSegmentedPicker: View {
             }
         }
         .pickerStyle(SegmentedPickerStyle())
+           .onAppear {
+        // 设置选中段的背景颜色
+        UISegmentedControl.appearance().selectedSegmentTintColor = UIColor(Color.Neumorphic.main)
+         }
+        .background(RoundedRectangle(cornerRadius: 8)
+        .fill(Color.Neumorphic.main)
+        )
+        .softOuterShadow()
+        .padding(10)
     }
 }

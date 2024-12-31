@@ -98,10 +98,10 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
         }
         .sheet(isPresented: $hasBeenLaunchedBefore.not) { // 显示欢迎视图
             WelcomeView(apiKeyManager: APIKeyManager())
-                .interactiveDismissDisabled() // 禁用交互式关闭
+               .interactiveDismissDisabled() // 禁用交互式关闭
         }
         .onAppear {
-          //  sceneDelegate.bannerState = bannerState // 设置 bannerState
+           sceneDelegate.bannerState = bannerState // 设置 bannerState
         }
         .onChange(of: diaryListInterval) { _, newValue in // 监听 diaryListInterval 的变化
             loadItems(of: newValue) // 加载新日期间隔的条目
@@ -216,7 +216,6 @@ struct Home_Previews: PreviewProvider {
         HomeView(apiKeyManager: APIKeyManager())
             .environmentObject(DiaryAppSceneDelegate()) // 注入 DiaryAppSceneDelegate
             .environmentObject(BannerState()) // 注入 BannerState
-           // .environmentObject(textOptions) // 注入 TextOptions 实例
     }
 
     static var previews: some View {

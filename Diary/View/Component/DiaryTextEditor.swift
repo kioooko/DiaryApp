@@ -21,6 +21,9 @@ struct DiaryTextEditor: View {
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             ZStack(alignment: .topLeading) {
+                 Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
+                .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
+
                 TextEditor(text: $bodyText)
                     .frame(maxHeight: .infinity)
                     .focused($isFocused)
@@ -46,16 +49,19 @@ struct DiaryTextEditor: View {
                 }) {
                     Text("OK")
                         .bold()
-                        .foregroundStyle(Color.adaptiveBlack)
+                        .foregroundStyle(Color.greenLight)
                 }
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 24)
         }
+     
         .onAppear {
             isFocused = true
         }
+     
     }
+
 }
 
 #if DEBUG

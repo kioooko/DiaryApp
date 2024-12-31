@@ -35,13 +35,15 @@ struct ShareImageRender: View {
         layout
             .padding(.bottom)
             .background {
-                shareCardBackground
+                Color.Neumorphic.main
+                    .softOuterShadow()
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.Neumorphic.main, lineWidth: 0.3)
+                    )
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(Color.appBlack, lineWidth: 3)
-            )
             .padding()
+            .background(Color.Neumorphic.main)
     }
 }
 
@@ -85,7 +87,8 @@ private extension ShareImageRender {
     }
 
     var shareCardBackground: some View {
-        backgroundColor.opacity(0.8)
+       Color.Neumorphic.main
+        .opacity(0.8)
             .cornerRadius(24)
     }
 
@@ -143,7 +146,7 @@ private extension ShareImageRender {
                         Image(systemName:"checkmark")
                             .bold()
                             .font(.system(size: 16))
-                            .foregroundColor(.green)
+                            .foregroundColor(.greenLight)
 
                         Text(checkListItem.title ?? "no title")
                             .font(.system(.body, weight: .medium))
@@ -164,21 +167,21 @@ struct ShareImageRender_Previews: PreviewProvider {
         NavigationStack {
             ScrollView {
                 ShareImageRender(
-                    backgroundColor: .white,
+                    backgroundColor: .Neumorphic.main,
                     item: .makeRandom(withImage: true),
                     contentPattern: .imageAndText
                 )
                 .padding()
 
                 ShareImageRender(
-                    backgroundColor: .white,
+                    backgroundColor: .Neumorphic.main,
                     item: .makeRandom(),
                     contentPattern: .text
                 )
                 .padding()
 
                 ShareImageRender(
-                    backgroundColor: .white,
+                    backgroundColor: .Neumorphic.main,
                     item: .makeWithOnlyCheckList(),
                     contentPattern: .checkList
                 )

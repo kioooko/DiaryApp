@@ -53,9 +53,8 @@ struct DiaryItem: View {
     var body: some View {
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(Color.adaptiveWhite)
-                .adaptiveShadow()
-
+                .fill(Color.Neumorphic.main)
+                .softOuterShadow()
             HStack(alignment: .top, spacing: 0) {
                 diaryDate
                 diaryContentLayout
@@ -130,7 +129,7 @@ private extension DiaryItem {
                 .padding(8)
                 .background {
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .foregroundColor(.adaptiveWhite)
+                        .foregroundColor(.Neumorphic.main)
                         .frame(width: 28, height: 28)
                 }
         })
@@ -146,7 +145,7 @@ private extension DiaryItem {
                 .padding(8)
                 .background {
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .foregroundColor(.adaptiveWhite)
+                        .foregroundColor(.Neumorphic.main)
                         .frame(width: 28, height: 28)
                 }
         })
@@ -177,7 +176,7 @@ private extension DiaryItem {
         }
         .frame(width: 90)
         .background {
-            LinearGradient(gradient: Gradient(colors: [.adaptiveWhite, .appSecondary]), startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(gradient: Gradient(colors: [.Neumorphic.main, .appSecondary]), startPoint: .topLeading, endPoint: .bottomTrailing)
                 .cornerRadius(cornerRadius, corners: [.topLeft, .bottomLeft])
         }
     }

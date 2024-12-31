@@ -19,7 +19,7 @@ struct DiaryDateButton: View {
           }, label: {
               HStack(spacing: 4) {
                   HStack {
-                      Image(systemName: "日历")
+                      Image(systemName: "calendar")
                           .foregroundColor(.adaptiveBlack)
                       Text(selectedDate, style: .date)
                           .bold()
@@ -34,17 +34,14 @@ struct DiaryDateButton: View {
           })
           .foregroundColor(.appBlack)
           .sheet(isPresented: $isPresentedDatePicker) {
-              /*
-               https://developer.apple.com/forums/thread/725965
-
-               下部に限らずDatePickerを表示している状態または閉じてすぐに他のsheetを表示させるとPresentaionエラーとなり、
-               以降Viewが再生成？されるまでSheetは表示されない。（iOS 16.4.1(a)実機で検証）
-               そのため、DatePickerをそのまま利用するのではなくsheetで表示している。
-               */
-              DatePicker("", selection: $selectedDate, displayedComponents: [.date])
-                  .padding(.horizontal)
-                  .datePickerStyle(GraphicalDatePickerStyle())
-                  .presentationDetents([.medium])
+              ZStack {
+                  Color.Neumorphic.main
+                      .edgesIgnoringSafeArea(.all)
+                  DatePicker("", selection: $selectedDate, displayedComponents: [.date])
+                      .padding(.horizontal)
+                      .datePickerStyle(GraphicalDatePickerStyle())
+                      .presentationDetents([.medium])
+              }
           }
           .onChange(of: selectedDate) {
               isPresentedDatePicker = false

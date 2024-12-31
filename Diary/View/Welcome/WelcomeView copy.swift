@@ -113,12 +113,12 @@ private extension WelcomeView {
 
     var appIntroduction: some View {
         VStack(spacing: 40) {
-            title("你好哇👋！", description: "编织日记是一款用文字记录生活的简单应用")
+            title("你好哇👋！", description: "编织生活是一款用文字记录生活的简单应用")
 
             featureRow(
                 icon: "book",
                 color: .orange,
-                description: "「编织日记」是一款直观且简洁的日记应用，帮助你用文字和图片编织自己的生活。"
+                description: "「编织生活」是一款直观而简洁的生活助手应用，帮助你用记录和规划编织属于自己的美好时光。"
             )
             featureRow(
                 icon: "checkmark",
@@ -166,7 +166,7 @@ private extension WelcomeView {
             HStack(spacing: 24) {
                 IconWithRoundedBackground(systemName: "mappin", backgroundColor: .green)
 
-                Text("在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
+                Text("在「编织生活」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
                     .foregroundColor(.adaptiveBlack.opacity(0.8))
                     .font(.system(size: 18))
                     .frame(maxWidth: .infinity, alignment: .leading)

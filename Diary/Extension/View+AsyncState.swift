@@ -51,8 +51,8 @@ public extension View {
                         _ phase: AsyncStatePhase,
                         initialContent: InitialContent = ProgressView(),
                         loadingContent: LoadingContent = ProgressView(),
-                        emptyContent: EmptyContent = Text("データが存在しません"),
-                        failureContent: FailureContent = Text("読み込みに失敗しました。")
+                        emptyContent: EmptyContent = Text("无法找到内容"),
+                        failureContent: FailureContent = Text("内容读取失败☹️")
                     ) -> some View {
                         switch phase {
                         case .initial:
@@ -80,8 +80,8 @@ public extension View {
                         _ state: AsyncState<T>,
                         initialContent: InitialContent = ProgressView(),
                         loadingContent: LoadingContent = ProgressView(),
-                        emptyContent: EmptyContent = Text("データが存在しません"),
-                        failureContent: FailureContent = Text("読み込みに失敗しました。")
+                        emptyContent: EmptyContent = Text("内容不存在"),
+                        failureContent: FailureContent = Text("内容读取失败☹️")
                     ) -> some View {
                         asyncState(
                             state.phase,

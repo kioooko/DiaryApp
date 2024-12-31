@@ -14,7 +14,7 @@ final class BannerState: ObservableObject {
 
     private static let defaultMessage = "好像是出了点问题, 再试一次吧🙏"
     
-    var mode: BannerState.Mode = .success(message: "这是一个用文字和图片编织日记的App")
+    var mode: BannerState.Mode = .success(message: "你好哇，这里是编织生活")
 
     func show(of mode: BannerState.Mode) {
         self.mode = mode

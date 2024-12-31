@@ -15,7 +15,7 @@ final class DiaryAppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-      FirebaseApp.configure()
+     FirebaseApp.configure()
 
       return true
     }

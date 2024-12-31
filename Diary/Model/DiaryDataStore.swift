@@ -5,11 +5,11 @@
 //  Created by Higashihara Yoki on 2023/05/01.
 //
 
-import Combine
-import CoreData
-import Foundation
-import _PhotosUI_SwiftUI
-import UIKit
+import Combine// 导入 Combine 框架
+import CoreData// 导入 CoreData 框架
+import Foundation// 导入 Foundation 框架
+import _PhotosUI_SwiftUI// 导入 PhotosUI 框架
+import UIKit// 导入 UIKit 框架
 
 /**
  Diary item関連の状態、ロジックを保持するclass
