@@ -19,19 +19,21 @@ struct DiaryTextEditor: View {
     }
 
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
-            ZStack(alignment: .topLeading) {
+        ZStack {
                  Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
                 .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
+        VStack(alignment: .center, spacing: 16) {
+            ZStack(alignment: .center) {
 
                 TextEditor(text: $bodyText)
                     .frame(maxHeight: .infinity)
                     .focused($isFocused)
                     .textOption(textOptions)
-                    .padding(.horizontal, 4)
-
+                    .background(Color.Neumorphic.main)
+               
                 if bodyText.isEmpty {
-                    Text("日記的文字") .foregroundColor(Color(uiColor: .placeholderText))
+                    Text("在这里写下今天的感受吧") 
+                        .foregroundColor(Color(uiColor: .placeholderText))
                         .padding(.vertical, 8)
                         .padding(.horizontal, 8)
                         .allowsHitTesting(false)
@@ -51,6 +53,7 @@ struct DiaryTextEditor: View {
                         .bold()
                         .foregroundStyle(Color.greenLight)
                 }
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 24)
@@ -61,7 +64,7 @@ struct DiaryTextEditor: View {
         }
      
     }
-
+  }
 }
 
 #if DEBUG

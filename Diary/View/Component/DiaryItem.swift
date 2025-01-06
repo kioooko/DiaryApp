@@ -18,7 +18,7 @@ struct DiaryItem: View {
 
     private let isYearDisplayed: Bool
     private let iconsHeight: CGFloat = 40
-    private let contentHeight: CGFloat = 120
+    private let contentHeight: CGFloat = 140
     private let cornerRadius: CGFloat = 10
     private let dayFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -198,7 +198,9 @@ private extension DiaryItem {
                     .frame(height: iconsHeight + contentHeight)
                     .clipped()
                     .cornerRadius(cornerRadius, corners: [.topRight, .bottomRight])
-                    .allowsHitTesting(false) // clipはUI上のclipは起こるが内部では画像をそのままのサイズで保持しているため、予期せぬタップ判定をもたらす。それを回避するためのワークアラウンド。 https://stackoverflow.com/questions/63300411/clipped-not-actually-clips-the-image-in-swiftui
+                    .allowsHitTesting(false)
+
+                     // clipはUI上のclipは起こるが内部では画像をそのままのサイズで保持しているため、予期せぬタップ判定をもたらす。それを回避するためのワークアラウンド。 https://stackoverflow.com/questions/63300411/clipped-not-actually-clips-the-image-in-swiftui
 
                 Text(item.title ?? "")
                     .bold()
@@ -216,6 +218,7 @@ private extension DiaryItem {
                             startPoint: .bottom,
                             endPoint: .top
                         )
+                        .cornerRadius(cornerRadius, corners: [.bottomRight])
                     }
             }
         case .text:

@@ -141,11 +141,10 @@ private extension CreateDiaryView {
         }) {
             Text("作成")
         }  
-        //.buttonStyle(softButtonStyle)
         .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }
-
+    //    .softInnerShadow(RoundedRectangle(cornerRadius: 20), spread: 0.6)
     // MARK: Action
 
     func createItemFromInput() {

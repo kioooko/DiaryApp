@@ -64,8 +64,8 @@ private extension DiaryImageView {
             .background {
                 RoundedRectangle(cornerRadius: 20)
                     .foregroundColor(.Neumorphic.main)
+                    .softInnerShadow(RoundedRectangle(cornerRadius: 20), spread: 0.6)
             }
-            .softOuterShadow()
         }
         .onChange(of: selectedPickerItem) { pickerItem in
             updateSelectedImage(to: pickerItem)

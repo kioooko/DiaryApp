@@ -266,8 +266,8 @@ extension Item: BaseModel {// 定义一个 Item 的扩展，用于实现 BaseMod
     }
 
     // Validation
-    static let titleRange = 1...100
-    static let textRange = 0...1000
+    static let titleRange = 1...1000
+    static let textRange = 0...3000
 }
 
 public enum ItemError: Error, LocalizedError {

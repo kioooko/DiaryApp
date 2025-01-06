@@ -29,7 +29,7 @@ struct FloatingButton: View {
             .background(
                 Capsule()
                     .fill(Color.Neumorphic.main)
-                    .softOuterShadow()
+                   .softOuterShadow()
             )
         }
     }
