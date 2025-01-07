@@ -17,16 +17,17 @@ struct DiaryText: View {//定义视图: 创建一个名为 DiaryText 的视图�
                     .contentShape(.rect)
 
                 if text.isEmpty {
-                    Text("可以在这里编织属于你的日记") .foregroundColor(Color(uiColor: .placeholderText))
+                    Spacer() 
+                    Text("点击这里编织属于你的日记") .foregroundColor(Color(uiColor: .placeholderText))
                         .padding(.vertical, 8)
                         .padding(.horizontal, 4)
                         .textOption(textOptions)
+                    Spacer() 
                 }
             }
         })
         .buttonStyle(.plain)
-       // .background(Color.Neumorphic.main)
-    
+        .background(Color.Neumorphic.main)
     }
 }
 

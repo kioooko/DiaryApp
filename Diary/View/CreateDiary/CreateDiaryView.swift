@@ -64,7 +64,7 @@ private extension CreateDiaryView {
         HStack {
             Spacer()
             XButton {
-                dismiss()
+            dismiss()
             }
             .padding(.trailing)
         }
@@ -88,7 +88,6 @@ private extension CreateDiaryView {
 
                 VStack(alignment: .leading, spacing: 20) {
                     // 画像以外に水平方向のpaddingを設定したいので別のStackで管理
-
                     HStack {
                         InputTitle(title: $diaryDataStore.title)
                      //   weather
@@ -123,13 +122,16 @@ private extension CreateDiaryView {
                 }
             }
         case .checkList:
-            VStack(spacing: 60) {
+           VStack(spacing: 60) {
                 CheckList(diaryDataStore: diaryDataStore)
 
                 NavigationLink {
                     CheckListEditor()
                 } label: {
+
+Spacer() // 底部 Spacer
                     CheckListEditButton()
+                    Spacer() // 底部 Spacer
                 }
             }
         }
@@ -144,7 +146,7 @@ private extension CreateDiaryView {
         .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }
-    //    .softInnerShadow(RoundedRectangle(cornerRadius: 20), spread: 0.6)
+    //.softInnerShadow(RoundedRectangle(cornerRadius: 20), spread: 0.6)
     // MARK: Action
 
     func createItemFromInput() {

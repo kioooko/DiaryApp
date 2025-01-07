@@ -180,7 +180,7 @@ private extension WelcomeView {
         VStack(spacing: 40) {
             title(
                 "设置提醒事项",
-                description: "让写日记成为一种习惯。我们不会发送任何烦人的通知。"
+                description: "让书写成为一种习惯。我们不会发送任何烦人的通知。"
             )
 
             HStack {

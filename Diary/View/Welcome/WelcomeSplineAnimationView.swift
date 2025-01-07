@@ -13,7 +13,7 @@ struct WelcomeSplineAnimationView: View {
                 // 这里是启动动画的内容
                     // WelcomeSplineView() // 背景画面
             
-                Text("深呼吸\n让我们开始今天的\n编织日记\n")
+                Text("深呼吸\n让我们开始今天的\n编织生活\n")
                     .font(.largeTitle)
                     .bold() // 添加粗体效果
                     .foregroundColor(.gray) // 添加文本颜色

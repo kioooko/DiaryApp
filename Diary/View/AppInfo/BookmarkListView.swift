@@ -31,7 +31,6 @@ struct BookmarkListView: View {
                 }
                 .padding(.vertical)
                 .background(Color.Neumorphic.main)
-              //  .softOuterShadow()
             }
             .navigationTitle("收藏")
         }

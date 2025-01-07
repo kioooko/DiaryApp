@@ -136,7 +136,7 @@ var nextButton: some View {
     // MARK: Introduction Page
     var appIntroduction: some View {
         VStack(spacing: 40) {
-         title("你好哇👋！", description: "编织日记是一款用文字记录生活的简洁应用。")
+         title("你好哇👋！", description: "编织生活是一款直观而简洁的生活助手应用。")
 featureRow(icon: "book", color: .orange, description: "直观简洁的日记工具，用文字和图片记录生活点滴，编织属于你的故事。")
 featureRow(icon: "message", color: .yellow, description: "与ChatAI对话，理清思路、释放压力，记录一天的心情感悟。支持自定义ChatAI的API接口，打造专属智能体验。")
 featureRow(icon: "checkmark", color: .green, description: "轻松追踪日常习惯的CheckList，通过可视化目标感受每天的进步与成长。")
@@ -179,7 +179,7 @@ featureRow(icon: "icloud", color: .blue, description: "iCloud全同步，重要�
         VStack(spacing: 40) {
             title("请允许访问您的位置信息", description: "允许位置访问，开始更加丰富的日记体验吧！")
             HStack(spacing: 24) {
-                featureRow(icon: "mappin", color: .orange, description: "在「编织日记」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
+                featureRow(icon: "mappin", color: .orange, description: "在「编织生活」中，我们会自动添加天气信息。\n位置信息仅用于获取天气信息。您随时可以更改设置。")
             }
         }
         .frame(maxHeight: .infinity)
@@ -191,7 +191,7 @@ featureRow(icon: "icloud", color: .blue, description: "iCloud全同步，重要�
         VStack(spacing: 40) {
             Spacer()  // 添加顶部空间
             VStack(spacing: 40) {
-                title("设置提醒事项", description: "让写日记成为一种习惯。我们不会发送任何烦人的垃圾通知。")
+                title("设置提醒事项", description: "让书写成为一种习惯。我们不会发送任何烦人的垃圾通知。")
                     .multilineTextAlignment(.center)  // 文本居中
                 
                 HStack {

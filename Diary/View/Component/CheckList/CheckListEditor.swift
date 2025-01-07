@@ -26,6 +26,8 @@ struct CheckListEditor: View {
 
     var body: some View {
         ZStack {
+             Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
+                .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
             ScrollView {
                 VStack(spacing: 20) {
                     ForEach(checkListItems, id: \.objectID) { item in
@@ -35,8 +37,9 @@ struct CheckListEditor: View {
                     addNewItem
                         .padding(.top)
                 }
-            }
+            } 
             .padding()
+           .softOuterShadow()
 
             if let editState, isPresentedTextEditor  {
                 CheckListTextEditor(
@@ -68,13 +71,13 @@ private extension CheckListEditor {
                 .font(.system(size: 16))
                 .foregroundColor(.adaptiveBlack)
                 .multilineTextAlignment(.leading)
-            .padding(.vertical, 12)
+            .padding(.vertical, 16)
             .padding(.horizontal, 16)
             .background {
                 RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(.appSecondary)
-                    .adaptiveShadow(size: .small)
+                    .foregroundColor(.Neumorphic.main)
             }
+            .softOuterShadow()
         }
     }
 

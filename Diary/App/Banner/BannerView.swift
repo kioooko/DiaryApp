@@ -19,7 +19,6 @@ struct BannerView: View {
     var body: some View {
         VStack {
             banner
-
             // Banner部分を上部に配置するためにSpacerを付与
             Spacer()
         }

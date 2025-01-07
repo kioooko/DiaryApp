@@ -21,8 +21,11 @@ struct CheckList: View {
         VStack(spacing: 12) {
             if checkListItems.count == 0 {
                 Text("现在没有CheckList，快来创建一个吧！")
-                    .font(.system(size: 16))
-                    .padding(.top, 16)
+                        .foregroundColor(Color(uiColor: .placeholderText))
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 4)
+
+
             } else {
                 ForEach(checkListItems, id: \.objectID) { item in
                     checkListItem(item)
