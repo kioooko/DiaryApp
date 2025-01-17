@@ -7,6 +7,7 @@
 
 import PhotosUI
 import SwiftUI
+//import Neumorphic
 
 struct CreateDiaryView: View {
     @Environment(\.dismiss) private var dismiss
@@ -86,7 +87,7 @@ private extension CreateDiaryView {
                 DiaryImageView(selectedImage: $diaryDataStore.selectedImage)
                 .padding(.horizontal, diaryDataStore.selectedImage == nil ? 20 : 0)
 
-                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 20) {
                     // 画像以外に水平方向のpaddingを設定したいので別のStackで管理
                     HStack {
                         InputTitle(title: $diaryDataStore.title)
@@ -129,9 +130,9 @@ private extension CreateDiaryView {
                     CheckListEditor()
                 } label: {
 
-Spacer() // 底部 Spacer
+                    Spacer() 
                     CheckListEditButton()
-                    Spacer() // 底部 Spacer
+                    Spacer() 
                 }
             }
         }
@@ -142,8 +143,10 @@ Spacer() // 底部 Spacer
             createItemFromInput()
         }) {
             Text("作成")
+            .bold()
         }  
-        .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
+        .softButtonStyle(RoundedRectangle(cornerRadius: 20))
+       // .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }
     //.softInnerShadow(RoundedRectangle(cornerRadius: 20), spread: 0.6)

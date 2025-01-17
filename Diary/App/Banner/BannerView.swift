@@ -45,20 +45,23 @@ private extension BannerView {
             .padding(.horizontal, 8)
             .background(
                 Capsule()
-                    .foregroundColor(.adaptiveWhite)
+                .fill(Color.Neumorphic.main)
+                //    .foregroundColor(.adaptiveWhite)
             )
             .drawingGroup() // テキストの変更とオフセットの変更アニメーションを同期させるために使用。（memo: これにより、もしViewが.clear（タッチイベントが生じなくなる）などを利用していても、タッチイベントは発生する（透過しない）ようになる。）
             .offset(y: bannerState.isPresented ? 0 : -(geometry.safeAreaInsets.top + baseHeight))
             .animation(Animation.spring(), value: bannerState.isPresented)
             .frame(maxWidth: .infinity)
             .frame(height: baseHeight)
+            //.softOuterShadow(RoundedRectangle(cornerRadius: 12))
             .adaptiveShadow()
             .onTapGesture {
                 bannerState.isPresented = false
             }
         }
         .frame(height: baseHeight)
-        .background(.clear)
+       //.background(.clear)
+        .background(Color.Neumorphic.main)
         .onReceive(bannerState.$isPresented) { isPresented in
             if isPresented {
                 dismissTask?.cancel()

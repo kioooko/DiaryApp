@@ -66,7 +66,8 @@ private extension CheckListEditor {
         Button (actionWithHapticFB: {
             editState = .createNewItem
             isPresentedTextEditor = true
-        }) {
+        })
+         {
             Text("追加新的CheckList")
                 .font(.system(size: 16))
                 .foregroundColor(.adaptiveBlack)
