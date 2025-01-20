@@ -264,7 +264,7 @@ private extension DiaryItem {
 
                 if let itemsCount = item.checkListItems?.count,
                    itemsCount >= 2 {
-                    Text("共计完成了\(itemsCount)个CheckList")
+                    Text("太棒啦🎉，完成了\(itemsCount)个CheckList")
                         .font(.system(size: 12))
                         .foregroundColor(.gray)
                 }

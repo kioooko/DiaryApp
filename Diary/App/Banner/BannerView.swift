@@ -60,8 +60,7 @@ private extension BannerView {
             }
         }
         .frame(height: baseHeight)
-       //.background(.clear)
-        .background(Color.Neumorphic.main)
+       .background(.clear)
         .onReceive(bannerState.$isPresented) { isPresented in
             if isPresented {
                 dismissTask?.cancel()

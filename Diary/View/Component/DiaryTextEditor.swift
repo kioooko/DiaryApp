@@ -23,7 +23,7 @@ struct DiaryTextEditor: View {
                  Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
                 .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
         VStack(alignment: .leading, spacing: 16) {
-            ZStack(alignment: .leading) {
+            ZStack{
                 TextEditor(text: $bodyText)
                     .frame(maxHeight: .infinity)
                     .focused($isFocused)

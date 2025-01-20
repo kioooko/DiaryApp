@@ -144,13 +144,12 @@ private extension CreateDiaryView {
         }) {
             Text("作成")
             .bold()
+            .foregroundColor(.gray)
         }  
         .softButtonStyle(RoundedRectangle(cornerRadius: 20))
-       // .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }
-    //.softInnerShadow(RoundedRectangle(cornerRadius: 20), spread: 0.6)
-    // MARK: Action
+  // MARK: Action
 
     func createItemFromInput() {
         do {

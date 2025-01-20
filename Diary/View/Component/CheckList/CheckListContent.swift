@@ -20,7 +20,7 @@ struct CheckListContent: View { // 定义一个结构体 CheckListContent，遵�
             Image(systemName: isChecked ? "checkmark.square.fill" : "square") // 根据 isChecked 显示不同的图标
                 .font(.system(size: 26)) // 设置图标的字体大小为 26
                 .bold() // 设置图标为粗体
-              .foregroundColor(Color.Neumorphic.main) // 设置图标的前景色为主色
+              .foregroundColor(.greenLight) // 设置图标的前景色为主色
         }
     }
 }

@@ -80,11 +80,12 @@ struct ChatAISetting: View {
     }
     
     private func validateAPIKey(_ key: String) {
-        let url = URL(string: "https://api.x.ai/v1/chat/completions")!
-
+       // let url = URL(string: "https://api.x.ai/v1/chat/completions")!
+        let url = URL(string:"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-pro:generateContent")!
         let parameters: [String: Any] = [
-            "model": "grok-beta",
-            "messages": [["role": "user", "content": "你好"]],
+           // "model": "grok-beta",
+            "model": "models/gemini-2.0-flash-exp",
+            "contents": [["parts": [["text": "你好"]]]],
             "stream": false,
             "temperature": 0
         ]

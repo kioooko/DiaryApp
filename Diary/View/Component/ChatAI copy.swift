@@ -2,65 +2,82 @@ import SwiftUI
 import Foundation
 import Neumorphic
 import Combine
-import GoogleGenerativeAI
 
 struct ChatAI: View {
     @ObservedObject var apiKeyManager: APIKeyManager
     @State private var userInput: String = ""
     @State private var chatHistory: [String] = []
     @State private var navigateToDiaryAppSceneDelegate = false
-    @State private var chat: Chat? // 用于存储 Gemini Chat 对象
 
     let chatHistoryKey = "chatHistory"
 
     init(apiKeyManager: APIKeyManager) {
         self.apiKeyManager = apiKeyManager
         loadChatHistory()
-        setupChat()
-    }
-
-    func setupChat() {
-        let config = GenerationConfig(maxOutputTokens: 100)
-        let model = GenerativeModel(
-            name: "models/gemini-2.0-flash-exp",
-            apiKey: APIKey.default, // 使用 APIKey.default
-            generationConfig: config
-        )
-
-        let history = [
-            ModelContent(role: "user", parts: "你好！我是你的正念引导小助手。"),
-            ModelContent(role: "model", parts: "你好！很高兴为你服务。")
-        ]
-
-        chat = model.startChat(history: history)
     }
 
     func sendToChatGPT(prompt: String) {
+        let apiKey = apiKeyManager.apiKey
+       // let url = URL(string: "https://api.x.ai/v1/chat/completions")!
+        let url = URL(string:"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-pro:generateContent")!
+        let parameters: [String: Any] = [
+           // "model": "grok-beta",
+            "model": "models/gemini-2.0-flash-exp",
+            "messages": [["role": "user", "content": prompt]],
+            "stream": false,
+            "temperature": 0
+        ]
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+        } catch {
+            print("请求编码错误: \(error)")
+            return
+        }
+
         DispatchQueue.main.async {
             chatHistory.append("You: \(prompt)")
             saveChatHistory()
         }
-
-        Task {
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("API 请求错误: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                print("没有收到数据")
+                return
+            }
+            
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("服务器响应: \(responseString)")
+            }
+            
             do {
-                guard let chat = chat else {
-                    print("Chat object is not initialized.")
-                    return
-                }
-                let response = try await chat.sendMessage(prompt)
-                if let text = response.text {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let choices = json["choices"] as? [[String: Any]],
+                   let firstChoice = choices.first,
+                   let message = firstChoice["message"] as? [String: Any],
+                   let content = message["content"] as? String {
                     DispatchQueue.main.async {
-                        chatHistory.append("你的正念助手: \(text.trimmingCharacters(in: .whitespacesAndNewlines))")
+                        chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
                         saveChatHistory()
                     }
                 }
             } catch {
-                print("API 请求错误: \(error)")
+                print("解析响应错误: \(error)")
             }
-        }
+        }.resume()
     }
 
-    func saveChatHistory() {
+   func saveChatHistory() {
         do {
             let data = try JSONEncoder().encode(chatHistory)
             UserDefaults.standard.set(data, forKey: chatHistoryKey)
@@ -77,7 +94,7 @@ struct ChatAI: View {
                 print("无法加载聊天记录: \(error)")
             }
         } else {
-            chatHistory = ["你的正念助手: 你好！我是正念引导助手，准备开始今天的练习吗？"]
+            chatHistory = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
         }
     }
 
@@ -102,7 +119,7 @@ struct ChatAI: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         createMessageView(
-                            message:"你的正念助手: 你好！我是你的正念引导小助手，准备开始今天的练习吗？",
+                            message:"正念小助手: 你好！我是你的正念引导小助手，准备开始今天的练习吗？",
                             isUser: false)
                             Spacer()
                         ForEach(chatHistory.indices, id: \.self) { index in
