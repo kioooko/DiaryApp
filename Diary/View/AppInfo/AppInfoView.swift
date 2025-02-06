@@ -52,6 +52,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
      
                     Section("支持") { // 支持相关信息部分
                         ChatAIGuide // 显示ChatAI功能
+                        DataDownLoad//导出并下载数据
                         inquiry // 显示联系选项
                         version // 显示应用版本
                     }
@@ -186,7 +187,15 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         NavigationLink {
           ChatAISetting(apiKeyManager: APIKeyManager())
         } label: {
-            rowTitle(icon: "message", Color: .yellow, description: "ChatAI设置")
+            rowTitle(icon: "message", Color: .purple, description: "ChatAI设置")
+        }
+    }
+
+    var DataDownLoad: some View { // 显示ChatAI功能
+        NavigationLink {
+          DataDownLoad()
+        } label: {
+           rowTitle(icon: "square.and.arrow.down", Color: .yellow, description: "导出日记数据")
         }
     }
 

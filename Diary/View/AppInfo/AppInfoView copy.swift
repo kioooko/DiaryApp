@@ -50,6 +50,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
 
                     Section("支持") { // 支持相关信息部分
                         ChatAIGuide // 显示ChatAI功能
+                        DownLoad //下载导出日记内容
                         inquiry // 显示联系选项
                         version // 显示应用版本
                     }
@@ -202,6 +203,12 @@ private extension AppInfoView { // AppInfoView 的私有扩展
             }
         }
     }
+
+    
+    var DownLoad: some View { // 显示下载功能
+
+
+}
 
     var ChatAIGuide: some View { // 显示ChatAI功能
         NavigationLink {
