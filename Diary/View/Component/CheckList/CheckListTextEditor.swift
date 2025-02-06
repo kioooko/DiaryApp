@@ -37,7 +37,7 @@ struct CheckListTextEditor: View {
             .padding(.bottom)
             .background {
                 Rectangle()
-                    .fill(Color.adaptiveBackground)
+                    .fill(Color.Neumorphic.main)
             }
 
         }
@@ -101,6 +101,7 @@ private extension CheckListTextEditor {
                 send(with: editState)
             }) {
                 Text("OK")
+                .foregroundColor(.greenLight)
             }
         }
     }
@@ -199,4 +200,3 @@ struct CheckListTextEditor_Previews: PreviewProvider {
 }
 
 #endif
-
