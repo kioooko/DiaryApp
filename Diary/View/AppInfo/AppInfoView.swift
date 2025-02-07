@@ -52,7 +52,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
      
                     Section("支持") { // 支持相关信息部分
                         ChatAIGuide // 显示ChatAI功能
-                        DataDownLoad//导出并下载数据
+                        DownLoadData//导出并下载数据
                         inquiry // 显示联系选项
                         version // 显示应用版本
                     }
@@ -191,13 +191,16 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         }
     }
 
-    var DataDownLoad: some View { // 显示ChatAI功能
-        NavigationLink {
-          DataDownLoad()
-        } label: {
-           rowTitle(icon: "square.and.arrow.down", Color: .yellow, description: "导出日记数据")
-        }
+var DownLoadData: some View { // 显示ChatAI功能  // 第 195 行
+    //NavigationLink {
+    //  DataDownLoad()
+  NavigationLink{
+     DataDownloadViewDetail()
+                 //   Text("跳转到详情页面")
+    } label: {
+       rowTitle(icon: "square.and.arrow.down", Color: .yellow, description: "导出日记数据")
     }
+}
 
     var inquiry: some View { // 显示联系选项
         Button(actionWithHapticFB: {
