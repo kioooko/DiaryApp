@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import Neumorphic
 
 // 添加 DiaryEntry 的定义
 class DiaryEntry: NSManagedObject {
@@ -9,39 +10,77 @@ class DiaryEntry: NSManagedObject {
 }
 
 struct DataDownloadView: View {
+    @EnvironmentObject private var bannerState: BannerState
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var selectedFormat: FileFormat = .csv
 
     enum FileFormat: String, CaseIterable, Identifiable {
-        case csv = "CSV"
-        case txt = "TXT"
-
+        case csv = "导出数据为CSV格式"
+        case txt = "导出数据为TXT格式"
         var id: String { self.rawValue }
     }
 
     var body: some View {
-        VStack {
-            Text("您可以选择下载txt或者csv格式\n将您的历史数据导出。")
-            .padding()
-            .foregroundColor(.gray)
-            .font(.system(size: 24))
-            .frame(height: 200)
-    }
-            Picker("文件格式", selection: $selectedFormat) {
-                ForEach(FileFormat.allCases) { format in
-                    Text(format.rawValue).tag(format)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding()
-
-            Button("下载") {
-                downloadData(format: selectedFormat)
-            }
-            .padding()
+        ScrollView {
+             VStack(spacing: 10) {
+               Spacer()
+               .padding(30)
+                     }
+            NoticeText
+            SelectButton
+            saveButton
         }
-    //}
+        .navigationTitle("导出日记数据")
+        .padding(30)
+        .background(Color.Neumorphic.main) // 设置 DataDownloadView 的背景颜色
+        .edgesIgnoringSafeArea(.all)
+    }
+    
+    var  NoticeText: some View {
+        VStack(spacing: 10) {
+            Text("您可以选择下载txt或者csv格式\n将您的历史数据导出。")
+                .padding()
+                .foregroundColor(.gray)
+                .font(.system(size: 18))
+        }
+      //  .padding(10)
+    }
+
+      var SelectButton: some View {
+        VStack (spacing: 10) {
+            ForEach(FileFormat.allCases) { format in
+                HStack {
+                    Text(format.rawValue)
+                    Spacer()
+                    Toggle(isOn: Binding(
+                        get: { selectedFormat == format },
+                        set: { newValue in
+                            if newValue {
+                                selectedFormat = format
+                            }
+                        }
+                    ))
+                    {
+                        EmptyView()
+                    }
+                    .labelsHidden()
+                }
+                .padding(.horizontal)
+            }
+        }
+     .padding(.bottom, 30)
+    }
+
+  var saveButton: some View {
+Button(action: {  downloadData(format: selectedFormat)
+            bannerState.show(of: .success(message: "下载成功🎉"))}) {
+    Text("下载").fontWeight(.bold)
+}
+.softButtonStyle(RoundedRectangle(cornerRadius: 12))
+  .padding(.horizontal)
+  
+    }
 
     private func downloadData(format: FileFormat) {
         // 1. 从 CoreData 获取日记数据
