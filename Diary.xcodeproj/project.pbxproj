@@ -23,6 +23,8 @@
 		07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
 		07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
 		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
+		07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
+		07536BBD2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
 		0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 0758BA022CFF20F50080DEF2 /* SplineRuntime */; };
 		075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2302D1263B10039A3B9 /* ChatAI.swift */; };
 		075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2302D1263B10039A3B9 /* ChatAI.swift */; };
@@ -143,6 +145,7 @@
 		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
 		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
 		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		07536BBB2D56121900E23444 /* DataDownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDownloadView.swift; sourceTree = "<group>"; };
 		075EB2302D1263B10039A3B9 /* ChatAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAI.swift; sourceTree = "<group>"; };
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
@@ -438,6 +441,7 @@
 			isa = PBXGroup;
 			children = (
 				F53E3A892A0BC88E0064CB62 /* AppInfoView.swift */,
+				07536BBB2D56121900E23444 /* DataDownloadView.swift */,
 				F53E3A8F2A0C8FCC0064CB62 /* BookmarkListView.swift */,
 				F53E3A872A0BB6D50064CB62 /* TextOptionsView.swift */,
 				F550BC942A0E499600BCB0F2 /* ReminderSettingView.swift */,
@@ -701,6 +705,7 @@
 				F5358D552A069BB2005FD6C8 /* InputTitle.swift in Sources */,
 				F5358CC029F69276005FD6C8 /* Item+Extension.swift in Sources */,
 				F56FF3A12C0AB35300C0D1D3 /* DiaryText.swift in Sources */,
+				07536BBD2D56121900E23444 /* DataDownloadView.swift in Sources */,
 				F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */,
 				F5BF44462A557E8600217119 /* WelcomeView.swift in Sources */,
 				F54395E42A47F43400C74D59 /* DiaryTextEditor.swift in Sources */,
@@ -764,6 +769,7 @@
 				07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
 				07E13D1E2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */,
 				07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
+				07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */,
 				07E13D262D1D5354008C13A9 /* DiaryApp.swift in Sources */,
 				075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,

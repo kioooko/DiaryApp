@@ -195,7 +195,7 @@ var DownLoadData: some View { // 显示ChatAI功能  // 第 195 行
     //NavigationLink {
     //  DataDownLoad()
   NavigationLink{
-     DataDownloadViewDetail()
+     DataDownloadView()
                  //   Text("跳转到详情页面")
     } label: {
        rowTitle(icon: "square.and.arrow.down", Color: .yellow, description: "导出日记数据")

@@ -1,6 +1,13 @@
 import SwiftUI
 import CoreData
 
+// 添加 DiaryEntry 的定义
+class DiaryEntry: NSManagedObject {
+    @NSManaged var date: Date?
+    @NSManaged var title: String?
+    @NSManaged var content: String?
+}
+
 struct DataDownloadView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -15,10 +22,12 @@ struct DataDownloadView: View {
 
     var body: some View {
         VStack {
-            Text("选择下载格式")
-                .font(.title2)
-                .padding()
-
+            Text("您可以选择下载txt或者csv格式\n将您的历史数据导出。")
+            .padding()
+            .foregroundColor(.gray)
+            .font(.system(size: 24))
+            .frame(height: 200)
+    }
             Picker("文件格式", selection: $selectedFormat) {
                 ForEach(FileFormat.allCases) { format in
                     Text(format.rawValue).tag(format)
@@ -32,11 +41,14 @@ struct DataDownloadView: View {
             }
             .padding()
         }
-    }
+    //}
 
     private func downloadData(format: FileFormat) {
         // 1. 从 CoreData 获取日记数据
-        let fetchRequest: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
+        guard let fetchRequest = DiaryEntry.fetchRequest() as? NSFetchRequest<DiaryEntry> else {
+            print("Could not create fetch request for DiaryEntry")
+            return
+        }
         do {
             let diaryEntries = try viewContext.fetch(fetchRequest)
 
@@ -95,11 +107,4 @@ struct DataDownloadView: View {
             print("Error saving file: \(error)")
         }
     }
-}
-
-// 示例 DiaryEntry 实体 (请替换为你实际的 CoreData 实体)
-class DiaryEntry: NSManagedObject {
-    @NSManaged var date: Date?
-    @NSManaged var title: String?
-    @NSManaged var content: String?
 }
