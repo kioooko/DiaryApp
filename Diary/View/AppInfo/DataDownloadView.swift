@@ -42,15 +42,23 @@ struct DataDownloadView: View {
         }
     }
 
-     var ImportData: some View { // 导入数据
-        NavigationLink {
-            DataImportView()
-        } label: {
-            Text("导入").fontWeight(.bold)
-        }
-        .softButtonStyle(RoundedRectangle(cornerRadius: 12))
-        .padding(.horizontal)
+var ImportData: some View { // 导入数据
+    NavigationLink {
+        DataImportView()
+    } label: {
+        Text("导入")
+            .fontWeight(.bold)
+            .padding(.init(top: 30, leading: 120, bottom: 30, trailing: 120)) // 增加一些内边距，让按钮更好看
+            .background(Color.white) // 设置背景色
+            .cornerRadius(12) // 轻微圆角
+            .overlay( // 添加虚线边框
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [5])) // 2px宽度，虚线间隔 5
+                    .foregroundColor(.gray) // 虚线颜色
+            )
     }
+}
+
 
      var  DownloadText: some View {
         VStack(spacing: 10) {

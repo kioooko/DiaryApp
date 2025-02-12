@@ -25,6 +25,8 @@
 		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
 		07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
 		07536BBD2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
+		07536BBF2D5C97B300E23444 /* DataImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBE2D5C97B300E23444 /* DataImportView.swift */; };
+		07536BC02D5C97B300E23444 /* DataImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBE2D5C97B300E23444 /* DataImportView.swift */; };
 		0758BA032CFF20F50080DEF2 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 0758BA022CFF20F50080DEF2 /* SplineRuntime */; };
 		075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2302D1263B10039A3B9 /* ChatAI.swift */; };
 		075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2302D1263B10039A3B9 /* ChatAI.swift */; };
@@ -146,6 +148,7 @@
 		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
 		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		07536BBB2D56121900E23444 /* DataDownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDownloadView.swift; sourceTree = "<group>"; };
+		07536BBE2D5C97B300E23444 /* DataImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataImportView.swift; sourceTree = "<group>"; };
 		075EB2302D1263B10039A3B9 /* ChatAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAI.swift; sourceTree = "<group>"; };
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
@@ -442,6 +445,7 @@
 			children = (
 				F53E3A892A0BC88E0064CB62 /* AppInfoView.swift */,
 				07536BBB2D56121900E23444 /* DataDownloadView.swift */,
+				07536BBE2D5C97B300E23444 /* DataImportView.swift */,
 				F53E3A8F2A0C8FCC0064CB62 /* BookmarkListView.swift */,
 				F53E3A872A0BB6D50064CB62 /* TextOptionsView.swift */,
 				F550BC942A0E499600BCB0F2 /* ReminderSettingView.swift */,
@@ -688,6 +692,7 @@
 				07414B2F2D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
 				07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
 				07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
+				07536BBF2D5C97B300E23444 /* DataImportView.swift in Sources */,
 				07E13D1B2D1D5322008C13A9 /* BannerView.swift in Sources */,
 				07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
 				F5BE688B2A72913300A92F00 /* ActivityView.swift in Sources */,
@@ -775,6 +780,7 @@
 				07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
 				07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
 				075EB2372D12A5040039A3B9 /* APIKeyManager.swift in Sources */,
+				07536BC02D5C97B300E23444 /* DataImportView.swift in Sources */,
 				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
 				075EB2342D1291140039A3B9 /* ChatAISetting.swift in Sources */,
 				07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
