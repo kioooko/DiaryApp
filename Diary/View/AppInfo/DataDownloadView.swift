@@ -20,10 +20,14 @@ struct DataDownloadView: View {
                .padding(30)
                      }
             NoticeText
+            ImportData
+
+            DownloadText
             SelectButton
             saveButton
+   
         }
-        .navigationTitle("导出日记数据")
+        .navigationTitle("管理日记数据")
         .padding(30)
         .background(Color.Neumorphic.main) // 设置 DataDownloadView 的背景颜色
         .edgesIgnoringSafeArea(.all)
@@ -31,12 +35,30 @@ struct DataDownloadView: View {
     
     var  NoticeText: some View {
         VStack(spacing: 10) {
+            Text("导入日记仅支持过去导出的历史日记数据，格式为txt或者csv格式。")
+                .padding()
+                .foregroundColor(.gray)
+                .font(.system(size: 18))
+        }
+    }
+
+     var ImportData: some View { // 导入数据
+        NavigationLink {
+            DataImportView()
+        } label: {
+            Text("导入").fontWeight(.bold)
+        }
+        .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal)
+    }
+
+     var  DownloadText: some View {
+        VStack(spacing: 10) {
             Text("您可以选择导出历史日记数据为txt或者csv格式。")
                 .padding()
                 .foregroundColor(.gray)
                 .font(.system(size: 18))
         }
-      //  .padding(10)
     }
 
       var SelectButton: some View {
