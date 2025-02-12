@@ -2,17 +2,9 @@ import SwiftUI
 import CoreData
 import Neumorphic
 
-// 添加 DiaryEntry 的定义
-class DiaryEntry: NSManagedObject {
-    @NSManaged var date: Date?
-    @NSManaged var title: String?
-    @NSManaged var content: String?
-}
-
 struct DataDownloadView: View {
     @EnvironmentObject private var bannerState: BannerState
     @Environment(\.managedObjectContext) private var viewContext
-
     @State private var selectedFormat: FileFormat = .csv
 
     enum FileFormat: String, CaseIterable, Identifiable {
@@ -82,27 +74,19 @@ Button(action: {  downloadData(format: selectedFormat)
   
     }
 
+ 
     private func downloadData(format: FileFormat) {
         // 1. 从 CoreData 获取日记数据
-        guard let fetchRequest = DiaryEntry.fetchRequest() as? NSFetchRequest<DiaryEntry> else {
-            print("Could not create fetch request for DiaryEntry")
-            return
-        }
-        do {
-            let diaryEntries = try viewContext.fetch(fetchRequest)
+        let diaryEntries = CoreDataProvider.shared.exportAllDiaryEntries()
 
-            // 2. 将数据转换为指定格式的字符串
-            let fileContent = convertDataToFileContent(entries: diaryEntries, format: format)
+        // 2. 将数据转换为指定格式的字符串
+        let fileContent = convertDataToFileContent(entries: diaryEntries, format: format)
 
-            // 3. 保存文件到本地
-            saveFile(content: fileContent, format: format)
-
-        } catch {
-            print("Error fetching diary entries: \(error)")
-        }
+        // 3. 保存文件到本地
+        saveFile(content: fileContent, format: format)
     }
 
-    private func convertDataToFileContent(entries: [DiaryEntry], format: FileFormat) -> String {
+    private func convertDataToFileContent(entries: [Item], format: FileFormat) -> String {
         switch format {
         case .csv:
             return convertToCSV(entries: entries)
@@ -111,24 +95,32 @@ Button(action: {  downloadData(format: selectedFormat)
         }
     }
 
-    private func convertToCSV(entries: [DiaryEntry]) -> String {
-        var csvString = "Date,Title,Content\n" // CSV Header
+    private func convertToCSV(entries: [Item]) -> String {
+        var csvString = "Title,Body,CreatedAt,UpdatedAt,Weather,ImageData,IsBookmarked\n"
         for entry in entries {
-            let date = entry.date?.formatted(date: .abbreviated, time: .omitted) ?? ""
             let title = entry.title ?? ""
-            let content = entry.content ?? ""
-            csvString += "\(date),\(title),\(content)\n"
+            let body = entry.body ?? ""
+            let createdAt = entry.createdAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
+            let updatedAt = entry.updatedAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
+            let weather = entry.weather ?? ""
+            let imageData = entry.imageData?.base64EncodedString() ?? ""
+            let isBookmarked = entry.isBookmarked
+            csvString += "\(title),\(body),\(createdAt),\(updatedAt),\(weather),\(imageData),\(isBookmarked)\n"
         }
         return csvString
     }
 
-    private func convertToTXT(entries: [DiaryEntry]) -> String {
-        var txtString = ""
+    private func convertToTXT(entries: [Item]) -> String {
+         var txtString = ""
         for entry in entries {
-            let date = entry.date?.formatted(date: .abbreviated, time: .omitted) ?? ""
             let title = entry.title ?? ""
-            let content = entry.content ?? ""
-            txtString += "Date: \(date)\nTitle: \(title)\nContent: \(content)\n\n"
+            let body = entry.body ?? ""
+            let createdAt = entry.createdAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
+            let updatedAt = entry.updatedAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
+            let weather = entry.weather ?? ""
+            let imageData = entry.imageData?.base64EncodedString() ?? ""
+            let isBookmarked = entry.isBookmarked
+            txtString += "Title: \(title)\nBody: \(body)\nCreatedAt: \(createdAt)\nUpdatedAt: \(updatedAt)\nWeather: \(weather)\nImageData: \(imageData)\nIsBookmarked: \(isBookmarked)\n\n"
         }
         return txtString
     }
@@ -140,10 +132,12 @@ Button(action: {  downloadData(format: selectedFormat)
 
         do {
             try content.write(to: fileURL, atomically: true, encoding: .utf8)
-            print("File saved to: \(fileURL)")
-            // TODO: 显示一个提示，告诉用户文件已保存，并提供分享选项
+            print("File saved to \(fileURL)")
+            // TODO: Show success alert
         } catch {
             print("Error saving file: \(error)")
+            // TODO: Show error alert
         }
     }
 }
+

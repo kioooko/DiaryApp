@@ -34,6 +34,17 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+     // 新增：导出所有 DiaryEntry 数据
+    func exportAllDiaryEntries() -> [Item] {
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            let diaryEntries = try container.viewContext.fetch(fetchRequest)
+            return diaryEntries
+        } catch {
+            print("Failed to fetch DiaryEntry: \(error)")
+            return []
+        }
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 
