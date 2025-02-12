@@ -8,8 +8,8 @@ struct DataDownloadView: View {
     @State private var selectedFormat: FileFormat = .csv
 
     enum FileFormat: String, CaseIterable, Identifiable {
-        case csv = "导出数据为CSV格式"
-        case txt = "导出数据为TXT格式"
+        case csv = "CSV"
+        case txt = "TXT"
         var id: String { self.rawValue }
     }
 
@@ -31,7 +31,7 @@ struct DataDownloadView: View {
     
     var  NoticeText: some View {
         VStack(spacing: 10) {
-            Text("您可以选择下载txt或者csv格式\n将您的历史数据导出。")
+            Text("您可以选择导出历史日记数据为txt或者csv格式。")
                 .padding()
                 .foregroundColor(.gray)
                 .font(.system(size: 18))
@@ -66,7 +66,7 @@ struct DataDownloadView: View {
 
   var saveButton: some View {
 Button(action: {  downloadData(format: selectedFormat)
-            bannerState.show(of: .success(message: "下载成功🎉"))}) {
+            bannerState.show(of: .success(message: "导出成功🎉"))}) {
     Text("下载").fontWeight(.bold)
 }
 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
@@ -125,7 +125,7 @@ Button(action: {  downloadData(format: selectedFormat)
         return txtString
     }
 
-    private func saveFile(content: String, format: FileFormat) {
+   private func saveFile(content: String, format: FileFormat) {
         let fileName = "DiaryData.\(format.rawValue.lowercased())"
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let fileURL = documentsDirectory.appendingPathComponent(fileName)
@@ -133,11 +133,18 @@ Button(action: {  downloadData(format: selectedFormat)
         do {
             try content.write(to: fileURL, atomically: true, encoding: .utf8)
             print("File saved to \(fileURL)")
-            // TODO: Show success alert
+
+            // 使用 UIActivityViewController 显示分享选项
+            let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+
+            // 找到当前视图控制器并呈现 activityViewController
+            if let viewController = UIApplication.shared.windows.first?.rootViewController {
+                viewController.present(activityViewController, animated: true, completion: nil)
+            }
+
         } catch {
             print("Error saving file: \(error)")
             // TODO: Show error alert
         }
     }
-}
-
+      }
