@@ -113,7 +113,7 @@ Button(action: {  downloadData(format: selectedFormat)
         let fileContent = convertDataToFileContent(entries: diaryEntries, format: format)
 
         // 3. 保存文件到本地
-        saveFile(content: fileContent, format: format)
+        saveAndShare(content: fileContent)
     }
 
     private func convertDataToFileContent(entries: [Item], format: FileFormat) -> String {
@@ -126,59 +126,65 @@ Button(action: {  downloadData(format: selectedFormat)
     }
 
     private func convertToCSV(entries: [Item]) -> String {
-        var csvString = "Title,Body,CreatedAt,UpdatedAt,Weather,ImageData,IsBookmarked\n"
+        // 使用与导入格式匹配的简单格式
+        var csvString = "日期,内容\n"
+        
         for entry in entries {
-            let title = entry.title ?? ""
-            let body = entry.body ?? ""
-            let createdAt = entry.createdAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
-            let updatedAt = entry.updatedAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
-            let weather = entry.weather ?? ""
-            let imageData = entry.imageData?.base64EncodedString() ?? ""
-            let isBookmarked = entry.isBookmarked
-            csvString += "\(title),\(body),\(createdAt),\(updatedAt),\(weather),\(imageData),\(isBookmarked)\n"
+            // 确保日期格式与导入时的格式一致
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let date = entry.date.map { dateFormatter.string(from: $0) } ?? ""
+            
+            // 合并标题和内容，确保没有逗号
+            var content = entry.title ?? ""
+            if let body = entry.body, !body.isEmpty {
+                content += content.isEmpty ? body : "\n\(body)"
+            }
+            content = content.replacingOccurrences(of: ",", with: "，")
+            
+            csvString += "\(date),\(content)\n"
         }
         return csvString
     }
 
     private func convertToTXT(entries: [Item]) -> String {
-         var txtString = ""
-        for entry in entries {
-            let title = entry.title ?? ""
-            let body = entry.body ?? ""
-            let createdAt = entry.createdAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
-            let updatedAt = entry.updatedAt?.formatted(date: .abbreviated, time: .omitted) ?? ""
-            let weather = entry.weather ?? ""
-            let imageData = entry.imageData?.base64EncodedString() ?? ""
-            let isBookmarked = entry.isBookmarked
-            txtString += "Title: \(title)\nBody: \(body)\nCreatedAt: \(createdAt)\nUpdatedAt: \(updatedAt)\nWeather: \(weather)\nImageData: \(imageData)\nIsBookmarked: \(isBookmarked)\n\n"
-        }
-        return txtString
+        // 使用与 CSV 相同的格式，以确保一致性
+        return convertToCSV(entries: entries)
     }
 
-   private func saveFile(content: String, format: FileFormat) {
-        let fileName = "DiaryData.\(format.rawValue.lowercased())"
-        // 使用临时目录
-        let tempDir = FileManager.default.temporaryDirectory
-        let fileURL = tempDir.appendingPathComponent(fileName)
+    private func saveAndShare(content: String) {
+        let fileName = "DiaryData.\(selectedFormat.rawValue.lowercased())"
+        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            bannerState.show(of: .error(message: "无法访问文档目录"))
+            return
+        }
+        
+        let fileURL = documentsPath.appendingPathComponent(fileName)
         
         do {
-            // 1. 写入文件到临时目录
-            try content.write(to: fileURL, atomically: true, encoding: .utf8)
-            print("✅ 文件已保存到临时目录: \(fileURL)")
+            // 添加 UTF-8 BOM，确保文件编码正确
+            let bom = "\u{FEFF}"
+            let contentWithBOM = bom + content
             
-            // 2. 使用 UIActivityViewController 显示分享选项
-            let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+            try contentWithBOM.write(to: fileURL, atomically: true, encoding: .utf8)
+            print("✅ 文件已保存: \(fileURL)")
             
-            // 3. 在主线程中显示分享界面
+            let activityVC = UIActivityViewController(
+                activityItems: [fileURL],
+                applicationActivities: nil
+            )
+            
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let rootViewController = windowScene.windows.first?.rootViewController {
                 DispatchQueue.main.async {
-                    rootViewController.present(activityViewController, animated: true, completion: nil)
+                    rootViewController.present(activityVC, animated: true)
                 }
             }
+            
+            bannerState.show(of: .success(message: "导出成功"))
         } catch {
             print("❌ 保存文件失败: \(error)")
-            bannerState.show(of: .error(message: "导出失败：\(error.localizedDescription)"))
+            bannerState.show(of: .error(message: "导出失败"))
         }
     }
       }

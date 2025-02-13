@@ -17,7 +17,6 @@ struct DataImportView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 10) {
-                // 拖拽区域
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(style: StrokeStyle(lineWidth: 2, dash: [5]))
@@ -29,6 +28,9 @@ struct DataImportView: View {
                             .font(.system(size: 30))
                         Text("拖拽文件到这里或点击选择")
                             .padding(.top, 8)
+                        Text("支持的格式：CSV、TXT")
+                            .font(.caption)
+                            .foregroundColor(.gray)
                     }
                 }
                 .padding(.horizontal, 40)
@@ -36,25 +38,62 @@ struct DataImportView: View {
                     isImporting = true
                 }
                 .onDrop(
-                    of: [.fileURL],
+                    of: [.text, .plainText, .utf8PlainText, .commaSeparatedText],
                     isTargeted: $isDropTargeted
                 ) { providers in
+                    print("📝 接收到拖拽项目")
                     guard let provider = providers.first else { return false }
                     
-                    _ = provider.loadObject(ofClass: URL.self) { url, error in
-                        if let url = url {
-                            DispatchQueue.main.async {
-                                copyAndImportFile(from: url)
+                    // 打印支持的类型
+                    print("📝 提供者支持的类型：")
+                    provider.registeredTypeIdentifiers.forEach { print("- \($0)") }
+                    
+                    // 尝试不同的类型标识符
+                    let typeIdentifiers = [
+                        UTType.plainText.identifier,
+                        UTType.utf8PlainText.identifier,
+                        UTType.text.identifier,
+                        UTType.commaSeparatedText.identifier,
+                        "public.data",
+                        "public.content"
+                    ]
+                    
+                    for identifier in typeIdentifiers {
+                        if provider.hasItemConformingToTypeIdentifier(identifier) {
+                            print("📝 尝试加载类型: \(identifier)")
+                            provider.loadDataRepresentation(forTypeIdentifier: identifier) { data, error in
+                                if let error = error {
+                                    print("❌ 加载类型 \(identifier) 失败: \(error)")
+                                    return
+                                }
+                                
+                                guard let data = data else {
+                                    print("❌ 类型 \(identifier) 数据为空")
+                                    return
+                                }
+                                
+                                if let content = String(data: data, encoding: .utf8) {
+                                    print("✅ 成功读取文件内容（类型：\(identifier)）")
+                                    DispatchQueue.main.async {
+                                        processImportedContent(content)
+                                    }
+                                    return
+                                } else {
+                                    print("❌ 无法将数据转换为字符串（类型：\(identifier)）")
+                                }
                             }
+                            return true
                         }
                     }
-                    return true
+                    
+                    print("❌ 未找到支持的文件类型")
+                    return false
                 }
 
                 if isImporting {
                     FilePicker(isPresented: $isImporting, selectedFile: $selectedFile) { url in
                         if let url = url {
-                            copyAndImportFile(from: url)
+                            handleFileSelection(url)
                         }
                     }
                 }
@@ -73,145 +112,171 @@ struct DataImportView: View {
         .navigationTitle("导入日记数据")
     }
     
-    private func copyAndImportFile(from sourceURL: URL) {
-        do {
-            // 获取应用文档目录
-            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let destinationURL = documentsDirectory.appendingPathComponent(sourceURL.lastPathComponent)
-            
-            // 如果文件已存在，先删除
-            if FileManager.default.fileExists(atPath: destinationURL.path) {
-                try FileManager.default.removeItem(at: destinationURL)
-            }
-            
-            // 复制文件到文档目录
-            try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
-            
-            // 更新UI并开始导入
-            selectedFile = destinationURL
-            importData(fileURL: destinationURL)
-            
-        } catch {
-            print("❌ 文件处理失败: \(error)")
-            bannerState.show(of: .error(message: "文件处理失败：\(error.localizedDescription)"))
+    private func handleFileSelection(_ url: URL) {
+        print("📝 处理文件: \(url)")
+        let fileExtension = url.pathExtension.lowercased()
+        
+        guard fileExtension == "csv" || fileExtension == "txt" else {
+            print("❌ 不支持的文件格式: \(fileExtension)")
+            bannerState.show(of: .error(message: "不支持的文件格式，请选择 CSV 或 TXT 文件"))
+            return
         }
+        
+        selectedFile = url
+        importData(fileURL: url)
     }
     
     private func importData(fileURL: URL) {
         isImporting = true
         importProgress = 0
-
+        
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
-                let entries = parseFileContent(fileContent: fileContent, fileURL: fileURL)
-
-                importToCoreData(entries: entries)
-
+                let lines = fileContent.components(separatedBy: .newlines)
+                    .filter { !$0.isEmpty }
+                
+                print("📝 开始导入，总行数: \(lines.count)")
+                
                 DispatchQueue.main.async {
+                    for (index, line) in lines.enumerated() {
+                        let components = line.components(separatedBy: ",")
+                        guard components.count >= 2 else { continue }
+                        
+                        let item = Item(context: viewContext)
+                        
+                        // 设置日期
+                        if let date = DateFormatter.yyyyMMdd.date(from: components[0].trimmingCharacters(in: .whitespaces)) {
+                            item.date = date
+                            item.createdAt = date
+                            item.updatedAt = date
+                        } else {
+                            item.date = Date()
+                            item.createdAt = Date()
+                            item.updatedAt = Date()
+                        }
+                        
+                        // 设置内容
+                        let content = components[1].trimmingCharacters(in: .whitespaces)
+                        item.body = content
+                        
+                        // 设置标题（取内容前10个字符）
+                        item.title = String(content.prefix(10))
+                        
+                        // 设置其他默认值
+                        item.isBookmarked = false
+                        
+                        // 更新进度
+                        importProgress = Double(index + 1) / Double(lines.count)
+                        
+                        // 每处理50条记录保存一次
+                        if (index + 1) % 50 == 0 {
+                            saveContext()
+                        }
+                    }
+                    
+                    // 最后保存一次
+                    saveContext()
+                    
+                    // 完成导入
                     isImporting = false
-                    bannerState.show(of: .success(message: "成功导入 \(entries.count) 条日记"))
                     selectedFile = nil
                     importProgress = 0
+                    bannerState.show(of: .success(message: "成功导入 \(lines.count) 条日记"))
                 }
             } catch {
+                print("❌ 导入失败: \(error)")
                 DispatchQueue.main.async {
                     isImporting = false
-                    bannerState.show(of: .error(message: "导入失败：\(error.localizedDescription)"))
+                    selectedFile = nil
                     importProgress = 0
+                    bannerState.show(of: .error(message: "导入失败：\(error.localizedDescription)"))
                 }
             }
         }
     }
-
-    private func parseFileContent(fileContent: String, fileURL: URL) -> [DiaryEntry] {
-        let fileExtension = fileURL.pathExtension.lowercased()
-        switch fileExtension {
-        case "csv":
-            return parseCSV(fileContent: fileContent)
-        case "txt":
-            return parseTXT(fileContent: fileContent)
-        default:
-            return []
+    
+    private func processImportedContent(_ content: String) {
+        let lines = content.components(separatedBy: .newlines)
+            .filter { !$0.isEmpty }
+        
+        guard lines.count > 1 else {
+            print("❌ 文件内容为空")
+            bannerState.show(of: .error(message: "文件内容为空"))
+            return
         }
-    }
-
-    private func parseCSV(fileContent: String) -> [DiaryEntry] {
-        var entries: [DiaryEntry] = []
-        let rows = fileContent.components(separatedBy: "\n")
-        for row in rows {
-            let columns = row.components(separatedBy: ",")
-            if columns.count >= 3 {
-                let dateString = columns[0]
-                let title = columns[1]
-                let body = columns[2]
-
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                if let date = dateFormatter.date(from: dateString) {
-                    let entry = DiaryEntry(date: date, title: title, body: body)
-                    entries.append(entry)
-                }
-            }
-        }
-        return entries
-    }
-
-    private func parseTXT(fileContent: String) -> [DiaryEntry] {
-        var entries: [DiaryEntry] = []
-        let rows = fileContent.components(separatedBy: "\n")
-        for row in rows {
-            let columns = row.components(separatedBy: "|")
-            if columns.count >= 3 {
-                let dateString = columns[0]
-                let title = columns[1]
-                let body = columns[2]
-
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                if let date = dateFormatter.date(from: dateString) {
-                    let entry = DiaryEntry(date: date, title: title, body: body)
-                    entries.append(entry)
-                }
-            }
-        }
-        return entries
-    }
-
-    private func importToCoreData(entries: [DiaryEntry]) {
-        let totalEntries = entries.count
-        for (index, entry) in entries.enumerated() {
+        
+        // 跳过标题行
+        let dataLines = Array(lines.dropFirst())
+        print("📝 开始导入，总行数: \(dataLines.count)")
+        
+        for (index, line) in dataLines.enumerated() {
+            let components = line.components(separatedBy: ",")
+            guard components.count >= 2 else { continue }
+            
             let item = Item(context: viewContext)
-            item.date = entry.date
-            item.title = entry.title
-            item.body = entry.body
-            item.createdAt = Date()
-            item.updatedAt = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                print("保存 Core Data 失败：\(error)")
+            
+            // 设置日期
+            if let date = DateFormatter.yyyyMMdd.date(from: components[0].trimmingCharacters(in: .whitespaces)) {
+                item.date = date
+                item.createdAt = date
+                item.updatedAt = date
+            } else {
+                item.date = Date()
+                item.createdAt = Date()
+                item.updatedAt = Date()
             }
-
-            let progress = Double(index + 1) / Double(totalEntries)
-            DispatchQueue.main.async {
-                importProgress = progress
+            
+            // 设置内容
+            let content = components[1].trimmingCharacters(in: .whitespaces)
+            item.body = content
+            item.title = String(content.prefix(10))
+            item.isBookmarked = false
+            
+            // 更新进度
+            importProgress = Double(index + 1) / Double(dataLines.count)
+            
+            // 每处理50条记录保存一次
+            if (index + 1) % 50 == 0 {
+                saveContext()
             }
+        }
+        
+        // 最后保存一次
+        saveContext()
+        bannerState.show(of: .success(message: "成功导入 \(dataLines.count) 条日记"))
+        
+        // 重置状态
+        isImporting = false
+        selectedFile = nil
+        importProgress = 0
+    }
+    
+    private func saveContext() {
+        do {
+            try viewContext.save()
+        } catch {
+            print("❌ 保存失败: \(error)")
+            bannerState.show(of: .error(message: "保存失败：\(error.localizedDescription)"))
         }
     }
 }
 
-// 📌 `FilePicker` 用于在 SwiftUI 里调用 `UIDocumentPickerViewController`
+// 添加 FilePicker 实现
 struct FilePicker: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     @Binding var selectedFile: URL?
     let onFileSelected: (URL?) -> Void
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.plainText, .commaSeparatedText])
+        // 使用简单的文件类型定义
+        let types: [String] = ["public.comma-separated-values-text", "public.plain-text"]
+        let picker = UIDocumentPickerViewController(documentTypes: types, in: .import)
+        
+        // 基本配置
         picker.delegate = context.coordinator
         picker.allowsMultipleSelection = false
+        
         return picker
     }
     
@@ -229,22 +294,36 @@ struct FilePicker: UIViewControllerRepresentable {
         }
         
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            guard let url = urls.first else { return }
-            parent.selectedFile = url
-            parent.onFileSelected(url)
-            parent.isPresented = false
+            print("📝 选择文件：\(urls)")
+            if let url = urls.first {
+                DispatchQueue.main.async {
+                    self.parent.selectedFile = url
+                    self.parent.onFileSelected(url)
+                    self.parent.isPresented = false
+                }
+            }
         }
         
         func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            parent.isPresented = false
-            parent.onFileSelected(nil)
+            print("📝 取消选择")
+            DispatchQueue.main.async {
+                self.parent.isPresented = false
+                self.parent.onFileSelected(nil)
+            }
         }
     }
 }
 
-// 📌 `DiaryEntry` 结构体
-struct DiaryEntry {
-    let date: Date
-    let title: String
-    let body: String
+// 添加 DateFormatter 扩展
+private extension DateFormatter {
+    static let yyyyMMdd: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = TimeZone.current
+        formatter.locale = Locale(identifier: "zh_CN")
+        return formatter
+    }()
 }
+
+// 📌 `
