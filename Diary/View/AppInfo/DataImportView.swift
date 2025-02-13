@@ -12,10 +12,11 @@ struct DataImportView: View {
 
     var body: some View {
         ScrollView {
+            Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
+                .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
             VStack(spacing: 10) {
-                Spacer()
-          
-
+            Spacer()
+            .padding(.init(top: 60, leading: 120, bottom: 60, trailing: 120)) // 增加一些内边距，让按钮更好看
             Button("选择文件") {
                 isImporting = true
             }
@@ -34,8 +35,6 @@ struct DataImportView: View {
           }
         .navigationTitle("导入日记数据")
         .padding(30)
-        .background(Color.Neumorphic.main)
-        .edgesIgnoringSafeArea(.all)
     }
 
     private func importData(fileURL: URL?) {
