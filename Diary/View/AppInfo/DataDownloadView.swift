@@ -157,24 +157,28 @@ Button(action: {  downloadData(format: selectedFormat)
 
    private func saveFile(content: String, format: FileFormat) {
         let fileName = "DiaryData.\(format.rawValue.lowercased())"
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fileURL = documentsDirectory.appendingPathComponent(fileName)
-
+        // 使用临时目录
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent(fileName)
+        
         do {
+            // 1. 写入文件到临时目录
             try content.write(to: fileURL, atomically: true, encoding: .utf8)
-            print("File saved to \(fileURL)")
-
-            // 使用 UIActivityViewController 显示分享选项
+            print("✅ 文件已保存到临时目录: \(fileURL)")
+            
+            // 2. 使用 UIActivityViewController 显示分享选项
             let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
-
-            // 找到当前视图控制器并呈现 activityViewController
-            if let viewController = UIApplication.shared.windows.first?.rootViewController {
-                viewController.present(activityViewController, animated: true, completion: nil)
+            
+            // 3. 在主线程中显示分享界面
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let rootViewController = windowScene.windows.first?.rootViewController {
+                DispatchQueue.main.async {
+                    rootViewController.present(activityViewController, animated: true, completion: nil)
+                }
             }
-
         } catch {
-            print("Error saving file: \(error)")
-            // TODO: Show error alert
+            print("❌ 保存文件失败: \(error)")
+            bannerState.show(of: .error(message: "导出失败：\(error.localizedDescription)"))
         }
     }
       }

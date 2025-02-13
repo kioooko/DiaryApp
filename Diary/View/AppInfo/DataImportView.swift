@@ -11,17 +11,20 @@ struct DataImportView: View {
     @State private var selectedFile: URL?
 
     var body: some View {
-        ScrollView {
-            Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
+     ZStack {
+                 Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
                 .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
             VStack(spacing: 10) {
-            Spacer()
-            .padding(.init(top: 60, leading: 120, bottom: 60, trailing: 120)) // 增加一些内边距，让按钮更好看
             Button("选择文件") {
                 isImporting = true
             }
             .disabled(isImporting)
-
+            .padding(.init(top: 60, leading: 120, bottom: 60, trailing: 120)) // 增加一些内边距，让按钮更好看
+ .overlay( // 添加虚线边框
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(style: StrokeStyle(lineWidth: 2, dash: [5])) // 2px宽度，虚线间隔 5
+                    .foregroundColor(.gray) // 虚线颜色
+            )
             if isImporting {
                 FilePicker(isPresented: $isImporting, selectedFile: $selectedFile, onFileSelected: importData)
             }
@@ -30,11 +33,9 @@ struct DataImportView: View {
                 Text("已选择文件：\(selectedFile.lastPathComponent)")
                     .padding()
             }
-              Spacer()
         }
           }
         .navigationTitle("导入日记数据")
-        .padding(30)
     }
 
     private func importData(fileURL: URL?) {

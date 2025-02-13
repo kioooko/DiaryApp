@@ -113,7 +113,7 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         .padding()
         iCloudLayout(
         title: "iCloud已连接",
-        message: "iCloud已连接。iCloud中保存了数据。如果删除应用程序或更改设备，请使用相同的Apple ID。"
+        message: "iCloud已连接。iCloud中保存了数据。如果删除应用程序或更改设备,请使用相同的Apple ID。" 
         )
     }
       .modifier(NeumorphicCardModifier())
@@ -193,7 +193,6 @@ private extension AppInfoView { // AppInfoView 的私有扩展
 var DataManage: some View {
   NavigationLink{
      DataDownloadView()
-                 //   Text("跳转到详情页面")
     } label: {
        rowTitle(icon: "square.and.arrow.down", Color: .yellow, description: "日记数据管理")
     }
@@ -239,7 +238,6 @@ var DataManage: some View {
                 .foregroundColor(Color) // 设置图标颜色
                 .padding() // 添加内边距
                 .clipShape(Circle()) // 将背景裁剪为圆形
-               // .softOuterShadow(offset: 8, radius: 8) // 添加柔和的外部阴影
                 .softInnerShadow(Circle(), spread: 0.6)
             // 描述文本
             Text(description)
@@ -249,10 +247,7 @@ var DataManage: some View {
         }
     }
 
-   // }
-
     // MARK: Action
-
     func fetchConsecutiveDays() { // 获取连续记录天数
         do {
             let consecutiveDays = try Item.calculateConsecutiveDays()
@@ -295,10 +290,6 @@ var DataManage: some View {
         }
         .padding(.horizontal) // 为整个 HStack 添加水平外边距
     }
-
-
-
-
 }
 
 struct NeumorphicCardModifier: ViewModifier {
