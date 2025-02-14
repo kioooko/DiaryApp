@@ -6,33 +6,33 @@ struct ExpenseContent: View {
     let item: Item
     
     var body: some View {
-        VStack(spacing: 20) {
-            HStack {
-                Text(item.isExpense ? "支出" : "收入")
-                    .font(.system(size: 18))
-                Spacer()
+        HStack(alignment: .center, spacing: 20) {
+            // 左侧：收入/支出
+            Text(item.isExpense ? "支出" : "收入")
+                .font(.system(size: 18))
+            
+            Spacer()
+            
+            // 右侧：金额、备注和时间
+            VStack(alignment: .trailing, spacing: 8) {
                 Text(String(format: "¥%.2f", item.amount))
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(item.isExpense ? .red : .green)
-            }
-            
-            if let date = item.date {
-                HStack {
-                      Spacer()
-                    Text("记录时间：")
-                        .foregroundColor(.gray)
-                    Text(date, style: .date)
-                        .foregroundColor(.gray)
-                    Text(date, style: .time)
+                
+                if let note = item.note, !note.isEmpty {
+                    Text(note)
+                        .font(.caption)
                         .foregroundColor(.gray)
                 }
-                .font(.caption)
-            }
-            
-            if let body = item.body, !body.isEmpty {
-                Text(body)
-                    .font(.subheadline)
+                
+                if let date = item.date {
+                    HStack(spacing: 4) {
+                        Text(date, style: .date)
+                        Text(date, style: .time)
+                    }
+                    .font(.caption)
                     .foregroundColor(.gray)
+                }
             }
         }
         .padding()
