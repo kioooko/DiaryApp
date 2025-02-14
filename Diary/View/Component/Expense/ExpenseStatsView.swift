@@ -1,86 +1,88 @@
 import SwiftUI
-import Charts
+import CoreData
 
 struct ExpenseStatsView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \ExpenseItem.date, ascending: false)],
-        predicate: NSPredicate(format: "date >= %@ AND date <= %@", 
+        sortDescriptors: [NSSortDescriptor(keyPath: \Item.date, ascending: false)],
+        predicate: NSPredicate(format: "date >= %@ AND date <= %@ AND amount != 0", 
                              Date().startOfDay as CVarArg,
                              Date().endOfDay as CVarArg)
-    ) private var items: FetchedResults<ExpenseItem>
+    ) private var items: FetchedResults<Item>
     
     var body: some View {
-        List {
-            // 今日统计
-            Section("今日收支") {
-                HStack {
-                    Text("收入")
-                    Spacer()
-                    Text("¥\(todayIncome, specifier: "%.2f")")
-                        .foregroundColor(.green)
-                }
-                
-                HStack {
-                    Text("支出")
-                    Spacer()
-                    Text("¥\(todayExpense, specifier: "%.2f")")
-                        .foregroundColor(.red)
-                }
-                
-                HStack {
-                    Text("结余")
-                    Spacer()
-                    Text("¥\(todayBalance, specifier: "%.2f")")
-                        .foregroundColor(todayBalance >= 0 ? .green : .red)
-                }
+        NavigationView {
+            VStack {
+                summarySection
+                recordsSection
             }
-            
-            // 支出饼图
-            Section("支出分布") {
-                if !expenseData.isEmpty {
-                    Chart(expenseData) { item in
-                        SectorMark(
-                            angle: .value("Amount", item.amount),
-                            innerRadius: .ratio(0.618),
-                            angularInset: 1.5
-                        )
-                        .foregroundStyle(by: .value("Category", item.category))
-                    }
-                    .frame(height: 200)
-                } else {
-                    Text("暂无支出数据")
-                        .foregroundColor(.gray)
-                }
+            .navigationTitle("记账统计")
+            .background(Color.Neumorphic.main)
+        }
+    }
+    
+    private var summarySection: some View {
+        List {
+            Section("今日收支") {
+                incomeRow
+                expenseRow
+                balanceRow
             }
         }
     }
     
-    private var todayIncome: Double {
+    private var recordsSection: some View {
+        ExpenseListView()
+    }
+    
+    private var incomeRow: some View {
+        HStack {
+            Text("收入")
+            Spacer()
+            Text("¥\(calculateIncome(), specifier: "%.2f")")
+                .foregroundColor(.green)
+        }
+    }
+    
+    private var expenseRow: some View {
+        HStack {
+            Text("支出")
+            Spacer()
+            Text("¥\(calculateExpense(), specifier: "%.2f")")
+                .foregroundColor(.red)
+        }
+    }
+    
+    private var balanceRow: some View {
+        let balance = calculateBalance()
+        return HStack {
+            Text("结余")
+            Spacer()
+            Text("¥\(balance, specifier: "%.2f")")
+                .foregroundColor(balance >= 0 ? .green : .red)
+        }
+    }
+    
+    private func calculateIncome() -> Double {
         items.filter { !$0.isExpense }.map { $0.amount }.reduce(0, +)
     }
     
-    private var todayExpense: Double {
+    private func calculateExpense() -> Double {
         items.filter { $0.isExpense }.map { $0.amount }.reduce(0, +)
     }
     
-    private var todayBalance: Double {
-        todayIncome - todayExpense
-    }
-    
-    private var expenseData: [ExpenseChartData] {
-        Dictionary(grouping: items.filter { $0.isExpense }) { $0.category ?? "其他" }
-            .map { category, items in
-                ExpenseChartData(
-                    category: category,
-                    amount: items.map { $0.amount }.reduce(0, +)
-                )
-            }
-            .filter { $0.amount > 0 }
+    private func calculateBalance() -> Double {
+        calculateIncome() - calculateExpense()
     }
 }
 
-struct ExpenseChartData: Identifiable {
-    let id = UUID()
-    let category: String
-    let amount: Double
+#if DEBUG
+struct ExpenseStatsView_Previews: PreviewProvider {
+    static var previews: some View {
+        let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        return ExpenseStatsView()
+            .environment(\.managedObjectContext, context)
+    }
 }
+#endif

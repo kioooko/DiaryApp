@@ -1,24 +1,32 @@
 import SwiftUI
 import Neumorphic
+import CoreData
 
 struct ExpenseContent: View {
-    @ObservedObject var item: ExpenseItem
+    let item: Item
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(item.category ?? "其他")
+        VStack(spacing: 20) {
+            HStack {
+                Text(item.isExpense ? "支出" : "收入")
                     .font(.system(size: 18))
-                if let note = item.note, !note.isEmpty {
-                    Text(note)
-                        .font(.caption)
+                Spacer()
+                Text(String(format: "¥%.2f", item.amount))
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(item.isExpense ? .red : .green)
+            }
+            
+            if let date = item.date {
+                HStack {
+                    Text("记录时间：")
+                        .foregroundColor(.gray)
+                    Text(date, style: .date)
+                        .foregroundColor(.gray)
+                    Text(date, style: .time)
                         .foregroundColor(.gray)
                 }
+                .font(.caption)
             }
-            Spacer()
-            Text(String(format: "%.2f", item.amount))
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(item.isExpense ? .red : .green)
         }
         .padding()
         .background(Color.Neumorphic.main)
@@ -26,3 +34,19 @@ struct ExpenseContent: View {
         .softOuterShadow()
     }
 }
+
+#if DEBUG
+struct ExpenseContent_Previews: PreviewProvider {
+    static var previews: some View {
+        let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        let item = Item(context: context)
+        item.amount = 100
+        item.isExpense = true
+        item.date = Date()
+        
+        return ExpenseContent(item: item)
+            .padding()
+            .background(Color.Neumorphic.main)
+    }
+}
+#endif

@@ -2,15 +2,12 @@ import SwiftUI
 import Neumorphic
 
 struct ExpenseEditor: View {
-    @EnvironmentObject private var bannerState: BannerState
+    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var bannerState: BannerState
     
     @State private var amount: String = ""
     @State private var isExpense: Bool = true
-    @State private var category: String = "其他"
-    @State private var note: String = ""
-    
-    let categories = ["餐饮", "交通", "购物", "娱乐", "其他"]
     
     var body: some View {
         NavigationView {
@@ -37,22 +34,6 @@ struct ExpenseEditor: View {
                     .background(Color.Neumorphic.main)
                     .cornerRadius(10)
                     .softOuterShadow()
-                    
-                    // 分类选择
-                    Picker("分类", selection: $category) {
-                        ForEach(categories, id: \.self) { category in
-                            Text(category).tag(category)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .padding()
-                    
-                    // 备注输入
-                    TextField("备注", text: $note)
-                        .padding()
-                        .background(Color.Neumorphic.main)
-                        .cornerRadius(10)
-                        .softOuterShadow()
                     
                     Spacer()
                 }
@@ -81,13 +62,15 @@ struct ExpenseEditor: View {
             return
         }
         
+        let item = Item(context: viewContext)
+        item.amount = amountValue
+        item.isExpense = isExpense
+        item.date = Date()
+        item.createdAt = Date()
+        item.updatedAt = Date()
+        
         do {
-            try ExpenseItem.create(
-                amount: amountValue,
-                isExpense: isExpense,
-                category: category,
-                note: note
-            )
+            try viewContext.save()
             dismiss()
             bannerState.show(of: .success(message: "记账成功"))
         } catch {
@@ -95,3 +78,12 @@ struct ExpenseEditor: View {
         }
     }
 }
+
+#if DEBUG
+struct ExpenseEditor_Previews: PreviewProvider {
+    static var previews: some View {
+        ExpenseEditor()
+            .environmentObject(BannerState())
+    }
+}
+#endif

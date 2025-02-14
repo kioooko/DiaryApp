@@ -202,7 +202,9 @@ private extension DiaryDetailView {
         case .checkList:
             checkList
                 .padding(.bottom, 100)
-               // .foregroundColor(.gray)
+        case .expense:
+            ExpenseContent(item: diaryDataStore.originalItem!)
+                .padding(.bottom, 100)
         }
     }
 

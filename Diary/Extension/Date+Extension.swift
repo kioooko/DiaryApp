@@ -23,4 +23,15 @@ public extension Date {
         }
         return DateInterval(start: startOfMonth, end: endOfMonth)
     }
+
+    var startOfDay: Date {
+        Calendar.current.startOfDay(for: self)
+    }
+    
+    var endOfDay: Date {
+        var components = DateComponents()
+        components.day = 1
+        components.second = -1
+        return Calendar.current.date(byAdding: components, to: startOfDay) ?? self
+    }
 }

@@ -14,7 +14,6 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @Environment(\.managedObjectContext) var viewContext // 获取 Core Data 的上下文
     @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate // 注入 DiaryAppSceneDelegate 对象
     @EnvironmentObject private var bannerState: BannerState // 注入 BannerState 对象
-  //  @EnvironmentObject private var textOptions: TextOptions // 注入 TextOptions 对象
     @ObservedObject var apiKeyManager: APIKeyManager
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
@@ -26,7 +25,6 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @State private var scrollToItem: Item? = nil // 滚动到的日记条目
     @State private var diaryListInterval: DateInterval = Date.currentMonthInterval! // 当前显示的日记时间间隔
     @State private var dateItemCount: [Date: Int] = [:] // 每个日期的日记条目计数
-    @State private var isExpenseEditorPresented = false
 
     private let calendar = Calendar.current // 当前日历
     private var dateFormatter: DateFormatter = { // 日期格式化器
@@ -82,18 +80,6 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
                                 break
                             }
                         }
-                    }
-                    Button {
-                        isExpenseEditorPresented = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .frame(width: 60, height: 60)
-                            .foregroundColor(.blue)
-                    }
-                    .padding()
-                    .sheet(isPresented: $isExpenseEditorPresented) {
-                        ExpenseEditor()
                     }
                 }
                 FloatingButton {

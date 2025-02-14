@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */; };
+		0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0802D5EDFA800446520 /* ExpenseEditor.swift */; };
+		0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
+		0709B0892D5EDFA800446520 /* ExpenseStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */; };
+		0709B08A2D5EDFA800446520 /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0802D5EDFA800446520 /* ExpenseEditor.swift */; };
+		0709B08B2D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
+		0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B08C2D5F156D00446520 /* ExpenseListView.swift */; };
+		0709B08E2D5F156D00446520 /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B08C2D5F156D00446520 /* ExpenseListView.swift */; };
 		0717EE8A2D0983F200C19355 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0717EE892D0983F200C19355 /* GoogleService-Info.plist */; };
 		0717EE8B2D0983F200C19355 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0717EE892D0983F200C19355 /* GoogleService-Info.plist */; };
 		072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
@@ -139,6 +147,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0709B07F2D5EDFA800446520 /* ExpenseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseContent.swift; sourceTree = "<group>"; };
+		0709B0802D5EDFA800446520 /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
+		0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseStatsView.swift; sourceTree = "<group>"; };
+		0709B08C2D5F156D00446520 /* ExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListView.swift; sourceTree = "<group>"; };
 		0717EE892D0983F200C19355 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		072082AC2D06DDD7001AAE75 /* meeet.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = meeet.splineswift; sourceTree = "<group>"; };
 		072082AF2D081FE9001AAE75 /* Nextimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Nextimg.png; sourceTree = "<group>"; };
@@ -264,6 +276,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0709B0832D5EDFA800446520 /* Expense */ = {
+			isa = PBXGroup;
+			children = (
+				0709B07F2D5EDFA800446520 /* ExpenseContent.swift */,
+				0709B0802D5EDFA800446520 /* ExpenseEditor.swift */,
+				0709B08C2D5F156D00446520 /* ExpenseListView.swift */,
+				0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */,
+			);
+			path = Expense;
+			sourceTree = "<group>";
+		};
 		F51446512A5C1B05002DA8CC /* ci_scripts */ = {
 			isa = PBXGroup;
 			children = (
@@ -535,6 +558,7 @@
 				F5562C3E2A5FC379006AECC5 /* ImageViewer.swift */,
 				F5BF443E2A53170E00217119 /* SafariView.swift */,
 				F5BF443A2A5059F100217119 /* XButton.swift */,
+				0709B0832D5EDFA800446520 /* Expense */,
 			);
 			path = Component;
 			sourceTree = "<group>";
@@ -704,6 +728,7 @@
 				F5358D1229F92DDD005FD6C8 /* NotificationService.swift in Sources */,
 				F5562C3F2A5FC379006AECC5 /* ImageViewer.swift in Sources */,
 				07E13D242D1D5346008C13A9 /* PassThroughWindow.swift in Sources */,
+				0709B08E2D5F156D00446520 /* ExpenseListView.swift in Sources */,
 				F5BE68822A6FDF1000A92F00 /* ShareCardBackgroundColorList.swift in Sources */,
 				F5BE688D2A73968C00A92F00 /* ImageSaver.swift in Sources */,
 				F5358D532A0698BE005FD6C8 /* WeatherSelectButton.swift in Sources */,
@@ -722,6 +747,9 @@
 				F5737D3A2A28882000D706E8 /* HomeTopCard.swift in Sources */,
 				075EB2382D12A5040039A3B9 /* APIKeyManager.swift in Sources */,
 				F56FF3952BF62C5100C0D1D3 /* Day.swift in Sources */,
+				0709B0892D5EDFA800446520 /* ExpenseStatsView.swift in Sources */,
+				0709B08A2D5EDFA800446520 /* ExpenseEditor.swift in Sources */,
+				0709B08B2D5EDFA800446520 /* ExpenseContent.swift in Sources */,
 				F5737D492A303EBA00D706E8 /* CheckList.swift in Sources */,
 				F5358D512A054D05005FD6C8 /* DiaryDetailView.swift in Sources */,
 				F5358D3A2A00BB1E005FD6C8 /* FloatingActionButton.swift in Sources */,
@@ -774,6 +802,10 @@
 				07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
 				07E13D1E2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */,
 				07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
+				0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */,
+				0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */,
+				0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */,
+				0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */,
 				07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */,
 				07E13D262D1D5354008C13A9 /* DiaryApp.swift in Sources */,
 				075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */,

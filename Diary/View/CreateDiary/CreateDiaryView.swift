@@ -122,18 +122,19 @@ private extension CreateDiaryView {
                 }
             }
         case .checkList:
-           VStack(spacing: 60) {
+            VStack(spacing: 60) {
                 CheckList(diaryDataStore: diaryDataStore)
-
+                
                 NavigationLink {
                     CheckListEditor()
                 } label: {
-
-Spacer() // 底部 Spacer
+                    Spacer()
                     CheckListEditButton()
-                    Spacer() // 底部 Spacer
+                    Spacer()
                 }
             }
+        case .expense:
+            ExpenseEditor()
         }
     }
 
