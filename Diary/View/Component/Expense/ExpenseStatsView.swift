@@ -12,28 +12,54 @@ struct ExpenseStatsView: View {
     ) private var items: FetchedResults<Item>
     
     var body: some View {
-        NavigationView {
-            VStack {
-                summarySection
-                recordsSection
+        NavigationStack {
+            ZStack {
+                Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    List {
+                        Section("今日收支") {
+                            incomeRow
+                            expenseRow
+                            balanceRow
+                        }
+                        
+                        Section("收支明细") {
+                            ForEach(items) { item in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        Text(item.isExpense ? "支出" : "收入")
+                                        Spacer()
+                                        Text("¥\(item.amount, specifier: "%.2f")")
+                                            .foregroundColor(item.isExpense ? .red : .green)
+                                    }
+                                    
+                                    if let note = item.note, !note.isEmpty {
+                                        Text("备注：\(note)")
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+                                    
+                                    if let date = item.date {
+                                        Text(date, style: .date)
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                            }
+                        }
+                        .listRowBackground(
+                            RoundedRectangle(cornerRadius: 0)
+                                .fill(Color.Neumorphic.main)
+                        )
+                    }
+                    .scrollContentBackground(.hidden)
+                    .background(Color.Neumorphic.main)
+                }
             }
-            .navigationTitle("记账统计")
-            .background(Color.Neumorphic.main)
+            .navigationTitle("账单统计")
+            .navigationBarTitleDisplayMode(.inline)
         }
-    }
-    
-    private var summarySection: some View {
-        List {
-            Section("今日收支") {
-                incomeRow
-                expenseRow
-                balanceRow
-            }
-        }
-    }
-    
-    private var recordsSection: some View {
-        ExpenseListView()
     }
     
     private var incomeRow: some View {

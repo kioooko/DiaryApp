@@ -18,6 +18,7 @@ struct ExpenseContent: View {
             
             if let date = item.date {
                 HStack {
+                      Spacer()
                     Text("记录时间：")
                         .foregroundColor(.gray)
                     Text(date, style: .date)
@@ -26,6 +27,12 @@ struct ExpenseContent: View {
                         .foregroundColor(.gray)
                 }
                 .font(.caption)
+            }
+            
+            if let body = item.body, !body.isEmpty {
+                Text(body)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
             }
         }
         .padding()

@@ -14,6 +14,7 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
 
      FetchRequestにより、コンテキストの変化に応じて自動取得を行う
      */
+    @Environment(\.managedObjectContext) private var viewContext
     @FetchRequest private var items: FetchedResults<Item> // 使用 FetchRequest 自动获取数据，items 是获取的结果
     @Binding var scrollToItem: Item? // 绑定变量，用于滚动到特定的日记项
     @State var selectedItem: Item? = nil // 状态变量，存储当前选中的日记项
@@ -38,14 +39,23 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
         } else {
             LazyVStack(spacing: 24) { // 使用 LazyVStack 显示日记项，设置项之间的间距
                 ForEach(items) { item in // 遍历每个日记项
-                    DiaryItem(item: item) // 显示单个日记项
-                        .id(item.objectID) // 设置唯一标识符
-                        .padding(.horizontal, 20) // 设置水平填充
-                        .onTapGesture { // 添加点击手势
-                            // NavigationLinkだと、DiaryItem上でのアクションではNavigationLinkが優先されます。
-                            // 本Viewの使用箇所であるHomeではDiaryItem上で左右スワイプを効かせたかったので、tap gestureにしています。
-                            selectedItem = item // 设置选中的日记项
-                        }
+                    if item.amount != 0 {
+                        // 记账展示
+                        ExpenseContent(item: item)
+                            .id(item.objectID)
+                            .padding(.horizontal, 20)
+                            .onTapGesture {
+                                selectedItem = item
+                            }
+                    } else {
+                        // 日记展示（保持原有样式）
+                        DiaryItem(item: item)
+                            .id(item.objectID)
+                            .padding(.horizontal, 20)
+                            .onTapGesture {
+                                selectedItem = item
+                            }
+                    }
                 }
             }
             .padding(.top, 4) // 设置顶部填充
@@ -58,7 +68,15 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
                     selectedItem = nil // 重置选中的日记项
                 }
             )) {
-                DiaryDetailView(diaryDataStore: .init(item: selectedItem)) // 显示日记详情视图
+                if let selectedItem = selectedItem {
+                    if selectedItem.amount != 0 {
+                        // 记账详情
+                        ExpenseEditor(editingItem: selectedItem)
+                    } else {
+                        // 日记详情
+                        DiaryDetailView(diaryDataStore: .init(item: selectedItem))
+                    }
+                }
             }
         }
     }

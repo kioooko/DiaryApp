@@ -17,7 +17,7 @@ public class Item: NSManagedObject, Identifiable {
     @NSManaged public var amount: Double
     @NSManaged public var isExpense: Bool
     @NSManaged public var expenseCategory: String?
-    @NSManaged public var expenseNote: String?
+    @NSManaged public var note: String?
 
 }
 
@@ -33,6 +33,11 @@ extension Item {
         get { primitiveValue(forKey: "isExpense") as? Bool ?? true }
         set { setPrimitiveValue(newValue, forKey: "isExpense") }
     }
+     
+    var note: String? {
+        get { primitiveValue(forKey: "note") as? String }
+        set { setPrimitiveValue(newValue, forKey: "note") }
+    }
     
     // 创建记账记录
     static func createExpenseItem(
@@ -43,6 +48,7 @@ extension Item {
         let item = Item(context: context)
         item.amount = amount
         item.isExpense = isExpense
+        item.note = note
         item.date = Date()
         item.createdAt = Date()
         item.updatedAt = Date()
@@ -57,6 +63,7 @@ extension Item {
         item.date = Date()
         item.amount = 100
         item.isExpense = true
+        item.note = "预览备注"
         return item
     }
 }
@@ -74,6 +81,7 @@ extension Item {
         item.body = "预览内容"
         item.amount = 100
         item.isExpense = true
+        item.note = "预览备注"
         return item
     }
     
@@ -88,6 +96,7 @@ extension Item {
         item.body = "预览内容"
         item.amount = Double.random(in: 1...1000)
         item.isExpense = Bool.random()
+        item.note = "预览备注"
         return item
     }
 }

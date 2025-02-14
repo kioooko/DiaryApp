@@ -51,6 +51,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                     
      
                     Section("支持") { // 支持相关信息部分
+                        Expense // 显示记账指南
                         ChatAIGuide // 显示ChatAI功能
                         DataManage//导入，导出等数据管理
                         inquiry // 显示联系选项
@@ -181,6 +182,13 @@ private extension AppInfoView { // AppInfoView 的私有扩展
             }
         }
     }
+var Expense: some View {
+    NavigationLink{
+        ExpenseStatsView()
+    } label: {
+        rowTitle(icon: "dollarsign.circle", Color: .green, description: "记账本")
+    }
+}
 
     var ChatAIGuide: some View { // 显示ChatAI功能
         NavigationLink {

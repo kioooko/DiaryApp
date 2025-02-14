@@ -15,6 +15,8 @@
 		0709B08B2D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
 		0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B08C2D5F156D00446520 /* ExpenseListView.swift */; };
 		0709B08E2D5F156D00446520 /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B08C2D5F156D00446520 /* ExpenseListView.swift */; };
+		0709B0902D5F250200446520 /* DiaryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B08F2D5F250200446520 /* DiaryRow.swift */; };
+		0709B0912D5F250200446520 /* DiaryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B08F2D5F250200446520 /* DiaryRow.swift */; };
 		0717EE8A2D0983F200C19355 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0717EE892D0983F200C19355 /* GoogleService-Info.plist */; };
 		0717EE8B2D0983F200C19355 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0717EE892D0983F200C19355 /* GoogleService-Info.plist */; };
 		072082AD2D06DDD7001AAE75 /* meeet.splineswift in Resources */ = {isa = PBXBuildFile; fileRef = 072082AC2D06DDD7001AAE75 /* meeet.splineswift */; };
@@ -151,6 +153,7 @@
 		0709B0802D5EDFA800446520 /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
 		0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseStatsView.swift; sourceTree = "<group>"; };
 		0709B08C2D5F156D00446520 /* ExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListView.swift; sourceTree = "<group>"; };
+		0709B08F2D5F250200446520 /* DiaryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryRow.swift; sourceTree = "<group>"; };
 		0717EE892D0983F200C19355 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		072082AC2D06DDD7001AAE75 /* meeet.splineswift */ = {isa = PBXFileReference; lastKnownFileType = file; path = meeet.splineswift; sourceTree = "<group>"; };
 		072082AF2D081FE9001AAE75 /* Nextimg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Nextimg.png; sourceTree = "<group>"; };
@@ -551,6 +554,7 @@
 				F53E3A722A087ADE0064CB62 /* DiaryImageView.swift */,
 				F54395E32A47F43300C74D59 /* DiaryTextEditor.swift */,
 				F5358D2F2A000DCC005FD6C8 /* DiaryItem.swift */,
+				0709B08F2D5F250200446520 /* DiaryRow.swift */,
 				F53E3A842A0A1F510064CB62 /* DiaryList.swift */,
 				F56FF3A02C0AB35300C0D1D3 /* DiaryText.swift */,
 				F568BB6A2A3B88E2000330E1 /* DiaryContentType.swift */,
@@ -759,6 +763,7 @@
 				F5358CC229F6DFE5005FD6C8 /* Date+Extension.swift in Sources */,
 				F576D3802A433DC10062650A /* IconWithRoundedBackground.swift in Sources */,
 				F53E3A732A087ADE0064CB62 /* DiaryImageView.swift in Sources */,
+				0709B0912D5F250200446520 /* DiaryRow.swift in Sources */,
 				F5BF44382A4F4B7B00217119 /* CheckListTextEditor.swift in Sources */,
 				F5358D322A000E5D005FD6C8 /* Color.swift in Sources */,
 				075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */,
@@ -811,6 +816,7 @@
 				075EB2312D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				07414B282D01B2B200D9AB42 /* SplineLaunchAnimationView.swift in Sources */,
 				07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
+				0709B0902D5F250200446520 /* DiaryRow.swift in Sources */,
 				075EB2372D12A5040039A3B9 /* APIKeyManager.swift in Sources */,
 				07536BC02D5C97B300E23444 /* DataImportView.swift in Sources */,
 				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
