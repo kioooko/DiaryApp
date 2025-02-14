@@ -1,5 +1,6 @@
 import SwiftUI
 import CoreData
+import Neumorphic
 
 struct ExpenseStatsView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -23,6 +24,7 @@ struct ExpenseStatsView: View {
                             expenseRow
                             balanceRow
                         }
+
                         
                         Section("收支明细") {
                             ForEach(items) { item in
