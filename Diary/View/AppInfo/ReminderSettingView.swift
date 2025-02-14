@@ -15,6 +15,7 @@ struct ReminderSettingView: View {
 
     @State private var selectedDate: Date = Date()
     @State private var showRequestNotificationPermissionAlert = false
+    @State private var isNotificationEnabled: Bool = false
 
     let cornerRadius : CGFloat = 15
 
@@ -23,17 +24,32 @@ struct ReminderSettingView: View {
             VStack(spacing: 16) {
                 Text("让文字记录成为你的习惯吧👋")
                     .font(.system(size: 16))
-                hourAndMinutePicker
-                    .padding(.top, 50)
-                saveButton
-                if notificationSetting.isSetNotification {
-                    deleteButton
+                Toggle("开启每日提醒", isOn: $isNotificationEnabled)
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(Color.Neumorphic.main)
+                            .softOuterShadow()
+                    )
+                    .onChange(of: isNotificationEnabled) { newValue in
+                        if !newValue {
+                            Task {
+                                await notificationSetting.delete()
+                            }
+                            bannerState.show(of: .success(message: "通知已被设为未启用状态🗑️"))
+                        }
+                    }
+                if isNotificationEnabled {
+                    hourAndMinutePicker
+                        .padding(.top, 20)
+                    saveButton
                 }
             }
             .padding(20)
         }
         .background(Color.Neumorphic.main.ignoresSafeArea())
         .onAppear {
+            isNotificationEnabled = notificationSetting.isSetNotification
             if let date = notificationSetting.setNotificationDate {
                 selectedDate = date
             }
@@ -72,19 +88,7 @@ private extension ReminderSettingView {
         Button(actionWithHapticFB: {
             save()
         }, label: {
-            Text("设置").fontWeight(.bold)
-        })
-        .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
-    }
-
-    var deleteButton: some View {
-        Button(actionWithHapticFB: {
-            Task {
-                await notificationSetting.delete()
-            }
-            bannerState.show(of: .success(message: "通知已被设为未启用状态🗑️"))
-        }, label: {
-            Text("关闭通知")
+            Text("保存").fontWeight(.bold)
         })
         .softButtonStyle(RoundedRectangle(cornerRadius: cornerRadius))
     }
