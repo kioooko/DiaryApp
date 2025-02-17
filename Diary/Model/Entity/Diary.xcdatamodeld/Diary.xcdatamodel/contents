@@ -18,7 +18,7 @@
         <attribute name="isBookmarked" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isExpense" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="note" optional="YES" attributeType="String"/>
-        <attribute name="title" optional="YES" attributeType="String" minValueString="1" maxValueString="10"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="weather" optional="YES" attributeType="String"/>
         <relationship name="checkListItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CheckListItem" inverseName="diary" inverseEntity="CheckListItem"/>

@@ -19,6 +19,10 @@ public class Item: NSManagedObject, Identifiable {
     @NSManaged public var expenseCategory: String?
     @NSManaged public var note: String?
 
+    public override func validateTitle(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
+        // 移除标题验证，允许为空
+        return
+    }
 }
 
 // MARK: - 记账相关扩展

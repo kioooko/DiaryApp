@@ -5,12 +5,15 @@ import UIKit
 
 struct DataImportView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var bannerState: BannerState
     @State private var isImporting: Bool = false
     @State private var importProgress: Double = 0
     @State private var selectedFile: URL?
     @State private var isDropTargeted: Bool = false
-    @State private var importedCount: Int = 0
+    @State private var importedCount = 0
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         ZStack {
@@ -111,6 +114,9 @@ struct DataImportView: View {
             }
         }
         .navigationTitle("导入日记数据")
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("导入结果"), message: Text(alertMessage), dismissButton: .default(Text("确定")))
+        }
     }
     
     private func handleFileSelection(_ url: URL) {
@@ -255,24 +261,34 @@ struct DataImportView: View {
                 }
             }
             
-            successCount += 1
+            do {
+                try viewContext.save()
+                successCount += 1
+            } catch {
+                print("❌ 导入单条记录失败: \(error)")
+                // 继续处理下一条记录
+                viewContext.rollback()
+            }
         }
         
-        do {
-            try viewContext.save()
-            importedCount = successCount
+        // 更新导入结果
+        importedCount = successCount
+        if successCount > 0 {
             showImportResult(success: true, message: "成功导入 \(successCount) 条记录")
-        } catch {
-            print("❌ 保存失败: \(error)")
-            showImportResult(success: false, message: "保存失败：\(error.localizedDescription)")
+        } else {
+            showImportResult(success: false, message: "没有成功导入任何记录")
         }
     }
     
     private func showImportResult(success: Bool, message: String) {
-        if success {
-            bannerState.show(of: .success(message: message))
-        } else {
-            bannerState.show(of: .error(message: message))
+        DispatchQueue.main.async {
+            // 即使有验证错误，只要有成功导入的记录就显示成功信息
+            if importedCount > 0 {
+                alertMessage = "成功导入 \(importedCount) 条记录"
+            } else {
+                alertMessage = message
+            }
+            showAlert = true
         }
     }
     
