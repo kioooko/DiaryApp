@@ -9,8 +9,8 @@ import SwiftUI
 
 @main
 struct DiaryApp: App {
-    @UIApplicationDelegateAdaptor var delegate: DiaryAppDelegate
-
+    @UIApplicationDelegateAdaptor(DiaryAppDelegate.self) var appDelegate
+    
     @StateObject private var bannerState = BannerState()
     @StateObject private var coreDataProvider = CoreDataProvider.shared
     @StateObject private var textOptions: TextOptions = .makeUserOptions()

@@ -34,11 +34,13 @@ struct DataDownloadView: View {
     }
     
     var  NoticeText: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 30) {
             Text("导入日记仅支持过去导出的历史日记数据，格式为txt或者csv格式。")
-                .padding()
-                .foregroundColor(.gray)
-                .font(.system(size: 18))
+            .padding()
+            .foregroundColor(.gray)
+            .font(.system(size: 14))
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
         }
     }
 
@@ -62,10 +64,13 @@ var ImportData: some View { // 导入数据
 
      var  DownloadText: some View {
         VStack(spacing: 10) {
-            Text("您可以选择导出历史日记数据为txt或者csv格式。")
-                .padding()
+            Text("您可以选择导出历史数据为txt或者csv格式。")
                 .foregroundColor(.gray)
-                .font(.system(size: 18))
+                .font(.system(size: 14))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding()
+       
         }
     }
 
