@@ -131,30 +131,96 @@ Button(action: {  downloadData(format: selectedFormat)
     }
 
     private func convertToCSV(entries: [Item]) -> String {
-        // 使用与导入格式匹配的简单格式
-        var csvString = "日期,内容\n"
+        // CSV 头部，包含所有字段（包括图片）
+        var csvString = "日期,标题,内容,金额,是否支出,支出分类,支出备注,天气,是否收藏,图片,待办事项\n"
         
         for entry in entries {
-            // 确保日期格式与导入时的格式一致
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let date = entry.date.map { dateFormatter.string(from: $0) } ?? ""
             
-            // 合并标题和内容，确保没有逗号
-            var content = entry.title ?? ""
-            if let body = entry.body, !body.isEmpty {
-                content += content.isEmpty ? body : "\n\(body)"
-            }
-            content = content.replacingOccurrences(of: ",", with: "，")
+            // 处理基本字段，确保不含逗号
+            var fields = [String]()
+            fields.append(date)
+            fields.append((entry.title ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append((entry.body ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(String(entry.amount))
+            fields.append(entry.isExpense ? "是" : "否")
+            fields.append((entry.expenseCategory ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append((entry.expenseNote ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append((entry.weather ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(entry.isBookmarked ? "是" : "否")
             
-            csvString += "\(date),\(content)\n"
+            // 处理图片数据
+            let imageStr = entry.imageData?.base64EncodedString() ?? ""
+            fields.append(imageStr)
+            
+            // 处理待办事项
+            let checkListItems = (entry.checkListItems?.allObjects as? [CheckListItem])?.map { item in
+                let title = (item.title ?? "").replacingOccurrences(of: ",", with: "，")
+                let status = item.isCompleted ? "[✓]" : "[ ]"
+                return "\(status) \(title)"
+            }.joined(separator: "|") ?? ""
+            fields.append(checkListItems)
+            
+            // 添加一行记录
+            csvString += fields.joined(separator: ",") + "\n"
         }
+        
         return csvString
     }
 
     private func convertToTXT(entries: [Item]) -> String {
-        // 使用与 CSV 相同的格式，以确保一致性
-        return convertToCSV(entries: entries)
+        var txtString = ""
+        
+        for entry in entries {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let date = entry.date.map { dateFormatter.string(from: $0) } ?? ""
+            
+            // 基本信息
+            txtString += "日期: \(date)\n"
+            txtString += "标题: \(entry.title ?? "")\n"
+            txtString += "内容: \(entry.body ?? "")\n"
+            
+            // 记账信息
+            if entry.amount != 0 {
+                txtString += "金额: \(entry.amount)\n"
+                txtString += "类型: \(entry.isExpense ? "支出" : "收入")\n"
+                if let category = entry.expenseCategory, !category.isEmpty {
+                    txtString += "分类: \(category)\n"
+                }
+                if let note = entry.expenseNote, !note.isEmpty {
+                    txtString += "备注: \(note)\n"
+                }
+            }
+            
+            // 天气和收藏状态
+            if let weather = entry.weather, !weather.isEmpty {
+                txtString += "天气: \(weather)\n"
+            }
+            if entry.isBookmarked {
+                txtString += "已收藏\n"
+            }
+            
+            // 图片数据
+            if let imageData = entry.imageData {
+                txtString += "图片: \(imageData.base64EncodedString())\n"
+            }
+            
+            // 待办事项
+            if let checkListItems = entry.checkListItems?.allObjects as? [CheckListItem], !checkListItems.isEmpty {
+                txtString += "\n待办事项:\n"
+                for item in checkListItems {
+                    let status = item.isCompleted ? "[✓]" : "[ ]"
+                    txtString += "\(status) \(item.title ?? "")\n"
+                }
+            }
+            
+            txtString += "\n-------------------\n\n"
+        }
+        
+        return txtString
     }
 
     private func saveAndShare(content: String) {

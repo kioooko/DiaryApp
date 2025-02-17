@@ -10,6 +10,7 @@ struct DataImportView: View {
     @State private var importProgress: Double = 0
     @State private var selectedFile: URL?
     @State private var isDropTargeted: Bool = false
+    @State private var importedCount: Int = 0
 
     var body: some View {
         ZStack {
@@ -75,7 +76,7 @@ struct DataImportView: View {
                                 if let content = String(data: data, encoding: .utf8) {
                                     print("✅ 成功读取文件内容（类型：\(identifier)）")
                                     DispatchQueue.main.async {
-                                        processImportedContent(content)
+                                        importContent(content)
                                     }
                                     return
                                 } else {
@@ -196,60 +197,83 @@ struct DataImportView: View {
         }
     }
     
-    private func processImportedContent(_ content: String) {
+    private func importContent(_ content: String) {
         let lines = content.components(separatedBy: .newlines)
-            .filter { !$0.isEmpty }
+        var successCount = 0
         
-        guard lines.count > 1 else {
-            print("❌ 文件内容为空")
-            bannerState.show(of: .error(message: "文件内容为空"))
-            return
-        }
-        
-        // 跳过标题行
+        // 跳过CSV头部
         let dataLines = Array(lines.dropFirst())
-        print("📝 开始导入，总行数: \(dataLines.count)")
         
-        for (index, line) in dataLines.enumerated() {
-            let components = line.components(separatedBy: ",")
-            guard components.count >= 2 else { continue }
+        for line in dataLines where !line.isEmpty {
+            let fields = line.components(separatedBy: ",")
+            guard fields.count >= 11 else { continue } // 确保有足够的字段（包括图片）
             
             let item = Item(context: viewContext)
             
-            // 设置日期
-            if let date = DateFormatter.yyyyMMdd.date(from: components[0].trimmingCharacters(in: .whitespaces)) {
-                item.date = date
-                item.createdAt = date
-                item.updatedAt = date
-            } else {
-                item.date = Date()
-                item.createdAt = Date()
-                item.updatedAt = Date()
+            // 解析日期
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            item.date = dateFormatter.date(from: fields[0]) ?? Date()
+            item.createdAt = item.date
+            item.updatedAt = Date()
+            
+            // 基本信息
+            item.title = fields[1]
+            item.body = fields[2]
+            
+            // 记账信息
+            item.amount = Double(fields[3]) ?? 0
+            item.isExpense = fields[4] == "是"
+            item.expenseCategory = fields[5]
+            item.expenseNote = fields[6]
+            
+            // 其他信息
+            item.weather = fields[7]
+            item.isBookmarked = fields[8] == "是"
+            
+            // 处理图片数据
+            if !fields[9].isEmpty {
+                if let imageData = Data(base64Encoded: fields[9]) {
+                    item.imageData = imageData
+                }
             }
             
-            // 设置内容
-            let content = components[1].trimmingCharacters(in: .whitespaces)
-            item.body = content
-            item.title = String(content.prefix(10))
-            item.isBookmarked = false
-            
-            // 更新进度
-            importProgress = Double(index + 1) / Double(dataLines.count)
-            
-            // 每处理50条记录保存一次
-            if (index + 1) % 50 == 0 {
-                saveContext()
+            // 处理待办事项
+            if fields.count > 10 {
+                let checkListItems = fields[10].components(separatedBy: "|")
+                for checkListStr in checkListItems where !checkListStr.isEmpty {
+                    let checkListItem = CheckListItem(context: viewContext)
+                    let isCompleted = checkListStr.contains("[✓]")
+                    let title = checkListStr.replacingOccurrences(of: "[✓]", with: "")
+                        .replacingOccurrences(of: "[ ]", with: "")
+                        .trimmingCharacters(in: .whitespaces)
+                    
+                    checkListItem.title = title
+                    checkListItem.isCompleted = isCompleted
+                    checkListItem.createdAt = item.date
+                    item.addToCheckListItems(checkListItem)
+                }
             }
+            
+            successCount += 1
         }
         
-        // 最后保存一次
-        saveContext()
-        bannerState.show(of: .success(message: "成功导入 \(dataLines.count) 条日记"))
-        
-        // 重置状态
-        isImporting = false
-        selectedFile = nil
-        importProgress = 0
+        do {
+            try viewContext.save()
+            importedCount = successCount
+            showImportResult(success: true, message: "成功导入 \(successCount) 条记录")
+        } catch {
+            print("❌ 保存失败: \(error)")
+            showImportResult(success: false, message: "保存失败：\(error.localizedDescription)")
+        }
+    }
+    
+    private func showImportResult(success: Bool, message: String) {
+        if success {
+            bannerState.show(of: .success(message: message))
+        } else {
+            bannerState.show(of: .error(message: message))
+        }
     }
     
     private func saveContext() {
