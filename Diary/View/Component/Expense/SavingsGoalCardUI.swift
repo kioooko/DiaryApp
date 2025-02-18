@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreData
 
-struct SavingsGoalCard: View {
+struct SavingsGoalCardUI: View {
     let goal: SavingsGoal
     
     @Environment(\.managedObjectContext) private var viewContext
