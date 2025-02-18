@@ -25,6 +25,7 @@ struct ExpenseStatsView: View {
                 // 添加储蓄目标卡片
                 if let currentGoal = goals.first {
                     SavingsGoalCard(goal: currentGoal)
+                    .padding(.horizontal)
                 }
                 
                 List {
@@ -68,7 +69,7 @@ struct ExpenseStatsView: View {
                 .background(Color.Neumorphic.main)
             }
             .background(Color.Neumorphic.main)
-            .navigationTitle("账单统计")
+            .navigationTitle("记账本")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

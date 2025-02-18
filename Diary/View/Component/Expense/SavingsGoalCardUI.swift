@@ -54,7 +54,8 @@ struct SavingsGoalCardUI: View {
                     .font(.caption)
             }
         }
-        .padding()
+        //.padding()
+        .padding(.horizontal)
         .background(Color.Neumorphic.main)
         .cornerRadius(15)
         .softOuterShadow()

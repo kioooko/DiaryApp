@@ -115,7 +115,7 @@ struct SavingsGoalSettingView: View {
             }
             .font(.subheadline)
         }
-        .padding()
+        .padding(.horizontal)
     }
     
     private var buttonSection: some View {
