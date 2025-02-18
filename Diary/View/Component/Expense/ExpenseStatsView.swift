@@ -15,51 +15,52 @@ struct ExpenseStatsView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
+            VStack(spacing: 20) {
+                // 添加储蓄目标卡片
+                SavingsGoalCard()
+                    .padding(.horizontal)
                 
-                VStack {
-                    List {
-                        Section("今日收支") {
-                            incomeRow
-                            expenseRow
-                            balanceRow
-                        }
+                List {
+                    Section("今日收支") {
+                        incomeRow
+                        expenseRow
+                        balanceRow
+                    }
 
-                        
-                        Section("收支明细") {
-                            ForEach(items) { item in
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack {
-                                        Text(item.isExpense ? "支出" : "收入")
-                                        Spacer()
-                                        Text("¥\(item.amount, specifier: "%.2f")")
-                                            .foregroundColor(item.isExpense ? .red : .green)
-                                    }
-                                    
-                                    if let note = item.note, !note.isEmpty {
-                                        Text("备注：\(note)")
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                    }
-                                    
-                                    if let date = item.date {
-                                        Text(date, style: .date)
-                                            .font(.caption)
-                                            .foregroundColor(.gray)
-                                    }
+                    
+                    Section("收支明细") {
+                        ForEach(items) { item in
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Text(item.isExpense ? "支出" : "收入")
+                                    Spacer()
+                                    Text("¥\(item.amount, specifier: "%.2f")")
+                                        .foregroundColor(item.isExpense ? .red : .green)
+                                }
+                                
+                                if let note = item.note, !note.isEmpty {
+                                    Text("备注：\(note)")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+                                
+                                if let date = item.date {
+                                    Text(date, style: .date)
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
                                 }
                             }
                         }
-                        .listRowBackground(
-                            RoundedRectangle(cornerRadius: 0)
-                                .fill(Color.Neumorphic.main)
-                        )
                     }
-                    .scrollContentBackground(.hidden)
-                    .background(Color.Neumorphic.main)
+                    .listRowBackground(
+                        RoundedRectangle(cornerRadius: 0)
+                            .fill(Color.Neumorphic.main)
+                    )
                 }
+                .scrollContentBackground(.hidden)
+                .background(Color.Neumorphic.main)
             }
+            .background(Color.Neumorphic.main)
             .navigationTitle("账单统计")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -73,8 +74,7 @@ struct ExpenseStatsView: View {
                 }
             }
             .sheet(isPresented: $showSavingsGoal) {
-                // 暂时用 EmptyView 占位，后续实现储蓄目标页面
-               SavingsGoalSettingView()
+                SavingsGoalSettingView()
             }
         }
     }

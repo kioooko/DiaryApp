@@ -18,6 +18,8 @@ struct SavingsGoalCard: View {
                     Text("¥\(Int(currentGoal.targetAmount))")
                         .font(.subheadline)
                 }
+                .background(Color.Neumorphic.main)
+        
                 
                 // 进度条
                 GeometryReader { geometry in
@@ -40,7 +42,7 @@ struct SavingsGoalCard: View {
                     Text("\(Int(currentGoal.progress * 100))%")
                         .font(.caption)
                     Spacer()
-                    Text("预计\(currentGoal.remainingMonths)个月后达成")
+                    Text("还剩\(currentGoal.remainingDays)天")
                         .font(.caption)
                 }
             }

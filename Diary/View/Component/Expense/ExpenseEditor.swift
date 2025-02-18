@@ -27,6 +27,10 @@ struct ExpenseEditor: View {
                 Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 20) {
+                    // 添加储蓄目标卡片
+                    SavingsGoalCard()
+                        .padding(.horizontal)
+                    
                     // 收入/支出选择
                     VStack(spacing: 10) {
                         HStack {
