@@ -74,7 +74,7 @@ struct ExpenseStatsView: View {
             }
             .sheet(isPresented: $showSavingsGoal) {
                 // 暂时用 EmptyView 占位，后续实现储蓄目标页面
-                EmptyView()
+               SavingsGoalSettingView()
             }
         }
     }

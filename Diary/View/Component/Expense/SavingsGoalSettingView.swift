@@ -1,6 +1,20 @@
 import SwiftUI
 import CoreData
 
+// SavingsGoal 扩展
+extension SavingsGoal {
+    var progress: Double {
+        return currentAmount / targetAmount
+    }
+    
+    var remainingMonths: Int {
+        guard let targetDate = targetDate else { return 0 }
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.month], from: Date(), to: targetDate)
+        return components.month ?? 0
+    }
+}
+
 struct SavingsGoalSettingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss

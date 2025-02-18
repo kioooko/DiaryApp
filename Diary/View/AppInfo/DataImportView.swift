@@ -230,8 +230,8 @@ struct DataImportView: View {
             // 记账信息
             item.amount = Double(fields[3]) ?? 0
             item.isExpense = fields[4] == "是"
-            item.expenseCategory = fields[5]
-            item.expenseNote = fields[6]
+            //item.expenseCategory = fields[5]
+            item.note = fields[6]
             
             // 其他信息
             item.weather = fields[7]
