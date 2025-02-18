@@ -131,8 +131,8 @@ Button(action: {  downloadData(format: selectedFormat)
     }
 
     private func convertToCSV(entries: [Item]) -> String {
-        // CSV 头部，包含所有字段（包括图片）
-        var csvString = "日期,标题,内容,金额,是否支出,支出分类,支出备注,天气,是否收藏,图片,待办事项\n"
+        // CSV 头部
+        var csvString = "日期,标题,内容,金额,是否支出,备注,天气,是否收藏,图片,待办事项\n"
         
         for entry in entries {
             let dateFormatter = DateFormatter()
@@ -146,8 +146,7 @@ Button(action: {  downloadData(format: selectedFormat)
             fields.append((entry.body ?? "").replacingOccurrences(of: ",", with: "，"))
             fields.append(String(entry.amount))
             fields.append(entry.isExpense ? "是" : "否")
-            fields.append((entry.expenseCategory ?? "").replacingOccurrences(of: ",", with: "，"))
-            fields.append((entry.expenseNote ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append((entry.note ?? "").replacingOccurrences(of: ",", with: "，"))  // 使用 note 属性
             fields.append((entry.weather ?? "").replacingOccurrences(of: ",", with: "，"))
             fields.append(entry.isBookmarked ? "是" : "否")
             
@@ -187,10 +186,7 @@ Button(action: {  downloadData(format: selectedFormat)
             if entry.amount != 0 {
                 txtString += "金额: \(entry.amount)\n"
                 txtString += "类型: \(entry.isExpense ? "支出" : "收入")\n"
-                if let category = entry.expenseCategory, !category.isEmpty {
-                    txtString += "分类: \(category)\n"
-                }
-                if let note = entry.expenseNote, !note.isEmpty {
+                if let note = entry.note, !note.isEmpty {  // 使用 note 属性
                     txtString += "备注: \(note)\n"
                 }
             }
