@@ -36,15 +36,19 @@ struct SavingsGoalSettingView: View {
                 Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
                 
                 ScrollView {
+
                     VStack(spacing: 20) {
                         // 目标设置表单
-                        VStack(spacing: 20) {
-                            Section("新储蓄目标设置") {
-                                TextField("储蓄目标名称", text: $goalTitle)
-                                TextField("储蓄目标金额", text: $targetAmount)
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("新储蓄目标设置")
+                                .font(.headline)
+                            Section {
+                                TextField("设置你的储蓄目标名称", text: $goalTitle)
+                                TextField("设置你的储蓄目标金额", text: $targetAmount)
                                     .keyboardType(.decimalPad)
                                 DatePicker("预计完成目标日期", selection: $targetDate, displayedComponents: .date)
                             }
+                            .padding(.horizontal)
                         }
                         .padding()
                         
@@ -66,7 +70,7 @@ struct SavingsGoalSettingView: View {
                         
                         // 已保存的目标列表
                         if !goals.isEmpty {
-                            VStack(alignment: .leading, spacing: 15) {
+                            VStack(alignment: .leading, spacing: 20) {
                                 Text("进行中的目标")
                                     .font(.headline)
                                     .padding(.horizontal)
