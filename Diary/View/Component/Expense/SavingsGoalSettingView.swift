@@ -41,7 +41,8 @@ struct SavingsGoalSettingView: View {
                         // 目标设置表单
                         VStack(alignment: .leading, spacing: 20) {
                             Text("新储蓄目标设置")
-                                .font(.headline)
+                                .font(.system(size: 14)) 
+                                .foregroundColor(.gray)
                             Section {
                                 TextField("设置你的储蓄目标名称", text: $goalTitle)
                                 TextField("设置你的储蓄目标金额", text: $targetAmount)
@@ -72,7 +73,8 @@ struct SavingsGoalSettingView: View {
                         if !goals.isEmpty {
                             VStack(alignment: .leading, spacing: 20) {
                                 Text("进行中的目标")
-                                    .font(.headline)
+                                    .font(.system(size: 14)) 
+                                    .foregroundColor(.gray)
                                     .padding(.horizontal)
                                 
                                 ForEach(goals) { goal in
