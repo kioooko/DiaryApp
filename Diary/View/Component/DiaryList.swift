@@ -27,8 +27,12 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
          HomeViewでitemsを管理した場合、EnvironmentObjectの更新毎にFetchRequestが発火し、再描画が起こった際に特定のDateでFetchRequestを作成することが難しい。
          別Viewを作成しinitでFetchRequestを作成することで再描画時の表示情報が特定のDateIntervalに紐づくものであることを保証している。
          */
-        _items = FetchRequest(fetchRequest: Item.items(of: dateInterval)) // 使用日期区间创建 FetchRequest
-
+        let request = Item.items(of: dateInterval)
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Item.createdAt, ascending: false),  // 主要按创建时间排序
+            NSSortDescriptor(keyPath: \Item.date, ascending: false)  // 二级按日期排序
+        ]
+        _items = FetchRequest(fetchRequest: request)
         self._scrollToItem = scrollToItem // 初始化 scrollToItem 绑定
     }
 
