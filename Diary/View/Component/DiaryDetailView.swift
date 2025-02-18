@@ -94,6 +94,7 @@ struct DiaryDetailView: View {
                 selectedContentType = .checkList
             }
         }
+        
     }
 }
 

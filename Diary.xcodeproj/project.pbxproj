@@ -33,6 +33,10 @@
 		07414B302D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */; };
 		07414B312D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B202D01B2B200D9AB42 /* LaunchAnimationView.swift */; };
 		07414B322D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */; };
+		0745A3362D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3342D6460FD00BB6F8B /* SavingsGoalCard.swift */; };
+		0745A3372D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */; };
+		0745A3382D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3342D6460FD00BB6F8B /* SavingsGoalCard.swift */; };
+		0745A3392D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */; };
 		07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
 		07536BBD2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
 		07536BBF2D5C97B300E23444 /* DataImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBE2D5C97B300E23444 /* DataImportView.swift */; };
@@ -162,6 +166,8 @@
 		07414B242D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineAnimationView.swift; sourceTree = "<group>"; };
 		07414B252D01B2B200D9AB42 /* WelcomeSplineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeSplineView.swift; sourceTree = "<group>"; };
 		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		0745A3342D6460FD00BB6F8B /* SavingsGoalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoalCard.swift; sourceTree = "<group>"; };
+		0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoalSettingView.swift; sourceTree = "<group>"; };
 		07536BBB2D56121900E23444 /* DataDownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDownloadView.swift; sourceTree = "<group>"; };
 		07536BBE2D5C97B300E23444 /* DataImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataImportView.swift; sourceTree = "<group>"; };
 		075EB2302D1263B10039A3B9 /* ChatAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAI.swift; sourceTree = "<group>"; };
@@ -282,6 +288,8 @@
 		0709B0832D5EDFA800446520 /* Expense */ = {
 			isa = PBXGroup;
 			children = (
+				0745A3342D6460FD00BB6F8B /* SavingsGoalCard.swift */,
+				0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */,
 				0709B07F2D5EDFA800446520 /* ExpenseContent.swift */,
 				0709B0802D5EDFA800446520 /* ExpenseEditor.swift */,
 				0709B08C2D5F156D00446520 /* ExpenseListView.swift */,
@@ -791,6 +799,8 @@
 				F5358D2629FEB2E9005FD6C8 /* UserDefaults.swift in Sources */,
 				F53CE9632A153CB400E63078 /* WeatherSymbol.swift in Sources */,
 				F5358CB129F52468005FD6C8 /* Diary.xcdatamodeld in Sources */,
+				0745A3382D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */,
+				0745A3392D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */,
 				F550BC952A0E499600BCB0F2 /* ReminderSettingView.swift in Sources */,
 				F549A54F2A57970C003E7F68 /* Binding+Extension.swift in Sources */,
 				F5358D2A29FF401D005FD6C8 /* HomeView.swift in Sources */,
@@ -818,6 +828,8 @@
 				07414B292D01B2B200D9AB42 /* WelcomeSplineAnimationView.swift in Sources */,
 				0709B0902D5F250200446520 /* DiaryRow.swift in Sources */,
 				075EB2372D12A5040039A3B9 /* APIKeyManager.swift in Sources */,
+				0745A3362D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */,
+				0745A3372D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */,
 				07536BC02D5C97B300E23444 /* DataImportView.swift in Sources */,
 				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
 				075EB2342D1291140039A3B9 /* ChatAISetting.swift in Sources */,

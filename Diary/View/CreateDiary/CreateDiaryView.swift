@@ -7,6 +7,7 @@
 
 import PhotosUI
 import SwiftUI
+import Neumorphic
 
 struct CreateDiaryView: View {
     @Environment(\.dismiss) private var dismiss
@@ -144,6 +145,7 @@ private extension CreateDiaryView {
         }) {
             Text("作成")
         }  
+      //  .softButtonStyle(RoundedRectangle(isActive: diaryDataStore.canCreate , cornerRadius: 10))
         .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }

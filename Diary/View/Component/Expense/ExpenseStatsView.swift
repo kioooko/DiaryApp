@@ -4,6 +4,7 @@ import Neumorphic
 
 struct ExpenseStatsView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @State private var showSavingsGoal = false
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.date, ascending: false)],
@@ -61,6 +62,20 @@ struct ExpenseStatsView: View {
             }
             .navigationTitle("账单统计")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showSavingsGoal = true
+                    } label: {
+                        Image(systemName: "target")
+                        Text("储蓄目标")
+                    }
+                }
+            }
+            .sheet(isPresented: $showSavingsGoal) {
+                // 暂时用 EmptyView 占位，后续实现储蓄目标页面
+                EmptyView()
+            }
         }
     }
     

@@ -101,7 +101,7 @@ struct ExpenseEditor: View {
                         .frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 10)
                 }
                 .padding()
             }
