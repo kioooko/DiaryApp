@@ -12,6 +12,12 @@ struct ExpenseEditor: View {
     
     var editingItem: Item?
     
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
+        predicate: NSPredicate(format: "isCompleted == false"),
+        animation: .default)
+    private var goals: FetchedResults<SavingsGoal>
+    
     init(editingItem: Item? = nil) {
         self.editingItem = editingItem
         if let item = editingItem {
@@ -28,8 +34,9 @@ struct ExpenseEditor: View {
                 
                 VStack(spacing: 20) {
                     // 添加储蓄目标卡片
-                    SavingsGoalCard()
-                        .padding(.horizontal)
+                    if let currentGoal = goals.first {
+                        SavingsGoalCard(goal: currentGoal)
+                    }
                     
                     // 收入/支出选择
                     VStack(spacing: 10) {

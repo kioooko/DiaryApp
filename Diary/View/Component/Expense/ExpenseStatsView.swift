@@ -13,12 +13,19 @@ struct ExpenseStatsView: View {
                              Date().endOfDay as CVarArg)
     ) private var items: FetchedResults<Item>
     
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
+        predicate: NSPredicate(format: "isCompleted == false"),
+        animation: .default)
+    private var goals: FetchedResults<SavingsGoal>
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 // 添加储蓄目标卡片
-                SavingsGoalCard()
-                    .padding(.horizontal)
+                if let currentGoal = goals.first {
+                    SavingsGoalCard(goal: currentGoal)
+                }
                 
                 List {
                     Section("今日收支") {

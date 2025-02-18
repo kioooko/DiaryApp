@@ -287,8 +287,5 @@ struct SavingsGoalCardUI: View {
         // 确保进度在 0-1 之间
         return max(0, min(1, finalProgress))
     }
-<<<<<<< HEAD
-} 
-=======
-} 
->>>>>>> 7353868317f780f666d25caf930338d40dd675ef
+
+    }
