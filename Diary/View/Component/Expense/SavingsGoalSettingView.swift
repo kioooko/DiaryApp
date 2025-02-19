@@ -76,8 +76,20 @@ struct SavingsGoalSettingView: View {
                             .padding(.horizontal)
                         
                         ForEach(goals) { goal in
-                            SavingsGoalCardUI(goal: goal)
-                                .padding(.horizontal)
+                            HStack {
+                                SavingsGoalCardUI(goal: goal)
+                                    .frame(maxWidth: .infinity)
+                                
+                                Button(action: {
+                                    goalToDelete = goal
+                                    showingDeleteAlert = true
+                                }) {
+                                    Image(systemName: "trash.circle.fill")
+                                        .foregroundColor(.gray)
+                                        .font(.title2)
+                                }
+                            }
+                            .padding(.horizontal)
                         }
                     }
                 }
@@ -91,16 +103,16 @@ struct SavingsGoalSettingView: View {
             }
             .navigationTitle("储蓄目标")
             .navigationBarTitleDisplayMode(.inline)
-            .alert("确认删除", isPresented: $showingDeleteAlert) {
-                Button("取消", role: .cancel) { }
-                Button("删除", role: .destructive) {
-                    if let goal = goalToDelete {
-                        deleteGoal(goal)
-                    }
+        }
+        .alert("确认删除", isPresented: $showingDeleteAlert) {
+            Button("取消", role: .cancel) { }
+            Button("删除", role: .destructive) {
+                if let goal = goalToDelete {
+                    deleteGoal(goal)
                 }
-            } message: {
-                Text("确定要删除这个储蓄目标吗？")
             }
+        } message: {
+            Text("确定要删除这个储蓄目标吗？")
         }
     }
     
@@ -138,7 +150,11 @@ struct SavingsGoalSettingView: View {
     // MARK: - Helper Functions
     private func deleteGoal(_ goal: SavingsGoal) {
         viewContext.delete(goal)
-        try? viewContext.save()
+        do {
+            try viewContext.save()
+        } catch {
+            print("删除目标时出错: \(error)")
+        }
     }
     
     private func saveGoal() {
@@ -164,7 +180,6 @@ struct SavingsGoalSettingView: View {
         dismiss()
     }
 }
-
 // 将卡片抽取为单独的组件
 struct SavingsGoalCardUI: View {
     let goal: SavingsGoal
@@ -287,5 +302,5 @@ struct SavingsGoalCardUI: View {
         // 确保进度在 0-1 之间
         return max(0, min(1, finalProgress))
     }
+}
 
-    }
