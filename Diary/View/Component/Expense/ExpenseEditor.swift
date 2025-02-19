@@ -116,7 +116,7 @@ struct ExpenseEditor: View {
                 }
                 .padding()
             }
-            .navigationTitle(editingItem == nil ? "记账" : "编辑记账")
+            .navigationTitle(editingItem == nil ? "" : "编辑记账")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -126,6 +126,8 @@ struct ExpenseEditor: View {
                     EmptyView()
                 }
             }
+            .padding(.top, 20)
+            .background(Color.Neumorphic.main)
         }
     }
     

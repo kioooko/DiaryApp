@@ -29,7 +29,7 @@ struct ExpenseStatsView: View {
                 }
                 
                 List {
-                    Section("今日收支") {
+                    Section("累计收支") {
                         incomeRow
                         expenseRow
                         balanceRow
