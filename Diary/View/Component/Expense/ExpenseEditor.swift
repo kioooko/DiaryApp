@@ -161,18 +161,10 @@ struct ExpenseEditor: View {
             try viewContext.save()
             print("支出记录保存成功")
             
+            // 检查预算状态
             if isExpense {
-                print("检查预算状态...")
                 if let budgetMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
-                    print("需要显示预算提醒: \(budgetMessage)")
-                    budgetAlert.alertMessage = budgetMessage
-                    budgetAlert.showingAlert = true
-                    
-                    // 发送每日支出总结
-                    print("发送每日支出总结...")
-                    budgetAlert.sendDailyBudgetNotification(context: viewContext)
-                } else {
-                    print("无需显示预算提醒")
+                    budgetAlert.showAlert(title: "预算提醒", message: budgetMessage)
                 }
             }
             
@@ -180,9 +172,12 @@ struct ExpenseEditor: View {
             let goalRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
             goalRequest.predicate = NSPredicate(format: "isCompleted == false")
             
-            if let currentGoal = try? viewContext.fetch(goalRequest).first,
-               let completionMessage = budgetAlert.checkSavingsGoalCompletion(goal: currentGoal, context: viewContext) {
-                budgetAlert.showAlert(title: "储蓄目标", message: completionMessage)
+            if let currentGoal = try? viewContext.fetch(goalRequest).first {
+                print("检查储蓄目标完成状态...")
+                if let completionMessage = budgetAlert.checkSavingsGoalCompletion(goal: currentGoal, context: viewContext) {
+                    print("显示储蓄目标完成提示")
+                    budgetAlert.showAlert(title: "储蓄目标", message: completionMessage)
+                }
             }
             
             dismiss()

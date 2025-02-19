@@ -10,7 +10,6 @@ struct ExpenseStatsView: View {
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
-        predicate: NSPredicate(format: "isCompleted == false"),
         animation: .default)
     private var goals: FetchedResults<SavingsGoal>
     
@@ -38,7 +37,7 @@ struct ExpenseStatsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                // 修改储蓄目标卡片的显示逻辑
+                // 修改储蓄目标卡片的显示逻辑，只要有目标就显示
                 if let currentGoal = goals.first {
                     SavingsGoalCard(goal: currentGoal)
                         .padding(.horizontal)

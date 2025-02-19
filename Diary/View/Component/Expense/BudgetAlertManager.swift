@@ -29,10 +29,13 @@ class BudgetAlertManager: ObservableObject {
             let items = try context.fetch(request)
             let totalSaving = items.map { $0.amount }.reduce(0, +)
             
+            print("目标金额: \(targetAmount), 实际储蓄: \(totalSaving)")
+            
             // 如果达到目标金额且未标记为完成
             if totalSaving >= targetAmount && !goal.isCompleted {
                 goal.isCompleted = true
-                try? context.save()
+                try context.save()  // 确保保存状态
+                print("储蓄目标已完成！")
                 return "🎉 恭喜！您已完成储蓄目标 ¥\(String(format: "%.2f", targetAmount))"
             }
         } catch {
@@ -187,12 +190,68 @@ class BudgetAlertManager: ObservableObject {
             return nil
         }
     }
+
+    func checkSavingGoalCompletion(goal: SavingsGoal, actualSaving: Double, in context: NSManagedObjectContext) {
+        print("检查储蓄目标完成状态...")
+        print("目标金额: \(goal.targetAmount), 实际储蓄: \(actualSaving)")
+        
+        // 确保数据一致性
+        let currentProgress = min((actualSaving / goal.targetAmount) * 100, 100)
+        
+        if currentProgress >= 100 && !goal.isCompleted {
+            showCompletionAlert(for: goal, in: context)
+            
+            // 更新目标完成状态
+            DispatchQueue.main.async {
+                var updatedGoal = goal
+                updatedGoal.isCompleted = true
+                // 确保在主线程更新数据
+                self.updateGoalCompletion(updatedGoal)
+            }
+        }
+    }
+
+    func showCompletionAlert(for goal: SavingsGoal, in context: NSManagedObjectContext) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(
+                title: "恭喜！",
+                message: "您已经完成了储蓄目标：\(goal.title ?? "")",
+                preferredStyle: .alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "好的", style: .default, handler: { _ in
+                // 用户点击"好的"后的处理逻辑
+                goal.isCompleted = true
+                try? context.save()
+            }))
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootViewController = window.rootViewController {
+                rootViewController.present(alert, animated: true)
+            }
+        }
+    }
+    
+    private func handleGoalCompletion(_ goal: SavingsGoal) {
+        // 在这里添加用户确认后的处理逻辑
+        // 例如：更新UI、保存状态等
+        var updatedGoal = goal
+        updatedGoal.isCompleted = true
+        updateGoalCompletion(updatedGoal)
+    }
+
+    private func updateGoalCompletion(_ goal: SavingsGoal) {
+        // 实现更新目标完成状态的逻辑
+        // 这里需要根据你的数据存储方式来实现
+        // 例如：CoreData、UserDefaults 或其他存储方式
+    }
 }
 
 struct SavingsGoalProgressView: View {
     @ObservedObject var goal: SavingsGoal
     @Environment(\.managedObjectContext) private var viewContext
-    @State private var showingCompletionAlert = false
+    private let alertManager = BudgetAlertManager()
     
     private var progress: Double {
         let calendar = Calendar.current
@@ -211,6 +270,21 @@ struct SavingsGoalProgressView: View {
         return min(max(savingProgress, timeProgress), 100)
     }
     
+    var body: some View {
+        VStack {
+            // ... existing code ...
+        }
+        .onChange(of: progress) { newProgress in
+            print("进度更新：\(newProgress)%")
+            if !goal.isCompleted && newProgress >= 100 {
+                print("目标达成，显示提示")
+                alertManager.showCompletionAlert(for: goal, in: viewContext)
+                goal.isCompleted = true
+                try? viewContext.save()
+            }
+        }
+    }
+    
     private func calculateActualSaving() -> Double {
         guard let startDate = goal.startDate,
               let targetDate = goal.targetDate else {
@@ -219,36 +293,21 @@ struct SavingsGoalProgressView: View {
         
         let request: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
         request.predicate = NSPredicate(
-            format: "amount > 0 AND date >= %@ AND date <= %@",
+            format: "savingsGoal == %@ AND date >= %@ AND date <= %@",
+            goal,
             startDate as NSDate,
             targetDate as NSDate
         )
         
         do {
             let items = try viewContext.fetch(request)
-            let totalSaving = items.map { $0.amount }.reduce(0, +)
+            let totalSaving = items.reduce(into: 0.0) { sum, item in
+                sum += item.amount
+            }
             return totalSaving
         } catch {
             print("计算实际储蓄金额时出错: \(error)")
             return 0.0
-        }
-    }
-    
-    var body: some View {
-        VStack {
-            // ... 现有的视图代码 ...
-        }
-        .onChange(of: progress) { newProgress in
-            if !goal.isCompleted && newProgress >= 100 {
-                goal.isCompleted = true
-                showingCompletionAlert = true
-                try? viewContext.save()
-            }
-        }
-        .alert("恭喜！", isPresented: $showingCompletionAlert) {
-            Button("太棒了", role: .cancel) { }
-        } message: {
-            Text("您已经达成储蓄目标！")
         }
     }
 }
