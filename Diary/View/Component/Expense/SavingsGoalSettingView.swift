@@ -181,11 +181,11 @@ struct SavingsGoalSettingView: View {
         print("Debug: 存储进度 - \(savingsProgress)%")
         print("Debug: 时间进度 - \(timeProgress)%")
         
-        // 计算最终进度
-        let finalProgress = timeProgress  // 使用时间进度作为最终进度
+        // 计算最终进度 - 使用时间进度和存储进度的较小值
+        let finalProgress = min(timeProgress, savingsProgress)
         print("Debug: 最终进度 - \(finalProgress)%")
         
-        // 修改完成状态的判断逻辑 - 只使用最终进度（时间进度）
+        // 修改完成状态的判断逻辑 - 使用最终进度
         let isCompleted = finalProgress >= 100.0
         
         // 如果状态发生变化，更新目标状态
