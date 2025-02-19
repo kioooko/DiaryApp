@@ -11,16 +11,15 @@ import SwiftUI
 struct DiaryApp: App {
     @UIApplicationDelegateAdaptor(DiaryAppDelegate.self) var appDelegate
     
+    @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue) 
+    private var hasBeenLaunchedBefore: Bool = false
+    
     @StateObject private var bannerState = BannerState()
     @StateObject private var coreDataProvider = CoreDataProvider.shared
     @StateObject private var textOptions: TextOptions = .makeUserOptions()
     @StateObject private var notificationSetting: NotificationSetting = NotificationSetting()
     @StateObject private var weatherData = WeatherData()
-    @StateObject private var apiKeyManager = APIKeyManager() // 确保 apiKeyManager 被声明和初始化
-
-
-    @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
-    private var hasBeenLaunchedBefore: Bool = false
+    @StateObject private var apiKeyManager = APIKeyManager()
 
     @AppStorage(UserDefaultsKey.reSyncPerformed.rawValue)
     private var reSyncPerformed: Bool = false
@@ -39,12 +38,21 @@ struct DiaryApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView(apiKeyManager: apiKeyManager)
-                .environmentObject(bannerState)
-                .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
-                .environmentObject(textOptions)
-                .environmentObject(notificationSetting)
-                .environmentObject(weatherData)
+            if !hasBeenLaunchedBefore {
+                WelcomeView(apiKeyManager: apiKeyManager)
+                    .environmentObject(bannerState)
+                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+                    .environmentObject(textOptions)
+                    .environmentObject(notificationSetting)
+                    .environmentObject(weatherData)
+            } else {
+                HomeView(apiKeyManager: apiKeyManager)
+                    .environmentObject(bannerState)
+                    .environment(\.managedObjectContext, coreDataProvider.container.viewContext)
+                    .environmentObject(textOptions)
+                    .environmentObject(notificationSetting)
+                    .environmentObject(weatherData)
+            }
         }
     }
 }
