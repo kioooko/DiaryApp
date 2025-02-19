@@ -12,56 +12,73 @@ class BudgetAlertManager: ObservableObject {
     
     // 检查预算状态并返回提醒消息
     func checkBudgetStatus(context: NSManagedObjectContext) -> String? {
-        let calendar = Calendar.current
-        let now = Date()
-        let components = calendar.dateComponents([.year, .month], from: now)
+        print("开始检查月度预算状态...")
         
-        guard let startOfMonth = calendar.date(from: components),
-              let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth) else {
-            return nil
-        }
-        
-        // 获取当月支出
-        let request = NSFetchRequest<Item>(entityName: "Item")
-        request.predicate = NSPredicate(
-            format: "date >= %@ AND date <= %@ AND amount < 0",
-            startOfMonth as CVarArg,
-            endOfMonth as CVarArg
-        )
+        // 获取当月预算
+        let budgetRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+        budgetRequest.predicate = NSPredicate(format: "isCompleted == false")
+        budgetRequest.sortDescriptors = [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)]
+        budgetRequest.fetchLimit = 1
         
         do {
-            let items = try context.fetch(request)
-            let totalExpense = abs(items.map { $0.amount }.reduce(0, +))
-            
-            // 获取月度预算
-            let budgetRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
-            budgetRequest.predicate = NSPredicate(format: "monthlyDate >= %@ AND monthlyDate <= %@", 
-                                                startOfMonth as CVarArg,
-                                                endOfMonth as CVarArg)
-            
-            let budgets = try context.fetch(budgetRequest)
-            guard let monthlyBudget = budgets.first?.monthlyAmount, monthlyBudget > 0 else {
+            let goals = try context.fetch(budgetRequest)
+            guard let currentGoal = goals.first else {
+                print("未找到有效的月度预算")
                 return nil
             }
             
-            // 计算预算使用比例
-            let usageRatio = totalExpense / monthlyBudget
+            let monthlyBudget = currentGoal.monthlyAmount ?? 0
+            if monthlyBudget <= 0 {
+                print("月度预算金额无效")
+                return nil
+            }
             
-            // 根据使用比例返回不同的提醒消息
+            print("月度预算: ¥\(monthlyBudget)")
+            
+            // 获取当月支出
+            let calendar = Calendar.current
+            let now = Date()
+            let components = calendar.dateComponents([.year, .month], from: now)
+            
+            guard let startOfMonth = calendar.date(from: components) else {
+                print("获取月初日期失败")
+                return nil
+            }
+            
+            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
+                .addingTimeInterval(-1)
+            
+            print("统计周期: \(startOfMonth) 至 \(endOfMonth)")
+            
+            let expenseRequest = NSFetchRequest<Item>(entityName: "Item")
+            expenseRequest.predicate = NSPredicate(
+                format: "date >= %@ AND date <= %@ AND amount < 0",
+                startOfMonth as CVarArg,
+                endOfMonth as CVarArg
+            )
+            
+            let expenses = try context.fetch(expenseRequest)
+            let totalExpense = abs(expenses.map { $0.amount }.reduce(0, +))
+            print("当月总支出: ¥\(totalExpense)")
+            
+            // 计算使用比例
+            let usageRatio = totalExpense / monthlyBudget
+            print("预算使用比例: \(usageRatio * 100)%")
+            
+            // 返回提醒消息
             if usageRatio >= 1.0 {
-                return "⚠️ 警告：本月支出已超出预算 ¥\(String(format: "%.2f", totalExpense - monthlyBudget))"
+                return "⚠️ 警告：本月支出 ¥\(String(format: "%.2f", totalExpense)) 已超出预算"
             } else if usageRatio >= warningThreshold {
                 return "⚠️ 注意：本月支出已达 \(Int(usageRatio * 100))% 预算，请控制支出"
             } else if usageRatio >= cautionThreshold {
                 return "📊 提示：本月支出已达 \(Int(usageRatio * 100))% 预算"
             }
             
-            return nil
-            
         } catch {
-            print("获取预算数据失败: \(error)")
-            return nil
+            print("检查预算状态失败: \(error)")
         }
+        
+        return nil
     }
     
     // 发送每日预算提醒

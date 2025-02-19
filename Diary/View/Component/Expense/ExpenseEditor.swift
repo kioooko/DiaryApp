@@ -6,6 +6,8 @@ struct ExpenseEditor: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var bannerState: BannerState
     
+    @StateObject private var budgetAlert = BudgetAlertManager()
+    
     @State private var amount: String = ""
     @State private var isExpense: Bool = true
     @State private var note: String = ""
@@ -17,8 +19,6 @@ struct ExpenseEditor: View {
         predicate: NSPredicate(format: "isCompleted == false"),
         animation: .default)
     private var goals: FetchedResults<SavingsGoal>
-    
-    @StateObject private var budgetAlert = BudgetAlertManager()
     
     init(editingItem: Item? = nil) {
         self.editingItem = editingItem
@@ -139,43 +139,43 @@ struct ExpenseEditor: View {
     }
     
     private func saveExpense() {
-        guard let amountValue = Double(amount), amountValue > 0 else {
-            bannerState.show(of: .error(message: "请输入有效金额"))
-            return
+        let newAmount = (Double(amount) ?? 0) * (isExpense ? -1 : 1)
+        
+        if let editingItem = editingItem {
+            editingItem.amount = newAmount
+            editingItem.note = note
+        } else {
+            let newItem = Item(context: viewContext)
+            //newItem.id = UUID()
+            newItem.date = Date()
+            newItem.amount = newAmount
+            newItem.note = note
         }
         
-        if let item = editingItem {
-            // 更新现有记录
-            item.amount = amountValue
-            item.isExpense = isExpense
-            item.note = note
-            item.updatedAt = Date()
-        } else {
-            // 创建新记录
-            let item = Item(context: viewContext)
-            item.amount = amountValue
-            item.isExpense = isExpense
-            item.note = note
-            item.date = Date()
-            item.createdAt = Date()
-            item.updatedAt = Date()
-        }
+        print("开始保存支出记录...")
         
         do {
             try viewContext.save()
-            dismiss()
-            bannerState.show(of: .success(message: editingItem == nil ? "记账成功" : "更新成功"))
+            print("支出记录保存成功")
             
-            // 保存后检查预算状态
-            if let alertMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
-                budgetAlert.alertMessage = alertMessage
-                budgetAlert.showingAlert = true
+            if isExpense {
+                print("检查预算状态...")
+                if let alertMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
+                    print("需要显示预算提醒: \(alertMessage)")
+                    budgetAlert.alertMessage = alertMessage
+                    budgetAlert.showingAlert = true
+                    
+                    // 发送每日支出总结
+                    print("发送每日支出总结...")
+                    budgetAlert.sendDailyBudgetNotification(context: viewContext)
+                } else {
+                    print("无需显示预算提醒")
+                }
             }
             
-            // 发送每日预算提醒
-            budgetAlert.sendDailyBudgetNotification(context: viewContext)
+            dismiss()
         } catch {
-            bannerState.show(of: .error(message: editingItem == nil ? "保存失败" : "更新失败"))
+            print("保存失败: \(error)")
         }
     }
 }
