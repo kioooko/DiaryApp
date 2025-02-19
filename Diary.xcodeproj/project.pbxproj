@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0701CD1B2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */; };
+		0701CD1C2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */; };
 		0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */; };
 		0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0802D5EDFA800446520 /* ExpenseEditor.swift */; };
 		0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
@@ -153,6 +155,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetAlertManager.swift; sourceTree = "<group>"; };
 		0709B07F2D5EDFA800446520 /* ExpenseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseContent.swift; sourceTree = "<group>"; };
 		0709B0802D5EDFA800446520 /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
 		0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseStatsView.swift; sourceTree = "<group>"; };
@@ -292,6 +295,7 @@
 				0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */,
 				0709B07F2D5EDFA800446520 /* ExpenseContent.swift */,
 				0709B0802D5EDFA800446520 /* ExpenseEditor.swift */,
+				0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */,
 				0709B08C2D5F156D00446520 /* ExpenseListView.swift */,
 				0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */,
 			);
@@ -777,6 +781,7 @@
 				075EB2322D1263B10039A3B9 /* ChatAI.swift in Sources */,
 				F5BF44432A54714300217119 /* Locale+Extension.swift in Sources */,
 				F550BCAF2A12852C00BCB0F2 /* BlobLayer.swift in Sources */,
+				0701CD1B2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */,
 				F5358D0E29F8BBE3005FD6C8 /* View+AsyncState.swift in Sources */,
 				F550BCA92A1281EC00BCB0F2 /* ResizableLayer.swift in Sources */,
 				07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */,
@@ -819,6 +824,7 @@
 				07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
 				0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */,
 				0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */,
+				0701CD1C2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */,
 				0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */,
 				0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */,
 				07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */,

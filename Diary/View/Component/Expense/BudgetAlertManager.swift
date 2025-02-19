@@ -34,22 +34,22 @@ class BudgetAlertManager: ObservableObject {
             let totalExpense = abs(items.map { $0.amount }.reduce(0, +))
             
             // 获取月度预算
-            let budgetRequest = NSFetchRequest<MonthlyBudget>(entityName: "MonthlyBudget")
-            budgetRequest.predicate = NSPredicate(format: "date >= %@ AND date <= %@", 
+            let budgetRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+            budgetRequest.predicate = NSPredicate(format: "monthlyDate >= %@ AND monthlyDate <= %@", 
                                                 startOfMonth as CVarArg,
                                                 endOfMonth as CVarArg)
             
             let budgets = try context.fetch(budgetRequest)
-            guard let currentBudget = budgets.first?.amount, currentBudget > 0 else {
+            guard let monthlyBudget = budgets.first?.monthlyAmount, monthlyBudget > 0 else {
                 return nil
             }
             
             // 计算预算使用比例
-            let usageRatio = totalExpense / currentBudget
+            let usageRatio = totalExpense / monthlyBudget
             
             // 根据使用比例返回不同的提醒消息
             if usageRatio >= 1.0 {
-                return "⚠️ 警告：本月支出已超出预算 ¥\(String(format: "%.2f", totalExpense - currentBudget))"
+                return "⚠️ 警告：本月支出已超出预算 ¥\(String(format: "%.2f", totalExpense - monthlyBudget))"
             } else if usageRatio >= warningThreshold {
                 return "⚠️ 注意：本月支出已达 \(Int(usageRatio * 100))% 预算，请控制支出"
             } else if usageRatio >= cautionThreshold {
@@ -122,14 +122,14 @@ class BudgetAlertManager: ObservableObject {
         }
         
         // 获取月度预算
-        let budgetRequest = NSFetchRequest<MonthlyBudget>(entityName: "MonthlyBudget")
-        budgetRequest.predicate = NSPredicate(format: "date >= %@ AND date <= %@",
+        let budgetRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+        budgetRequest.predicate = NSPredicate(format: "monthlyDate >= %@ AND monthlyDate <= %@",
                                             startOfMonth as CVarArg,
                                             endOfMonth as CVarArg)
         
         do {
             let budgets = try context.fetch(budgetRequest)
-            guard let currentBudget = budgets.first?.amount else { return nil }
+            guard let monthlyBudget = budgets.first?.monthlyAmount else { return nil }
             
             // 获取当月总支出
             let expenseRequest = NSFetchRequest<Item>(entityName: "Item")
@@ -142,11 +142,11 @@ class BudgetAlertManager: ObservableObject {
             let expenses = try context.fetch(expenseRequest)
             let totalExpense = abs(expenses.map { $0.amount }.reduce(0, +))
             
-            return currentBudget - totalExpense
+            return monthlyBudget - totalExpense
             
         } catch {
             print("计算剩余预算失败: \(error)")
             return nil
         }
     }
-} 
+}

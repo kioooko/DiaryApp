@@ -176,14 +176,18 @@ extension Item: BaseModel {// 定义一个 Item 的扩展，用于实现 BaseMod
         let request = allSortedByDate
         request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
         var items = try context.fetch(request)
+        
+        // 过滤掉 createdAt 为 nil 的记录
+        items = items.filter { $0.createdAt != nil }
+        
         guard !items.isEmpty,
               let latestItemDate = items.first?.createdAt
         else { return 0 }
-
+        
         var count = 0
         let now = Date()
 
-        // 最新のItemと今日の日付が同じかどうかを判別する
+        // 最新的Item与今日的日期差
         let dayDiffBetweenLatestItemAndNow = Calendar.current.dateComponents([.day], from: latestItemDate, to: now).day
 
         let hasTodayItem = dayDiffBetweenLatestItemAndNow == 0
@@ -192,7 +196,8 @@ extension Item: BaseModel {// 定义一个 Item 的扩展，用于实现 BaseMod
         }
 
         for item in items {
-            let currentItemDateStartOfDay = Calendar.current.startOfDay(for: item.createdAt!)
+            guard let itemCreatedAt = item.createdAt else { continue }  // 安全处理
+            let currentItemDateStartOfDay = Calendar.current.startOfDay(for: itemCreatedAt)
             let expectedDate = Calendar.current.date(byAdding: .day, value: -(count + 1), to: now)!
             let expectedStartOfDay = Calendar.current.startOfDay(for: expectedDate)
 
@@ -205,7 +210,6 @@ extension Item: BaseModel {// 定义一个 Item 的扩展，用于实现 BaseMod
             if dayDiffBetweenCurrentItemAndExpected == 0 {
                 count += 1
             } else if dayDiffBetweenCurrentItemAndExpected == -1 {
-                // 同日に複数件作成している場合もあるのでその場合は次のループへ（countの変化はないので、expectedDateは同じでitemが更新されて再度処理される）
                 continue
             } else {
                 break
