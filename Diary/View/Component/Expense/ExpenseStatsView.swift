@@ -6,18 +6,34 @@ struct ExpenseStatsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @State private var showSavingsGoal = false
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.date, ascending: false)],
-        predicate: NSPredicate(format: "date >= %@ AND date <= %@ AND amount != 0", 
-                             Date().startOfDay as CVarArg,
-                             Date().endOfDay as CVarArg)
-    ) private var items: FetchedResults<Item>
+    @FetchRequest private var items: FetchedResults<Item>
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
         predicate: NSPredicate(format: "isCompleted == false"),
         animation: .default)
     private var goals: FetchedResults<SavingsGoal>
+    
+    init() {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents([.year, .month], from: now)
+        
+        guard let startOfMonth = calendar.date(from: components),
+              let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth) else {
+            fatalError("无法计算月份日期范围")
+        }
+        
+        let request = NSFetchRequest<Item>(entityName: "Item")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Item.date, ascending: false)]
+        request.predicate = NSPredicate(
+            format: "date >= %@ AND date <= %@ AND amount != 0",
+            startOfMonth as CVarArg,
+            endOfMonth as CVarArg
+        )
+        
+        _items = FetchRequest(fetchRequest: request)
+    }
     
     var body: some View {
         NavigationStack {
@@ -29,7 +45,7 @@ struct ExpenseStatsView: View {
                 }
                 
                 List {
-                    Section("累计收支") {
+                    Section("月度收支") {
                         incomeRow
                         expenseRow
                         balanceRow
@@ -91,7 +107,7 @@ struct ExpenseStatsView: View {
         HStack {
             Text("收入")
             Spacer()
-            Text("¥\(calculateIncome(), specifier: "%.2f")")
+            Text("¥\(calculateMonthlyIncome(), specifier: "%.2f")")
                 .foregroundColor(.green)
         }
     }
@@ -100,13 +116,13 @@ struct ExpenseStatsView: View {
         HStack {
             Text("支出")
             Spacer()
-            Text("¥\(calculateExpense(), specifier: "%.2f")")
+            Text("¥\(calculateMonthlyExpense(), specifier: "%.2f")")
                 .foregroundColor(.red)
         }
     }
     
     private var balanceRow: some View {
-        let balance = calculateBalance()
+        let balance = calculateMonthlyBalance()
         return HStack {
             Text("结余")
             Spacer()
@@ -115,16 +131,22 @@ struct ExpenseStatsView: View {
         }
     }
     
-    private func calculateIncome() -> Double {
+    private func calculateMonthlyIncome() -> Double {
         items.filter { !$0.isExpense }.map { $0.amount }.reduce(0, +)
     }
     
-    private func calculateExpense() -> Double {
+    private func calculateMonthlyExpense() -> Double {
         items.filter { $0.isExpense }.map { $0.amount }.reduce(0, +)
     }
     
-    private func calculateBalance() -> Double {
-        calculateIncome() - calculateExpense()
+    private func calculateMonthlyBalance() -> Double {
+        calculateMonthlyIncome() - calculateMonthlyExpense()
+    }
+    
+    private var currentMonthString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy年MM月"
+        return formatter.string(from: Date())
     }
 }
 
