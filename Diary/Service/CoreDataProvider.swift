@@ -45,6 +45,18 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             return []
         }
     }
+
+    func fetchAllSavingsGoals() -> [SavingsGoal] {
+        let request = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)]
+        
+        do {
+            return try container.viewContext.fetch(request)
+        } catch {
+            print("❌ 获取储蓄目标失败: \(error)")
+            return []
+        }
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 
