@@ -43,20 +43,34 @@ extension SavingsGoal {
         // 确保进度在 0-1 之间
         return max(0, min(1, finalProgress))
     }
+    
+    var displayProgress: Double {
+        if isCompleted {
+            return 1.0 // 确保已完成的目标显示 100% 进度
+        }
+        // 使用原有的进度计算逻辑
+        return progress
+    }
 }
 
 struct SavingsGoalSettingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.dismiss) private var dismiss
+    @State private var showingNewGoalSheet = false
     
+    // 获取未完成的目标
     @FetchRequest(
-        sortDescriptors: [
-            NSSortDescriptor(keyPath: \SavingsGoal.isCompleted, ascending: true),
-            NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)
-        ],
-        predicate: NSPredicate(format: "isCompleted == false"), // 只显示未完成的目标
+        sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
+        predicate: NSPredicate(format: "isCompleted == false AND (currentAmount < targetAmount OR targetDate > %@)", Date() as NSDate),
         animation: .default)
-    private var goals: FetchedResults<SavingsGoal>
+    private var activeGoals: FetchedResults<SavingsGoal>
+    
+    // 获取已完成的目标
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
+        predicate: NSPredicate(format: "isCompleted == true OR (currentAmount >= targetAmount AND targetDate <= %@)", Date() as NSDate),
+        animation: .default)
+    private var completedGoals: FetchedResults<SavingsGoal>
     
     @State private var goalTitle = ""
     @State private var targetAmount = ""
@@ -67,33 +81,31 @@ struct SavingsGoalSettingView: View {
     var body: some View {
         let mainContent = ScrollView {
             VStack(spacing: 20) {
-                formSection
-                buttonSection
-                if !goals.isEmpty {
-                    VStack(alignment: .leading, spacing: 15) {
-                        Text("进行中的目标")
-                            .font(.headline)
-                            .padding(.horizontal)
-                        
-                        ForEach(goals) { goal in
-                            HStack {
-                                SavingsGoalCardUI(goal: goal)
-                                    .frame(maxWidth: .infinity)
-                                
-                                Button(action: {
-                                    goalToDelete = goal
-                                    showingDeleteAlert = true
-                                }) {
-                                    Image(systemName: "trash.circle.fill")
-                                        .foregroundColor(.gray)
-                                        .font(.title2)
-                                }
-                            }
-                            .padding(.horizontal)
+                // 进行中的目标
+                if !activeGoals.isEmpty {
+                    GoalSection(
+                        title: "进行中的目标",
+                        goals: activeGoals,
+                        onDelete: { goal in
+                            goalToDelete = goal
+                            showingDeleteAlert = true
                         }
-                    }
+                    )
+                }
+                
+                // 已完成的目标
+                if !completedGoals.isEmpty {
+                    GoalSection(
+                        title: "已完成的目标",
+                        goals: completedGoals,
+                        onDelete: { goal in
+                            goalToDelete = goal
+                            showingDeleteAlert = true
+                        }
+                    )
                 }
             }
+            .padding(.bottom, 20)
         }
         
         NavigationView {
@@ -103,6 +115,19 @@ struct SavingsGoalSettingView: View {
             }
             .navigationTitle("储蓄目标")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showingNewGoalSheet = true
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                    }
+                }
+            }
+            .sheet(isPresented: $showingNewGoalSheet) {
+                NewSavingsGoalView()
+            }
         }
         .alert("确认删除", isPresented: $showingDeleteAlert) {
             Button("取消", role: .cancel) { }
@@ -116,37 +141,6 @@ struct SavingsGoalSettingView: View {
         }
     }
     
-    // MARK: - View Components
-    private var formSection: some View {
-        VStack(spacing: 20) {
-            Section("新储蓄目标设置") {
-                TextField("储蓄目标名称", text: $goalTitle)
-                TextField("储蓄目标金额", text: $targetAmount)
-                    .keyboardType(.decimalPad)
-                DatePicker("预计完成目标日期", selection: $targetDate, displayedComponents: .date)
-            }
-            .font(.subheadline)
-        }
-        .padding(.horizontal)
-    }
-    
-    private var buttonSection: some View {
-        HStack(spacing: 20) {
-            Button("取消") {
-                dismiss()
-            }
-            .softButtonStyle(RoundedRectangle(cornerRadius: 10))
-            .frame(maxWidth: .infinity)
-            
-            Button("保存") {
-                saveGoal()
-            }
-            .softButtonStyle(RoundedRectangle(cornerRadius: 10))
-            .frame(maxWidth: .infinity)
-        }
-        .padding(.horizontal)
-    }
-    
     // MARK: - Helper Functions
     private func deleteGoal(_ goal: SavingsGoal) {
         viewContext.delete(goal)
@@ -156,48 +150,68 @@ struct SavingsGoalSettingView: View {
             print("删除目标时出错: \(error)")
         }
     }
+}
+
+// 目标列表区域组件
+struct GoalSection: View {
+    let title: String
+    let goals: FetchedResults<SavingsGoal>
+    let onDelete: (SavingsGoal) -> Void
     
-    private func saveGoal() {
-        guard let amount = Double(targetAmount), amount > 0 else { return }
-        
-        let goal = SavingsGoal(context: viewContext)
-        goal.title = goalTitle
-        goal.targetAmount = amount
-        goal.currentAmount = 0
-        goal.startDate = Date()
-        goal.targetDate = targetDate
-        goal.createdAt = Date()
-        goal.updatedAt = Date()
-        goal.isCompleted = false
-        
-        try? viewContext.save()
-        
-        // 重置表单
-        goalTitle = ""
-        targetAmount = ""
-        targetDate = Date()
-        
-        dismiss()
+    var body: some View {
+        VStack(alignment: .leading, spacing: 15) {
+            Text(title)
+                .font(.headline)
+                .padding(.horizontal)
+            
+            ForEach(goals) { goal in
+                VStack(alignment: .leading, spacing: 8) {
+                    // 已完成目标显示时间信息
+                    if goal.isCompleted {
+                        HStack {
+                            Text("开始时间：\(formatDate(goal.startDate))")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            Spacer()
+                            Text("完成时间：\(formatDate(Date()))")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        .padding(.horizontal)
+                    }
+                    
+                    // 原有卡片和删除按钮
+                    HStack {
+                        SavingsGoalCard(goal: goal)
+                            .frame(maxWidth: .infinity)
+                        
+                        Button(action: {
+                            onDelete(goal)
+                        }) {
+                            Image(systemName: "trash.circle.fill")
+                                .foregroundColor(.gray)
+                                .font(.title2)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
+        .padding(.bottom, 10)
+    }
+    
+    // 格式化日期
+    private func formatDate(_ date: Date?) -> String {
+        guard let date = date else { return "未知" }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
     }
 }
-// 将卡片抽取为单独的组件
+
+// 修改 SavingsGoalCardUI 以支持已完成状态的显示
 struct SavingsGoalCardUI: View {
-    let goal: SavingsGoal
-    
-    @Environment(\.managedObjectContext) private var viewContext
-    
-    // 获取所有收入支出记录
-    @FetchRequest
-    private var items: FetchedResults<Item>
-    
-    init(goal: SavingsGoal) {
-        self.goal = goal
-        // 初始化 FetchRequest
-        let request = NSFetchRequest<Item>(entityName: "Item")
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Item.date, ascending: true)]
-        request.predicate = NSPredicate(format: "amount != 0")
-        _items = FetchRequest(fetchRequest: request)
-    }
+    @ObservedObject var goal: SavingsGoal
     
     var body: some View {
         VStack(spacing: 12) {
@@ -207,6 +221,12 @@ struct SavingsGoalCardUI: View {
                 Spacer()
                 Text("¥\(Int(goal.targetAmount))")
                     .font(.subheadline)
+                
+                // 显示完成标记
+                if goal.isCompleted {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                }
             }
             
             // 进度条
@@ -221,86 +241,84 @@ struct SavingsGoalCardUI: View {
                             startPoint: .leading,
                             endPoint: .trailing
                         ))
-                        .frame(width: geometry.size.width * CGFloat(calculateProgress()))
+                        .frame(width: geometry.size.width * CGFloat(goal.progress))
                 }
             }
             .frame(height: 8)
             
             HStack {
-                Text("\(Int(calculateProgress() * 100))%")
+                Text("\(Int(goal.progress * 100))%")
                     .font(.caption)
                 Spacer()
-                Text("还剩\(goal.remainingDays)天")
-                    .font(.caption)
+                if !goal.isCompleted {
+                    Text("还剩\(goal.remainingDays)天")
+                        .font(.caption)
+                }
             }
         }
         .padding()
         .background(Color.Neumorphic.main)
         .cornerRadius(15)
         .softOuterShadow()
-        .padding(.horizontal)
+        .opacity(goal.isCompleted ? 0.8 : 1.0)
     }
+}
+
+// 新建储蓄目标设置页面
+struct NewSavingsGoalView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.dismiss) private var dismiss
     
-    private func calculateProgress() -> Double {
-        var totalIncome: Double = 0
-        var totalExpense: Double = 0
-        
-        debugPrint("Debug: 开始计算收支...")
-        
-        // 确保目标日期存在且有效
-        guard let startDate = goal.startDate,
-              let targetDate = goal.targetDate else {
-            debugPrint("Debug: 日期为空")
-            return 0
-        }
-        
-        debugPrint("Debug: 开始日期 - \(startDate)")
-        debugPrint("Debug: 目标日期 - \(targetDate)")
-        
-        // 计算在目标开始日期之后的收入和支出
-        let calendar = Calendar.current
-        let now = Date()
-        
-        for item in items {
-            guard let itemDate = item.date else { continue }
-            
-            // 只计算开始日期到当前日期之间的收支
-            if itemDate >= startDate && itemDate <= now {
-                if item.amount > 0 {
-                    totalIncome += item.amount
-                } else {
-                    totalExpense += abs(item.amount)
+    @State private var goalTitle = ""
+    @State private var targetAmount = ""
+    @State private var targetDate = Date()
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
+                Form {
+                    Section(header: Text("新储蓄目标信息")) {
+                        TextField("新储蓄目标名称", text: $goalTitle)
+                        TextField("新储蓄目标金额", text: $targetAmount)
+                            .keyboardType(.decimalPad)
+                        DatePicker("新储蓄目标日期", selection: $targetDate, in: Date()..., displayedComponents: .date)
+                    }
+                }
+            }
+            .navigationTitle("新建储蓄目标")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("取消") {
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("保存") {
+                        saveGoal()
+                    }
+                    .disabled(goalTitle.isEmpty || targetAmount.isEmpty)
                 }
             }
         }
+    }
+    
+    private func saveGoal() {
+        let newGoal = SavingsGoal(context: viewContext)
+        newGoal.title = goalTitle
+        newGoal.targetAmount = Double(targetAmount) ?? 0
+        newGoal.startDate = Date()
+        newGoal.targetDate = targetDate
+        newGoal.isCompleted = false
         
-        debugPrint("Debug: 总收入 - ¥\(totalIncome)")
-        debugPrint("Debug: 总支出 - ¥\(totalExpense)")
-        
-        // 计算实际存储的金额（收入-支出）
-        let actualSavings = totalIncome - totalExpense
-        debugPrint("Debug: 实际存储 - ¥\(actualSavings)")
-        debugPrint("Debug: 目标金额 - ¥\(goal.targetAmount)")
-        
-        // 计算时间进度
-        let totalDays = max(1, calendar.dateComponents([.day], from: startDate, to: targetDate).day ?? 1)
-        // 设置已过天数最小为1，确保第一天就有进度
-        let passedDays = max(1, min(totalDays, calendar.dateComponents([.day], from: startDate, to: now).day ?? 1))
-        
-        debugPrint("Debug: 总天数 - \(totalDays)")
-        debugPrint("Debug: 已过天数 - \(passedDays)")
-        
-        // 计算进度：(收入-支出)/目标金额 × 已过去天数/总天数
-        let savingsProgress = min(1.0, actualSavings / goal.targetAmount) // 限制最大为 100%
-        let timeProgress = Double(passedDays) / Double(totalDays)
-        let finalProgress = savingsProgress * timeProgress
-        
-        debugPrint("Debug: 存储进度 - \(savingsProgress * 100)%")
-        debugPrint("Debug: 时间进度 - \(timeProgress * 100)%")
-        debugPrint("Debug: 最终进度 - \(finalProgress * 100)%")
-        
-        // 确保进度在 0-1 之间
-        return max(0, min(1, finalProgress))
+        do {
+            try viewContext.save()
+            dismiss()
+        } catch {
+            print("保存储蓄目标失败: \(error)")
+        }
     }
 }
 

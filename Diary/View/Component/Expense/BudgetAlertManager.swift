@@ -6,6 +6,10 @@ class BudgetAlertManager: ObservableObject {
     @Published var showingAlert = false
     @Published var alertMessage = ""
     @Published var alertTitle = ""
+    @Published var isShowingCompletionModal = false
+    @Published var currentGoal: SavingsGoal?
+    @Published var context: NSManagedObjectContext?
+    @Published var shouldDismissParentView = false  // 添加控制父视图关闭的状态
     
     // 预算阈值
     private let warningThreshold: Double = 0.9  // 90%
@@ -191,123 +195,162 @@ class BudgetAlertManager: ObservableObject {
         }
     }
 
-    func checkSavingGoalCompletion(goal: SavingsGoal, actualSaving: Double, in context: NSManagedObjectContext) {
+    func showCompletionModal(for goal: SavingsGoal, in context: NSManagedObjectContext) {
+        print("准备显示完成弹窗 - 目标：\(goal.title ?? "")")
+        self.currentGoal = goal
+        self.context = context
+        self.isShowingCompletionModal = true
+        self.shouldDismissParentView = false
+    }
+
+    func checkSavingGoalCompletion(goal: SavingsGoal, in context: NSManagedObjectContext) {
         print("检查储蓄目标完成状态...")
-        print("目标金额: \(goal.targetAmount), 实际储蓄: \(actualSaving)")
         
-        // 确保数据一致性
-        let currentProgress = min((actualSaving / goal.targetAmount) * 100, 100)
+        // 检查时间是否达到目标日期
+        guard let targetDate = goal.targetDate else { return }
+        let currentDate = Date()
         
-        if currentProgress >= 100 && !goal.isCompleted {
-            showCompletionAlert(for: goal, in: context)
+        // 如果还未到目标日期，不触发完成状态
+        if currentDate < targetDate {
+            print("未到目标日期，不触发完成状态")
+            return
+        }
+        
+        // 获取实际储蓄金额
+        let request = NSFetchRequest<Item>(entityName: "Item")
+        request.predicate = NSPredicate(
+            format: "amount > 0 AND date >= %@ AND date <= %@",
+            goal.startDate! as NSDate,
+            targetDate as NSDate
+        )
+        
+        do {
+            let items = try context.fetch(request)
+            let actualSaving = items.reduce(0.0) { $0 + $1.amount }
+            print("目标金额: \(goal.targetAmount), 实际储蓄: \(actualSaving)")
             
-            // 更新目标完成状态
-            DispatchQueue.main.async {
-                var updatedGoal = goal
-                updatedGoal.isCompleted = true
-                // 确保在主线程更新数据
-                self.updateGoalCompletion(updatedGoal)
+            // 只有在达到目标日期且达到目标金额时才标记为完成
+            if actualSaving >= goal.targetAmount && !goal.isCompleted {
+                print("检测到储蓄目标达成且时间已到，显示完成弹窗")
+                DispatchQueue.main.async {
+                    self.showCompletionModal(for: goal, in: context)
+                }
+            } else if actualSaving < goal.targetAmount {
+                print("未达到目标金额，不触发完成状态")
             }
+        } catch {
+            print("检查储蓄目标完成状态失败: \(error)")
         }
     }
 
-    func showCompletionAlert(for goal: SavingsGoal, in context: NSManagedObjectContext) {
-        DispatchQueue.main.async {
-            let alert = UIAlertController(
-                title: "恭喜！",
-                message: "您已经完成了储蓄目标：\(goal.title ?? "")",
-                preferredStyle: .alert
-            )
+    func checkSavingGoalCompletion(goal: SavingsGoal, context: NSManagedObjectContext) -> Bool {
+        guard let startDate = goal.startDate,
+              let targetDate = goal.targetDate,
+              let targetAmount = goal.targetAmount as? Double else {
+            return false
+        }
+        
+        // 计算时间进度
+        let totalDays = Calendar.current.dateComponents([.day], from: startDate, to: targetDate).day ?? 0
+        let passedDays = Calendar.current.dateComponents([.day], from: startDate, to: Date()).day ?? 0
+        
+        // 获取收支数据
+        let request: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
+        request.predicate = NSPredicate(
+            format: "date >= %@ AND date <= %@",
+            startDate as NSDate,
+            targetDate as NSDate
+        )
+        
+        do {
+            let items = try context.fetch(request)
+            let income = items.filter { $0.amount > 0 }.map { $0.amount }.reduce(0, +)
+            let expense = items.filter { $0.amount < 0 }.map { abs($0.amount) }.reduce(0, +)
+            let actualSavings = income - expense
             
-            alert.addAction(UIAlertAction(title: "好的", style: .default, handler: { _ in
-                // 用户点击"好的"后的处理逻辑
-                goal.isCompleted = true
-                try? context.save()
-            }))
+            // 计算进度
+            let savingsProgress = min(1.0, actualSavings / targetAmount)
+            let timeProgress = Double(passedDays) / Double(totalDays)
+            let finalProgress = savingsProgress * timeProgress
             
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let window = windowScene.windows.first,
-               let rootViewController = window.rootViewController {
-                rootViewController.present(alert, animated: true)
+            return finalProgress >= 1.0
+        } catch {
+            print("获取收支数据失败: \(error)")
+            return false
+        }
+    }
+}
+
+struct SavingsGoalsView: View {
+    @FetchRequest(
+        entity: SavingsGoal.entity(),
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \SavingsGoal.isCompleted, ascending: true),
+            NSSortDescriptor(keyPath: \SavingsGoal.targetDate, ascending: true)
+        ]
+    ) private var goals: FetchedResults<SavingsGoal>
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // 进行中的目标
+            if !inProgressGoals.isEmpty {
+                Text("进行中的目标")
+                    .font(.headline)
+                ForEach(inProgressGoals) { goal in
+                    SavingsGoalProgressView(goal: goal)
+                }
+            }
+            
+            // 已完成的目标
+            if !completedGoals.isEmpty {
+                Text("已完成的目标")
+                    .font(.headline)
+                    .padding(.top)
+                ForEach(completedGoals) { goal in
+                    SavingsGoalProgressView(goal: goal)
+                }
             }
         }
+        .padding()
     }
     
-    private func handleGoalCompletion(_ goal: SavingsGoal) {
-        // 在这里添加用户确认后的处理逻辑
-        // 例如：更新UI、保存状态等
-        var updatedGoal = goal
-        updatedGoal.isCompleted = true
-        updateGoalCompletion(updatedGoal)
+    private var inProgressGoals: [SavingsGoal] {
+        goals.filter { !$0.isCompleted }
     }
-
-    private func updateGoalCompletion(_ goal: SavingsGoal) {
-        // 实现更新目标完成状态的逻辑
-        // 这里需要根据你的数据存储方式来实现
-        // 例如：CoreData、UserDefaults 或其他存储方式
+    
+    private var completedGoals: [SavingsGoal] {
+        goals.filter { $0.isCompleted }
     }
 }
 
 struct SavingsGoalProgressView: View {
     @ObservedObject var goal: SavingsGoal
     @Environment(\.managedObjectContext) private var viewContext
-    private let alertManager = BudgetAlertManager()
-    
-    private var progress: Double {
-        let calendar = Calendar.current
-        let now = Date()
-        
-        // 计算时间进度
-        let totalDays = max(1, calendar.days(from: goal.startDate ?? now, to: goal.targetDate ?? now))
-        let passedDays = min(totalDays, calendar.days(from: goal.startDate ?? now, to: now))
-        let timeProgress = (Double(passedDays) / Double(totalDays)) * 100
-        
-        // 计算存储进度
-        let targetAmount = goal.targetAmount
-        let actualSaving = calculateActualSaving()
-        let savingProgress = (actualSaving / targetAmount) * 100
-        
-        return min(max(savingProgress, timeProgress), 100)
-    }
+    @StateObject private var alertManager = BudgetAlertManager()
     
     var body: some View {
         VStack {
-            // ... existing code ...
+            // ... existing progress view code ...
         }
-        .onChange(of: progress) { newProgress in
-            print("进度更新：\(newProgress)%")
-            if !goal.isCompleted && newProgress >= 100 {
-                print("目标达成，显示提示")
-                alertManager.showCompletionAlert(for: goal, in: viewContext)
-                goal.isCompleted = true
-                try? viewContext.save()
+        .opacity(goal.isCompleted ? 0.7 : 1.0)
+        .onAppear {
+            // 视图出现时检查完成状态
+            alertManager.checkSavingGoalCompletion(goal: goal, in: viewContext)
+        }
+        .onChange(of: goal.isCompleted) { completed in
+            // 当完成状态改变时检查
+            if !completed {
+                alertManager.checkSavingGoalCompletion(goal: goal, in: viewContext)
             }
         }
-    }
-    
-    private func calculateActualSaving() -> Double {
-        guard let startDate = goal.startDate,
-              let targetDate = goal.targetDate else {
-            return 0.0
-        }
-        
-        let request: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
-        request.predicate = NSPredicate(
-            format: "savingsGoal == %@ AND date >= %@ AND date <= %@",
-            goal,
-            startDate as NSDate,
-            targetDate as NSDate
-        )
-        
-        do {
-            let items = try viewContext.fetch(request)
-            let totalSaving = items.reduce(into: 0.0) { sum, item in
-                sum += item.amount
+        .sheet(isPresented: $alertManager.isShowingCompletionModal) {
+            if let currentGoal = alertManager.currentGoal {
+                CompletionModalView(
+                    goal: currentGoal,
+                    isPresented: $alertManager.isShowingCompletionModal,
+                    shouldDismissParentView: $alertManager.shouldDismissParentView
+                )
             }
-            return totalSaving
-        } catch {
-            print("计算实际储蓄金额时出错: \(error)")
-            return 0.0
         }
     }
 }
@@ -317,5 +360,137 @@ extension Calendar {
     func days(from startDate: Date, to endDate: Date) -> Int {
         let components = dateComponents([.day], from: startDate, to: endDate)
         return components.day ?? 0
+    }
+}
+
+// 扩展 SavingsGoal 实体
+extension SavingsGoal {
+    // 添加完成日期属性（需要在Core Data模型中添加对应字段）
+    @NSManaged var completedDate: Date?
+    
+    var isTimeCompleted: Bool {
+        guard let targetDate = targetDate else { return false }
+        return Date() >= targetDate
+    }
+    
+    var isAmountCompleted: Bool {
+        guard let startDate = startDate,
+              let targetDate = targetDate else { return false }
+        
+        let request = NSFetchRequest<Item>(entityName: "Item")
+        request.predicate = NSPredicate(
+            format: "amount > 0 AND date >= %@ AND date <= %@",
+            startDate as NSDate,
+            targetDate as NSDate
+        )
+        
+        do {
+            if let context = self.managedObjectContext {
+                let items = try context.fetch(request)
+                let actualSaving = items.reduce(0.0) { $0 + $1.amount }
+                return actualSaving >= targetAmount
+            }
+        } catch {
+            print("计算储蓄金额失败: \(error)")
+        }
+        return false
+    }
+    
+    var shouldComplete: Bool {
+        return isTimeCompleted && isAmountCompleted
+    }
+}
+
+struct CompletionModalView: View {
+    @ObservedObject var goal: SavingsGoal
+    @Environment(\.managedObjectContext) var context
+    @Binding var isPresented: Bool
+    @Binding var shouldDismissParentView: Bool
+    
+    var body: some View {
+        ZStack {
+            // 半透明背景
+            Color.black.opacity(0.4)
+                .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    // 点击背景不关闭弹窗
+                }
+            
+            // 弹窗内容
+            VStack(spacing: 20) {
+                // 顶部图标
+                Image(systemName: "checkmark.circle.fill")
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .foregroundColor(.green)
+                
+                // 标题
+                Text("储蓄目标完成")
+                    .font(.title2)
+                    .bold()
+                
+                // 内容
+                VStack(spacing: 10) {
+                    Text("恭喜！您已经完成了储蓄目标")
+                        .font(.body)
+                    Text(goal.title ?? "")
+                        .font(.headline)
+                    Text("目标金额：¥\(String(format: "%.2f", goal.targetAmount))")
+                        .font(.body)
+                }
+                .multilineTextAlignment(.center)
+                
+                // 确认按钮
+                Button(action: {
+                    // 只有在时间和金额都达标时才允许完成
+                    if goal.shouldComplete {
+                        goal.isCompleted = true
+                        try? context.save()
+                        isPresented = false
+                        shouldDismissParentView = true
+                    }
+                }) {
+                    Text("确认")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(goal.shouldComplete ? Color.blue : Color.gray)
+                        .cornerRadius(10)
+                }
+                .disabled(!goal.shouldComplete)
+            }
+            .padding(30)
+            .background(Color.white)
+            .cornerRadius(20)
+            .shadow(radius: 10)
+            .padding(.horizontal, 40)
+        }
+    }
+}
+
+// 在记账页面中使用
+struct ExpenseInputView: View {
+    @StateObject private var alertManager = BudgetAlertManager()
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        VStack {
+            // ... 现有的记账输入界面 ...
+        }
+        .sheet(isPresented: $alertManager.isShowingCompletionModal) {
+            if let currentGoal = alertManager.currentGoal {
+                CompletionModalView(
+                    goal: currentGoal,
+                    isPresented: $alertManager.isShowingCompletionModal,
+                    shouldDismissParentView: $alertManager.shouldDismissParentView
+                )
+            }
+        }
+        .onChange(of: alertManager.shouldDismissParentView) { shouldDismiss in
+            if shouldDismiss {
+                dismiss()  // 只有在确认按钮点击后才关闭记账页面
+            }
+        }
     }
 }
