@@ -61,14 +61,14 @@ struct SavingsGoalSettingView: View {
     // 获取未完成的目标
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
-        predicate: NSPredicate(format: "isCompleted == false AND (currentAmount < targetAmount OR targetDate > %@)", Date() as NSDate),
+        predicate: NSPredicate(format: "isCompleted == false"),
         animation: .default)
     private var activeGoals: FetchedResults<SavingsGoal>
     
     // 获取已完成的目标
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
-        predicate: NSPredicate(format: "isCompleted == true OR (currentAmount >= targetAmount AND targetDate <= %@)", Date() as NSDate),
+        predicate: NSPredicate(format: "isCompleted == true"),
         animation: .default)
     private var completedGoals: FetchedResults<SavingsGoal>
     
@@ -149,6 +149,52 @@ struct SavingsGoalSettingView: View {
         } catch {
             print("删除目标时出错: \(error)")
         }
+    }
+    
+    private func calculateProgress(for goal: SavingsGoal) -> (Double, Double, Double) {
+        print("Debug: 开始计算收支...")
+        
+        // 获取开始日期和目标日期
+        let startDate = goal.startDate ?? Date()
+        let targetDate = goal.targetDate ?? Date()
+        
+        print("Debug: 开始日期 - \(startDate)")
+        print("Debug: 目标日期 - \(targetDate)")
+        
+        // 使用 currentAmount 替代计算总收入和支出
+        let actualSavings = goal.currentAmount
+        
+        print("Debug: 实际存储 - ¥\(actualSavings)")
+        print("Debug: 目标金额 - ¥\(goal.targetAmount)")
+        
+        // 计算总天数和已过天数
+        let totalDays = Calendar.current.dateComponents([.day], from: startDate, to: targetDate).day ?? 1
+        let elapsedDays = Calendar.current.dateComponents([.day], from: startDate, to: Date()).day ?? 0
+        
+        print("Debug: 总天数 - \(totalDays)")
+        print("Debug: 已过天数 - \(elapsedDays)")
+        
+        // 计算存储进度和时间进度
+        let savingsProgress = min((actualSavings / goal.targetAmount) * 100.0, 100.0)
+        let timeProgress = min((Double(elapsedDays) / Double(totalDays)) * 100.0, 100.0)
+        
+        print("Debug: 存储进度 - \(savingsProgress)%")
+        print("Debug: 时间进度 - \(timeProgress)%")
+        
+        // 计算最终进度
+        let finalProgress = timeProgress  // 使用时间进度作为最终进度
+        print("Debug: 最终进度 - \(finalProgress)%")
+        
+        // 修改完成状态的判断逻辑 - 只使用最终进度（时间进度）
+        let isCompleted = finalProgress >= 100.0
+        
+        // 如果状态发生变化，更新目标状态
+        if goal.isCompleted != isCompleted {
+            goal.isCompleted = isCompleted
+            try? viewContext.save()
+        }
+        
+        return (savingsProgress, timeProgress, finalProgress)
     }
 }
 
