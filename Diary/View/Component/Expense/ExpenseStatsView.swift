@@ -38,10 +38,10 @@ struct ExpenseStatsView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                // 添加储蓄目标卡片
+                // 修改储蓄目标卡片的显示逻辑
                 if let currentGoal = goals.first {
                     SavingsGoalCard(goal: currentGoal)
-                    .padding(.horizontal)
+                        .padding(.horizontal)
                 }
                 
                 List {
@@ -132,15 +132,15 @@ struct ExpenseStatsView: View {
     }
     
     private func calculateMonthlyIncome() -> Double {
-        items.filter { !$0.isExpense }.map { $0.amount }.reduce(0, +)
+        items.filter { $0.amount > 0 }.map { $0.amount }.reduce(0, +)
     }
     
     private func calculateMonthlyExpense() -> Double {
-        items.filter { $0.isExpense }.map { $0.amount }.reduce(0, +)
+        items.filter { $0.amount < 0 }.map { $0.amount }.reduce(0, +)
     }
     
     private func calculateMonthlyBalance() -> Double {
-        calculateMonthlyIncome() - calculateMonthlyExpense()
+        items.map { $0.amount }.reduce(0, +)
     }
     
     private var currentMonthString: String {

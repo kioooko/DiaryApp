@@ -5,65 +5,87 @@ import UserNotifications
 class BudgetAlertManager: ObservableObject {
     @Published var showingAlert = false
     @Published var alertMessage = ""
+    @Published var alertTitle = ""
     
     // 预算阈值
-    private let warningThreshold = 0.9 // 90%
-    private let cautionThreshold = 0.7 // 70%
+    private let warningThreshold: Double = 0.9  // 90%
+    private let cautionThreshold: Double = 0.7  // 70%
+    
+    // 检查储蓄目标完成状态
+    func checkSavingsGoalCompletion(goal: SavingsGoal, context: NSManagedObjectContext) -> String? {
+        guard let targetAmount = goal.targetAmount as? Double else { return nil }
+        
+        let startDate: NSDate = (goal.startDate ?? Date()) as NSDate
+        let targetDate: NSDate = (goal.targetDate ?? Date()) as NSDate
+        
+        let request: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
+        request.predicate = NSPredicate(
+            format: "amount > 0 AND date >= %@ AND date <= %@",
+            startDate,
+            targetDate
+        )
+        
+        do {
+            let items = try context.fetch(request)
+            let totalSaving = items.map { $0.amount }.reduce(0, +)
+            
+            // 如果达到目标金额且未标记为完成
+            if totalSaving >= targetAmount && !goal.isCompleted {
+                goal.isCompleted = true
+                try? context.save()
+                return "🎉 恭喜！您已完成储蓄目标 ¥\(String(format: "%.2f", targetAmount))"
+            }
+        } catch {
+            print("检查储蓄目标完成状态失败: \(error)")
+        }
+        
+        return nil
+    }
+    
+    // 显示提醒
+    func showAlert(title: String, message: String) {
+        alertTitle = title
+        alertMessage = message
+        showingAlert = true
+    }
     
     // 检查预算状态并返回提醒消息
     func checkBudgetStatus(context: NSManagedObjectContext) -> String? {
-        print("开始检查月度预算状态...")
-        
         // 获取当月预算
-        let budgetRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+        let budgetRequest: NSFetchRequest<SavingsGoal> = NSFetchRequest(entityName: "SavingsGoal")
         budgetRequest.predicate = NSPredicate(format: "isCompleted == false")
         budgetRequest.sortDescriptors = [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)]
         budgetRequest.fetchLimit = 1
         
         do {
             let goals = try context.fetch(budgetRequest)
-            guard let currentGoal = goals.first else {
-                print("未找到有效的月度预算")
+            guard let currentGoal = goals.first,
+                  let monthlyAmount = currentGoal.monthlyAmount as? Double,
+                  monthlyAmount > 0 else {
                 return nil
             }
-            
-            let monthlyBudget = currentGoal.monthlyAmount ?? 0
-            if monthlyBudget <= 0 {
-                print("月度预算金额无效")
-                return nil
-            }
-            
-            print("月度预算: ¥\(monthlyBudget)")
             
             // 获取当月支出
             let calendar = Calendar.current
             let now = Date()
             let components = calendar.dateComponents([.year, .month], from: now)
-            
-            guard let startOfMonth = calendar.date(from: components) else {
-                print("获取月初日期失败")
+            guard let startOfMonth = calendar.date(from: components),
+                  let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth) else {
                 return nil
             }
             
-            let endOfMonth = calendar.date(byAdding: .month, value: 1, to: startOfMonth)!
-                .addingTimeInterval(-1)
-            
-            print("统计周期: \(startOfMonth) 至 \(endOfMonth)")
-            
-            let expenseRequest = NSFetchRequest<Item>(entityName: "Item")
+            let expenseRequest: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
             expenseRequest.predicate = NSPredicate(
-                format: "date >= %@ AND date <= %@ AND amount < 0",
-                startOfMonth as CVarArg,
-                endOfMonth as CVarArg
+                format: "amount < 0 AND date >= %@ AND date <= %@",
+                startOfMonth as NSDate,
+                endOfMonth as NSDate
             )
             
             let expenses = try context.fetch(expenseRequest)
             let totalExpense = abs(expenses.map { $0.amount }.reduce(0, +))
-            print("当月总支出: ¥\(totalExpense)")
             
             // 计算使用比例
-            let usageRatio = totalExpense / monthlyBudget
-            print("预算使用比例: \(usageRatio * 100)%")
+            let usageRatio = totalExpense / monthlyAmount
             
             // 返回提醒消息
             if usageRatio >= 1.0 {
@@ -73,7 +95,6 @@ class BudgetAlertManager: ObservableObject {
             } else if usageRatio >= cautionThreshold {
                 return "📊 提示：本月支出已达 \(Int(usageRatio * 100))% 预算"
             }
-            
         } catch {
             print("检查预算状态失败: \(error)")
         }
@@ -91,9 +112,9 @@ class BudgetAlertManager: ObservableObject {
         // 获取今日支出
         let request = NSFetchRequest<Item>(entityName: "Item")
         request.predicate = NSPredicate(
-            format: "date >= %@ AND date < %@ AND amount < 0",
-            today as CVarArg,
-            tomorrow as CVarArg
+            format: "amount < 0 AND date >= %@ AND date < %@",
+            today as NSDate,
+            tomorrow as NSDate
         )
         
         do {
@@ -165,5 +186,77 @@ class BudgetAlertManager: ObservableObject {
             print("计算剩余预算失败: \(error)")
             return nil
         }
+    }
+}
+
+struct SavingsGoalProgressView: View {
+    @ObservedObject var goal: SavingsGoal
+    @Environment(\.managedObjectContext) private var viewContext
+    @State private var showingCompletionAlert = false
+    
+    private var progress: Double {
+        let calendar = Calendar.current
+        let now = Date()
+        
+        // 计算时间进度
+        let totalDays = max(1, calendar.days(from: goal.startDate ?? now, to: goal.targetDate ?? now))
+        let passedDays = min(totalDays, calendar.days(from: goal.startDate ?? now, to: now))
+        let timeProgress = (Double(passedDays) / Double(totalDays)) * 100
+        
+        // 计算存储进度
+        let targetAmount = goal.targetAmount
+        let actualSaving = calculateActualSaving()
+        let savingProgress = (actualSaving / targetAmount) * 100
+        
+        return min(max(savingProgress, timeProgress), 100)
+    }
+    
+    private func calculateActualSaving() -> Double {
+        guard let startDate = goal.startDate,
+              let targetDate = goal.targetDate else {
+            return 0.0
+        }
+        
+        let request: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
+        request.predicate = NSPredicate(
+            format: "amount > 0 AND date >= %@ AND date <= %@",
+            startDate as NSDate,
+            targetDate as NSDate
+        )
+        
+        do {
+            let items = try viewContext.fetch(request)
+            let totalSaving = items.map { $0.amount }.reduce(0, +)
+            return totalSaving
+        } catch {
+            print("计算实际储蓄金额时出错: \(error)")
+            return 0.0
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            // ... 现有的视图代码 ...
+        }
+        .onChange(of: progress) { newProgress in
+            if !goal.isCompleted && newProgress >= 100 {
+                goal.isCompleted = true
+                showingCompletionAlert = true
+                try? viewContext.save()
+            }
+        }
+        .alert("恭喜！", isPresented: $showingCompletionAlert) {
+            Button("太棒了", role: .cancel) { }
+        } message: {
+            Text("您已经达成储蓄目标！")
+        }
+    }
+}
+
+// Calendar 扩展
+extension Calendar {
+    func days(from startDate: Date, to endDate: Date) -> Int {
+        let components = dateComponents([.day], from: startDate, to: endDate)
+        return components.day ?? 0
     }
 }

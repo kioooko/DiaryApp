@@ -1,5 +1,6 @@
 import SwiftUI
 import Neumorphic
+import CoreData
 
 struct ExpenseEditor: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -131,7 +132,7 @@ struct ExpenseEditor: View {
             .padding(.top, 20)
             .background(Color.Neumorphic.main)
         }
-        .alert("预算提醒", isPresented: $budgetAlert.showingAlert) {
+        .alert(budgetAlert.alertTitle, isPresented: $budgetAlert.showingAlert) {
             Button("确定", role: .cancel) { }
         } message: {
             Text(budgetAlert.alertMessage)
@@ -143,12 +144,14 @@ struct ExpenseEditor: View {
         
         if let editingItem = editingItem {
             editingItem.amount = newAmount
+            editingItem.isExpense = isExpense
             editingItem.note = note
         } else {
             let newItem = Item(context: viewContext)
             //newItem.id = UUID()
             newItem.date = Date()
             newItem.amount = newAmount
+            newItem.isExpense = isExpense
             newItem.note = note
         }
         
@@ -160,9 +163,9 @@ struct ExpenseEditor: View {
             
             if isExpense {
                 print("检查预算状态...")
-                if let alertMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
-                    print("需要显示预算提醒: \(alertMessage)")
-                    budgetAlert.alertMessage = alertMessage
+                if let budgetMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
+                    print("需要显示预算提醒: \(budgetMessage)")
+                    budgetAlert.alertMessage = budgetMessage
                     budgetAlert.showingAlert = true
                     
                     // 发送每日支出总结
@@ -171,6 +174,15 @@ struct ExpenseEditor: View {
                 } else {
                     print("无需显示预算提醒")
                 }
+            }
+            
+            // 检查储蓄目标完成状态
+            let goalRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+            goalRequest.predicate = NSPredicate(format: "isCompleted == false")
+            
+            if let currentGoal = try? viewContext.fetch(goalRequest).first,
+               let completionMessage = budgetAlert.checkSavingsGoalCompletion(goal: currentGoal, context: viewContext) {
+                budgetAlert.showAlert(title: "储蓄目标", message: completionMessage)
             }
             
             dismiss()
