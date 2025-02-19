@@ -18,6 +18,8 @@ struct ExpenseEditor: View {
         animation: .default)
     private var goals: FetchedResults<SavingsGoal>
     
+    @StateObject private var budgetAlert = BudgetAlertManager()
+    
     init(editingItem: Item? = nil) {
         self.editingItem = editingItem
         if let item = editingItem {
@@ -129,6 +131,11 @@ struct ExpenseEditor: View {
             .padding(.top, 20)
             .background(Color.Neumorphic.main)
         }
+        .alert("预算提醒", isPresented: $budgetAlert.showingAlert) {
+            Button("确定", role: .cancel) { }
+        } message: {
+            Text(budgetAlert.alertMessage)
+        }
     }
     
     private func saveExpense() {
@@ -158,6 +165,15 @@ struct ExpenseEditor: View {
             try viewContext.save()
             dismiss()
             bannerState.show(of: .success(message: editingItem == nil ? "记账成功" : "更新成功"))
+            
+            // 保存后检查预算状态
+            if let alertMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
+                budgetAlert.alertMessage = alertMessage
+                budgetAlert.showingAlert = true
+            }
+            
+            // 发送每日预算提醒
+            budgetAlert.sendDailyBudgetNotification(context: viewContext)
         } catch {
             bannerState.show(of: .error(message: editingItem == nil ? "保存失败" : "更新失败"))
         }
