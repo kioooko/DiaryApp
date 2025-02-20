@@ -447,6 +447,170 @@ struct DataImportView: View {
         
         return csvContent
     }
+
+    private func shareCSV() {
+        // 获取所有数据并生成CSV内容
+        let csvContent = downloadCSVData()
+        
+        // 保存CSV文件
+        if let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = documentsPath.appendingPathComponent("DiaryData.csv")
+            do {
+                // 添加 UTF-8 BOM，解决中文乱码问题
+                let bomPrefix = Data([0xEF, 0xBB, 0xBF])
+                try bomPrefix.write(to: fileURL)
+                try csvContent.data(using: .utf8)?.write(to: fileURL, options: .atomic)
+                
+                print("✅ 文件已保存: \(fileURL)")
+                print("📝 导出数据内容预览:")
+                print(csvContent.prefix(200))  // 打印前200个字符用于调试
+                
+                // 分享文件
+                let activityVC = UIActivityViewController(
+                    activityItems: [fileURL],
+                    applicationActivities: nil
+                )
+                
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first,
+                   let rootVC = window.rootViewController {
+                    activityVC.popoverPresentationController?.sourceView = rootVC.view
+                    rootVC.present(activityVC, animated: true)
+                }
+            } catch {
+                print("❌ 保存文件失败: \(error)")
+                print("错误详情: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func downloadCSVData() -> String {
+        let dateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            formatter.calendar = Calendar(identifier: .gregorian)
+            formatter.timeZone = TimeZone.current
+            formatter.locale = Locale(identifier: "zh_CN")
+            return formatter
+        }()
+        
+        var csvContent = ""
+        
+        // 1. 日记数据表
+        csvContent += "=== 日记数据 ===\n"
+        csvContent += "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
+        let itemRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        if let items = try? viewContext.fetch(itemRequest) {
+            for item in items {
+                // 分步处理每个字段
+                let fields = [
+                    item.title ?? "",
+                    item.body ?? "",
+                    dateFormatter.string(from: item.date),
+                    String(item.amount),
+                    item.isExpense ? "是" : "否",
+                    item.note ?? "",
+                    item.weather ?? "",
+                    item.isBookmarked ? "是" : "否",
+                    item.imageData?.base64EncodedString() ?? "",
+                    "",
+                    dateFormatter.string(from: item.createdAt),
+                    dateFormatter.string(from: item.updatedAt)
+                ]
+                
+                let quotedFields = fields.map { "\"\($0)\"" }
+                let row = quotedFields.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        csvContent += "\n\n"
+        
+        // 2. 联系人数据表
+        csvContent += "=== 联系人数据 ===\n"
+        csvContent += "姓名,关系层级,生日,备注,最近联系时间,头像,创建时间,更新时间\n"
+        let contactRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
+        if let contacts = try? viewContext.fetch(contactRequest) {
+            for contact in contacts {
+                // 分步处理每个字段
+                let birthdayStr = contact.birthday.map { dateFormatter.string(from: $0) } ?? ""
+                let lastInteractionStr = contact.lastInteraction.map { dateFormatter.string(from: $0) } ?? ""
+                let avatarStr = contact.avatar?.base64EncodedString() ?? ""
+                
+                let fields = [
+                    contact.name ?? "",
+                    String(contact.tier),
+                    birthdayStr,
+                    contact.notes ?? "",
+                    lastInteractionStr,
+                    avatarStr,
+                    dateFormatter.string(from: contact.createdAt), // 非可选
+                    dateFormatter.string(from: contact.updatedAt)  // 非可选
+                ]
+                
+                let quotedFields = fields.map { "\"\($0)\"" }
+                let row = quotedFields.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        csvContent += "\n\n"
+        
+        // 3. 储蓄目标数据表
+        csvContent += "=== 储蓄目标数据 ===\n"
+        csvContent += "标题,目标金额,当前金额,开始日期,目标日期,创建时间,更新时间\n"
+        let goalRequest: NSFetchRequest<SavingsGoal> = SavingsGoal.fetchRequest()
+        if let goals = try? viewContext.fetch(goalRequest) {
+            for goal in goals {
+                // 分步处理每个字段
+                let startDateStr = goal.startDate.map { dateFormatter.string(from: $0) } ?? ""
+                let targetDateStr = goal.targetDate.map { dateFormatter.string(from: $0) } ?? ""
+                let createdAtStr = dateFormatter.string(from: goal.createdAt ?? Date()) // 提供默认值
+                let updatedAtStr = dateFormatter.string(from: goal.updatedAt ?? Date()) // 提供默认值
+                
+                let fields = [
+                    goal.title ?? "",
+                    String(goal.targetAmount),
+                    String(goal.currentAmount),
+                    startDateStr,
+                    targetDateStr,
+                    createdAtStr,
+                    updatedAtStr
+                ]
+                
+                let quotedFields = fields.map { "\"\($0)\"" }
+                let row = quotedFields.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        csvContent += "\n\n"
+        
+        // 4. 清单项目数据表
+        csvContent += "=== 清单项目数据 ===\n"
+        csvContent += "标题,是否完成,创建时间,更新时间\n"
+        let checklistRequest: NSFetchRequest<CheckListItem> = CheckListItem.fetchRequest()
+        if let items = try? viewContext.fetch(checklistRequest) {
+            for item in items {
+                // 分步处理每个字段
+                let createdAtStr = dateFormatter.string(from: item.createdAt ?? Date()) // 提供默认值
+                let updatedAtStr = dateFormatter.string(from: item.updatedAt ?? Date()) // 提供默认值
+                
+                let fields = [
+                    item.title ?? "",
+                    item.isCompleted ? "是" : "否",
+                    createdAtStr,
+                    updatedAtStr
+                ]
+                
+                let quotedFields = fields.map { "\"\($0)\"" }
+                let row = quotedFields.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        
+        print("📝 导出数据表单数量: 4")
+        print("📝 CSV内容长度: \(csvContent.count) 字符")
+        
+        return csvContent
+    }
 }
 
 // 添加 FilePicker 实现
