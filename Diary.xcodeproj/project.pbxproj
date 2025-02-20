@@ -13,6 +13,8 @@
 		0701CD272D670F75006888A6 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD252D670F75006888A6 /* Relationship.swift */; };
 		0701CD292D67102E006888A6 /* RelationshipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD282D67102E006888A6 /* RelationshipView.swift */; };
 		0701CD2A2D67102E006888A6 /* RelationshipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD282D67102E006888A6 /* RelationshipView.swift */; };
+		0701CD2C2D67187F006888A6 /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD2B2D67187F006888A6 /* AddContactView.swift */; };
+		0701CD2D2D67187F006888A6 /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD2B2D67187F006888A6 /* AddContactView.swift */; };
 		0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */; };
 		0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0802D5EDFA800446520 /* ExpenseEditor.swift */; };
 		0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
@@ -162,6 +164,7 @@
 		0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetAlertManager.swift; sourceTree = "<group>"; };
 		0701CD252D670F75006888A6 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		0701CD282D67102E006888A6 /* RelationshipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipView.swift; sourceTree = "<group>"; };
+		0701CD2B2D67187F006888A6 /* AddContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactView.swift; sourceTree = "<group>"; };
 		0709B07F2D5EDFA800446520 /* ExpenseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseContent.swift; sourceTree = "<group>"; };
 		0709B0802D5EDFA800446520 /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
 		0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseStatsView.swift; sourceTree = "<group>"; };
@@ -298,6 +301,7 @@
 			isa = PBXGroup;
 			children = (
 				0701CD282D67102E006888A6 /* RelationshipView.swift */,
+				0701CD2B2D67187F006888A6 /* AddContactView.swift */,
 			);
 			path = Relationship;
 			sourceTree = "<group>";
@@ -822,6 +826,7 @@
 				F5358D2629FEB2E9005FD6C8 /* UserDefaults.swift in Sources */,
 				F53CE9632A153CB400E63078 /* WeatherSymbol.swift in Sources */,
 				F5358CB129F52468005FD6C8 /* Diary.xcdatamodeld in Sources */,
+				0701CD2D2D67187F006888A6 /* AddContactView.swift in Sources */,
 				0745A3382D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */,
 				0745A3392D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */,
 				F550BC952A0E499600BCB0F2 /* ReminderSettingView.swift in Sources */,
@@ -858,6 +863,7 @@
 				07536BC02D5C97B300E23444 /* DataImportView.swift in Sources */,
 				07414B2A2D01B2B200D9AB42 /* LaunchAnimationView.swift in Sources */,
 				075EB2342D1291140039A3B9 /* ChatAISetting.swift in Sources */,
+				0701CD2C2D67187F006888A6 /* AddContactView.swift in Sources */,
 				07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
 				07E13D1A2D1D5322008C13A9 /* BannerView.swift in Sources */,
 				0701CD262D670F75006888A6 /* Relationship.swift in Sources */,

@@ -125,12 +125,10 @@ struct AddContactView: View {
     
     private func saveContact() {
         let contact = Contact(context: viewContext)
-        contact.id = UUID()
         contact.name = name
         contact.tier = selectedTier.rawValue
         contact.birthday = birthday
         contact.notes = notes
-        contact.lastInteraction = Date()
         contact.createdAt = Date()
         contact.updatedAt = Date()
         

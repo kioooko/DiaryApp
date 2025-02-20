@@ -184,9 +184,9 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         }
     }
 
-    var relationship: some View {  // 改为小写开头，符合 Swift 命名规范
+    var relationship: some View {
         NavigationLink(destination: RelationshipView()) {
-            rowTitle(icon: "person.2", Color: .blue, description: "关系")
+            rowTitle(icon: "person.2", Color: .blue, description: "关系网络")
         }
     }
 

@@ -228,9 +228,8 @@ struct DataImportView: View {
                     rowData[header] = columns[index]
                 }
                 
+                // 日记数据处理
                 let entry = Item(context: viewContext)
-                
-                // 设置基本字段（确保必填字段有值）
                 entry.title = (rowData["标题"]?.isEmpty ?? true) ? "未命名记录" : rowData["标题"]
                 entry.body = rowData["内容"]
                 
@@ -286,19 +285,49 @@ struct DataImportView: View {
                     entry.updatedAt = Date()
                 }
                 
-                importedCount += 1
+                importedCount += 1  // 计数日记数据
+                
+                // 联系人数据处理
+                if rowData["联系人姓名"] != nil {
+                    let contact = Contact(context: viewContext)
+                    contact.id = UUID()
+                    contact.name = rowData["联系人姓名"] ?? "未命名"
+                    contact.tier = Int16(rowData["关系层级"] ?? "3") ?? 3
+                    
+                    if let birthdayStr = rowData["生日"],
+                       let birthday = dateFormatter.date(from: birthdayStr) {
+                        contact.birthday = birthday
+                    }
+                    
+                    contact.notes = rowData["备注"]
+                    
+                    if let lastInteractionStr = rowData["最近联系时间"],
+                       let lastInteraction = dateFormatter.date(from: lastInteractionStr) {
+                        contact.lastInteraction = lastInteraction
+                    }
+                    
+                    if let avatarStr = rowData["头像"],
+                       let avatarData = Data(base64Encoded: avatarStr) {
+                        contact.avatar = avatarData
+                    }
+                    
+                    contact.createdAt = Date()
+                    contact.updatedAt = Date()
+                    
+                    importedCount += 1  // 计数联系人数据
+                }
+                
+                // 每处理50条记录保存一次
+                if (importedCount + 1) % 50 == 0 {
+                    saveContext()
+                }
             }
             
-            // 批量保存
-            do {
-                try viewContext.save()
-                print("✅ 成功导入 \(importedCount) 条记录")
-                bannerState.show(of: .success(message: "成功导入 \(importedCount) 条记录"))
-            } catch {
-                print("❌ 保存失败: \(error)")
-                viewContext.rollback()
-                bannerState.show(of: .error(message: "导入失败"))
-            }
+            // 最后保存一次
+            saveContext()
+            
+            // 完成导入
+            bannerState.show(of: .success(message: "成功导入 \(importedCount) 条记录"))
         }
     }
     
@@ -388,4 +417,4 @@ private extension DateFormatter {
     }()
 }
 
-// 📌 `
+// 📌 `importedCount` 是导入的联系人数量，而不是总记录数。

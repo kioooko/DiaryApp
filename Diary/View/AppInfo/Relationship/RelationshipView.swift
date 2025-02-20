@@ -36,7 +36,8 @@ struct RelationshipView: View {
                 }
             }
             .sheet(isPresented: $showingAddContact) {
-                Text("添加联系人") // 这里后续会替换为真正的添加联系人视图
+                AddContactView()
+                    .environmentObject(bannerState)
             }
         }
     }

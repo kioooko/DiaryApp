@@ -29,19 +29,4 @@ enum RelationshipTier: Int16, CaseIterable {
     }
 }
 
-@objc(Contact)
-class Contact: NSManagedObject {
-    @NSManaged var name: String
-    @NSManaged var avatar: Data?
-    @NSManaged var tier: Int16
-    @NSManaged var birthday: Date?
-    @NSManaged var notes: String?
-    @NSManaged var lastInteraction: Date?
-    @NSManaged var createdAt: Date
-    @NSManaged var updatedAt: Date
-    
-    var relationshipTier: RelationshipTier {
-        get { RelationshipTier(rawValue: tier) ?? .acquaintance }
-        set { tier = newValue.rawValue }
-    }
-} 
+// 移除 Contact 类定义，使用 CoreData 生成的类 

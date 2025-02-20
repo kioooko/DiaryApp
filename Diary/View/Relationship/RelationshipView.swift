@@ -9,42 +9,45 @@ struct RelationshipView: View {
     @State private var showingAddContact = false
     
     var body: some View {
-          NavigationView {
-            ZStack {
-                Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
-         
-                ScrollView {
-                    VStack(spacing: 16) {
-                        // 搜索栏
-                        SearchBar(text: $searchText)
-                            .padding(.horizontal)
-                        
-                        // 关系层级列表
-                        ForEach(RelationshipTier.allCases, id: \.self) { tier in
-                            RelationshipTierSection(tier: tier)
-                        }
+        ZStack {
+            Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
+            
+            ScrollView {
+                VStack(spacing: 16) {
+                    // 搜索栏
+                    SearchBar(text: $searchText)
+                        .padding(.horizontal)
+                    
+                    // 关系层级列表
+                    ForEach(RelationshipTier.allCases, id: \.self) { tier in
+                        RelationshipTierSection(tier: tier)
                     }
-                    .padding(.vertical)
                 }
+                .padding(.vertical)
             }
-            .background(Color.Neumorphic.main)
-             .navigationTitle("人际关系")
-             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+        }
+        .background(Color.Neumorphic.main)
+        .navigationBarBackButtonHidden(false)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 16) {
+                    Text("人际关系")
+                    
                     Button {
                         showingAddContact = true
                     } label: {
                         Image(systemName: "person.badge.plus")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.blue)
                     }
                 }
             }
-                        .sheet(isPresented: $showingAddContact) {
-                AddContactView()  
-            }
+        }
+        .sheet(isPresented: $showingAddContact) {
+            AddContactView()
+                .environmentObject(bannerState)
         }
     }
+}
 
 // 关系层级区块
 struct RelationshipTierSection: View {
@@ -72,7 +75,8 @@ struct RelationshipTierSection: View {
                 .padding(.horizontal)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 10)
     }
 }
 
@@ -82,7 +86,7 @@ struct ContactCard: View {
         VStack {
             Image(systemName: "person.circle.fill")
                 .resizable()
-                .frame(width: 40, height: 40)
+                .frame(width: 18, height: 18)
                 .foregroundColor(.gray)
             
             Text("姓名")
@@ -92,7 +96,7 @@ struct ContactCard: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
-        .frame(width: 90)
+        .frame(width: 60)
         .padding()
         .background(Color.Neumorphic.main)
         .cornerRadius(12)
