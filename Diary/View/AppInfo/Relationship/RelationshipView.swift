@@ -9,10 +9,10 @@ struct RelationshipView: View {
     @State private var showingAddContact = false
     
     var body: some View {
-          NavigationView {
+        NavigationView {
             ZStack {
                 Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
-         
+                
                 ScrollView {
                     VStack(spacing: 16) {
                         // 搜索栏
@@ -27,24 +27,20 @@ struct RelationshipView: View {
                     .padding(.vertical)
                 }
             }
-            .background(Color.Neumorphic.main)
-             .navigationTitle("人际关系")
-             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("人际关系")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingAddContact = true
-                    } label: {
+                    Button(action: { showingAddContact = true }) {
                         Image(systemName: "person.badge.plus")
-                            .foregroundColor(.gray)
                     }
                 }
             }
-                        .sheet(isPresented: $showingAddContact) {
-                AddContactView()  
+            .sheet(isPresented: $showingAddContact) {
+                Text("添加联系人") // 这里后续会替换为真正的添加联系人视图
             }
         }
     }
+}
 
 // 关系层级区块
 struct RelationshipTierSection: View {
@@ -82,7 +78,7 @@ struct ContactCard: View {
         VStack {
             Image(systemName: "person.circle.fill")
                 .resizable()
-                .frame(width: 40, height: 40)
+                .frame(width: 60, height: 60)
                 .foregroundColor(.gray)
             
             Text("姓名")
@@ -92,7 +88,7 @@ struct ContactCard: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
-        .frame(width: 90)
+        .frame(width: 100)
         .padding()
         .background(Color.Neumorphic.main)
         .cornerRadius(12)
@@ -122,4 +118,4 @@ struct SearchBar: View {
 #Preview {
     RelationshipView()
         .environmentObject(BannerState())
-} 
+}
