@@ -15,6 +15,8 @@
 		0701CD2A2D67102E006888A6 /* RelationshipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD282D67102E006888A6 /* RelationshipView.swift */; };
 		0701CD2C2D67187F006888A6 /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD2B2D67187F006888A6 /* AddContactView.swift */; };
 		0701CD2D2D67187F006888A6 /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD2B2D67187F006888A6 /* AddContactView.swift */; };
+		0701CD2F2D672028006888A6 /* Contact+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD2E2D672028006888A6 /* Contact+Extension.swift */; };
+		0701CD302D672028006888A6 /* Contact+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD2E2D672028006888A6 /* Contact+Extension.swift */; };
 		0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */; };
 		0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0802D5EDFA800446520 /* ExpenseEditor.swift */; };
 		0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
@@ -165,6 +167,7 @@
 		0701CD252D670F75006888A6 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		0701CD282D67102E006888A6 /* RelationshipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelationshipView.swift; sourceTree = "<group>"; };
 		0701CD2B2D67187F006888A6 /* AddContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactView.swift; sourceTree = "<group>"; };
+		0701CD2E2D672028006888A6 /* Contact+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Contact+Extension.swift"; sourceTree = "<group>"; };
 		0709B07F2D5EDFA800446520 /* ExpenseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseContent.swift; sourceTree = "<group>"; };
 		0709B0802D5EDFA800446520 /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
 		0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseStatsView.swift; sourceTree = "<group>"; };
@@ -382,6 +385,7 @@
 				F5358D2D29FF53E6005FD6C8 /* DiaryDataStore.swift */,
 				F550BC982A0E58BD00BCB0F2 /* NotificationSetting.swift */,
 				F53E3A8D2A0C07680064CB62 /* TextOptions.swift */,
+				0701CD2E2D672028006888A6 /* Contact+Extension.swift */,
 				F5358D0929F8B8B9005FD6C8 /* WeatherDataStore.swift */,
 				F5BF443C2A52FE8000217119 /* FeedbackPhrase.swift */,
 				0701CD252D670F75006888A6 /* Relationship.swift */,
@@ -759,6 +763,7 @@
 				07E13D272D1D5354008C13A9 /* DiaryApp.swift in Sources */,
 				F5358D3C2A00D5CF005FD6C8 /* ActionButtonStyle.swift in Sources */,
 				F5BF44362A4C747900217119 /* CheckListEditor.swift in Sources */,
+				0701CD302D672028006888A6 /* Contact+Extension.swift in Sources */,
 				F53E3A882A0BB6D50064CB62 /* TextOptionsView.swift in Sources */,
 				0701CD292D67102E006888A6 /* RelationshipView.swift in Sources */,
 				F5BF443D2A52FE8000217119 /* FeedbackPhrase.swift in Sources */,
@@ -846,6 +851,7 @@
 				07E13D1E2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */,
 				07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
 				0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */,
+				0701CD2F2D672028006888A6 /* Contact+Extension.swift in Sources */,
 				0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */,
 				0701CD1C2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */,
 				0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */,

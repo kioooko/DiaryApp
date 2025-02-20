@@ -8,62 +8,89 @@ struct RelationshipView: View {
     @State private var searchText = ""
     @State private var showingAddContact = false
     
+    @FetchRequest(
+        entity: Contact.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Contact.name, ascending: true)]
+    ) private var contacts: FetchedResults<Contact>
+    
+    // 按关系层级过滤联系人
+    private func contactsForTier(_ tier: RelationshipTier) -> [Contact] {
+        contacts.filter { $0.relationshipTier == tier }
+    }
+    
+    // 搜索过滤
+    private func filteredContacts(for tier: RelationshipTier) -> [Contact] {
+        let tierContacts = contactsForTier(tier)
+        if searchText.isEmpty {
+            return tierContacts
+        }
+        return tierContacts.filter { contact in
+            guard let name = contact.name else { return false }
+            return name.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+    
     var body: some View {
-        NavigationView {
-            ZStack {
-                Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
-                
-                ScrollView {
-                    VStack(spacing: 16) {
-                        // 搜索栏
-                        SearchBar(text: $searchText)
-                            .padding(.horizontal)
-                        
-                        // 关系层级列表
-                        ForEach(RelationshipTier.allCases, id: \.self) { tier in
-                            RelationshipTierSection(tier: tier)
-                        }
+        ZStack {
+            Color.Neumorphic.main.edgesIgnoringSafeArea(.all)
+            
+            ScrollView {
+                VStack(spacing: 16) {
+                    SearchBar(text: $searchText)
+                        .padding(.horizontal)
+                    
+                    ForEach(RelationshipTier.allCases, id: \.self) { tier in
+                        RelationshipTierSection(
+                            tier: tier,
+                            contacts: filteredContacts(for: tier)
+                        )
                     }
-                    .padding(.vertical)
                 }
+                .padding(.vertical)
             }
-            .navigationTitle("人际关系")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { showingAddContact = true }) {
+        }
+        .background(Color.Neumorphic.main)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                HStack(spacing: 16) {
+                    Text("人际关系")
+                        .fontWeight(.bold)
+                    Button {
+                        showingAddContact = true
+                    } label: {
                         Image(systemName: "person.badge.plus")
+                            .foregroundColor(.gray)
                     }
                 }
             }
-            .sheet(isPresented: $showingAddContact) {
-                AddContactView()
-                    .environmentObject(bannerState)
-            }
+        }
+        .sheet(isPresented: $showingAddContact) {
+            AddContactView()
+                .environmentObject(bannerState)
         }
     }
 }
 
-// 关系层级区块
 struct RelationshipTierSection: View {
     let tier: RelationshipTier
+    let contacts: [Contact]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // 标题栏
             HStack {
                 Text(tier.title)
                     .font(.headline)
                 Spacer()
-                Text("(\(tier.limit)人)")
+                Text("(\(contacts.count)/\(tier.limit)人)")
                     .foregroundColor(.secondary)
             }
             .padding(.horizontal)
             
-            // 联系人列表
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(0..<3) { _ in // 临时使用固定数量，后续会替换为实际数据
-                        ContactCard()
+                    ForEach(contacts, id: \.objectID) { contact in
+                        ContactCard(contact: contact)
                     }
                 }
                 .padding(.horizontal)
@@ -73,27 +100,68 @@ struct RelationshipTierSection: View {
     }
 }
 
-// 联系人卡片
 struct ContactCard: View {
+    let contact: Contact
+    
     var body: some View {
         VStack {
-            Image(systemName: "person.circle.fill")
-                .resizable()
-                .frame(width: 60, height: 60)
-                .foregroundColor(.gray)
+            if let avatarData = contact.avatar,
+               let uiImage = UIImage(data: avatarData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 40, height: 40)
+                    .clipShape(Circle())
+            } else {
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .frame(width: 40, height: 40)
+                    .foregroundColor(.gray)
+            }
             
-            Text("姓名")
+            Text(contact.name ?? "未命名")
                 .font(.subheadline)
             
-            Text("最近联系：3天前")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            if let lastInteraction = contact.lastInteraction {
+                Text("最近联系：\(lastInteraction.timeAgoDisplay())")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
-        .frame(width: 100)
+        .frame(width: 80)
         .padding()
         .background(Color.Neumorphic.main)
         .cornerRadius(12)
         .softOuterShadow()
+    }
+}
+
+// 时间显示扩展
+extension Date {
+    func timeAgoDisplay() -> String {
+        let calendar = Calendar.current
+        let now = Date()
+        let components = calendar.dateComponents([.day, .hour, .minute], from: self, to: now)
+        
+        if let day = components.day {
+            if day > 30 {
+                let formatter = DateFormatter()
+                formatter.dateFormat = "MM-dd"
+                return formatter.string(from: self)
+            } else if day > 0 {
+                return "\(day)天前"
+            }
+        }
+        
+        if let hour = components.hour, hour > 0 {
+            return "\(hour)小时前"
+        }
+        
+        if let minute = components.minute, minute > 0 {
+            return "\(minute)分钟前"
+        }
+        
+        return "刚刚"
     }
 }
 

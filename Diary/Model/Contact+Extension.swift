@@ -1,6 +1,8 @@
 import Foundation
 import CoreData
+import SwiftUI
 
+@available(iOS 13.0, *)
 extension Contact {
     var relationshipTier: RelationshipTier {
         get { RelationshipTier(rawValue: tier) ?? .acquaintance }
@@ -9,8 +11,8 @@ extension Contact {
     
     // 用于预览的示例数据
     static var example: Contact {
-        let context = PersistenceController.preview.container.viewContext
-        let contact = Contact(context: context)
+        let viewContext = NSPersistentContainer(name: "Diary").viewContext
+        let contact = Contact(context: viewContext)
         contact.id = UUID()
         contact.name = "示例联系人"
         contact.tier = RelationshipTier.core.rawValue
