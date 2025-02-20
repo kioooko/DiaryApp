@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0701CD1B2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */; };
 		0701CD1C2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */; };
+		0701CD232D670CF3006888A6 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD212D670CF3006888A6 /* Relationship.swift */; };
+		0701CD242D670CF3006888A6 /* Relationship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0701CD212D670CF3006888A6 /* Relationship.swift */; };
 		0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */; };
 		0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B0802D5EDFA800446520 /* ExpenseEditor.swift */; };
 		0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0709B07F2D5EDFA800446520 /* ExpenseContent.swift */; };
@@ -156,6 +158,7 @@
 
 /* Begin PBXFileReference section */
 		0701CD1A2D657D3A006888A6 /* BudgetAlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetAlertManager.swift; sourceTree = "<group>"; };
+		0701CD212D670CF3006888A6 /* Relationship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Relationship.swift; sourceTree = "<group>"; };
 		0709B07F2D5EDFA800446520 /* ExpenseContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseContent.swift; sourceTree = "<group>"; };
 		0709B0802D5EDFA800446520 /* ExpenseEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditor.swift; sourceTree = "<group>"; };
 		0709B0822D5EDFA800446520 /* ExpenseStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseStatsView.swift; sourceTree = "<group>"; };
@@ -288,6 +291,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0701CD222D670CF3006888A6 /* Relationship */ = {
+			isa = PBXGroup;
+			children = (
+				0701CD212D670CF3006888A6 /* Relationship.swift */,
+			);
+			path = Relationship;
+			sourceTree = "<group>";
+		};
 		0709B0832D5EDFA800446520 /* Expense */ = {
 			isa = PBXGroup;
 			children = (
@@ -481,6 +492,7 @@
 		F53E3A862A0BB6A60064CB62 /* AppInfo */ = {
 			isa = PBXGroup;
 			children = (
+				0701CD222D670CF3006888A6 /* Relationship */,
 				F53E3A892A0BC88E0064CB62 /* AppInfoView.swift */,
 				07536BBB2D56121900E23444 /* DataDownloadView.swift */,
 				07536BBE2D5C97B300E23444 /* DataImportView.swift */,
@@ -748,6 +760,7 @@
 				F5BE68822A6FDF1000A92F00 /* ShareCardBackgroundColorList.swift in Sources */,
 				F5BE688D2A73968C00A92F00 /* ImageSaver.swift in Sources */,
 				F5358D532A0698BE005FD6C8 /* WeatherSelectButton.swift in Sources */,
+				0701CD242D670CF3006888A6 /* Relationship.swift in Sources */,
 				F5358D552A069BB2005FD6C8 /* InputTitle.swift in Sources */,
 				F5358CC029F69276005FD6C8 /* Item+Extension.swift in Sources */,
 				F56FF3A12C0AB35300C0D1D3 /* DiaryText.swift in Sources */,
@@ -820,6 +833,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07414B272D01B2B200D9AB42 /* WelcomeView.swift in Sources */,
+				0701CD232D670CF3006888A6 /* Relationship.swift in Sources */,
 				07E13D1E2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift in Sources */,
 				07E13D1F2D1D533F008C13A9 /* DiaryAppDelegate.swift in Sources */,
 				0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */,

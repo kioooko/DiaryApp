@@ -51,7 +51,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                     
      
                     Section("支持") { // 支持相关信息部分
-                        Relationship // 显示关系
+                        relationship // 显示关系
                         Expense // 显示记账指南
                         ChatAIGuide // 显示ChatAI功能
                         DataManage//导入，导出等数据管理
@@ -184,22 +184,19 @@ private extension AppInfoView { // AppInfoView 的私有扩展
         }
     }
 
-
-
-var Relationship: some View {
-    NavigationLink{
-        RelationshipView()
-    } label: {
-        rowTitle(icon: "person.2", Color: .blue, description: "关系")
+    var relationship: some View {  // 改为小写开头，符合 Swift 命名规范
+        NavigationLink(destination: RelationshipView()) {
+            rowTitle(icon: "person.2", Color: .blue, description: "关系")
+        }
     }
-}
-var Expense: some View {
-    NavigationLink{
-        ExpenseStatsView()
-    } label: {
-        rowTitle(icon: "dollarsign.circle", Color: .green, description: "记账本")
+
+    var Expense: some View {
+        NavigationLink{
+            ExpenseStatsView()
+        } label: {
+            rowTitle(icon: "dollarsign.circle", Color: .green, description: "记账本")
+        }
     }
-}
 
     var ChatAIGuide: some View { // 显示ChatAI功能
         NavigationLink {
