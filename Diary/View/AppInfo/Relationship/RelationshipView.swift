@@ -50,18 +50,16 @@ struct RelationshipView: View {
             }
         }
         .background(Color.Neumorphic.main)
+        .navigationTitle("人际关系")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                HStack(spacing: 16) {
-                    Text("人际关系")
-                        .fontWeight(.bold)
-                    Button {
-                        showingAddContact = true
-                    } label: {
-                        Image(systemName: "person.badge.plus")
-                            .foregroundColor(.gray)
-                    }
+                Button {
+                    showingAddContact = true
+                } label: {
+                    Image(systemName: "person.badge.plus")
+                        .font(.system(size: 16))
+                        .foregroundColor(.black)
                 }
             }
         }
@@ -86,6 +84,7 @@ struct RelationshipTierSection: View {
                     .foregroundColor(.secondary)
             }
             .padding(.horizontal)
+            .padding(.vertical, 8)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
@@ -94,9 +93,11 @@ struct RelationshipTierSection: View {
                     }
                 }
                 .padding(.horizontal)
+                 .padding(.vertical, 8)
             }
         }
         .padding(.vertical, 8)
+        .padding(.horizontal, 8)
     }
 }
 

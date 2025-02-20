@@ -42,6 +42,7 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                         bookMark // 显示书签
                         textOption // 显示文本选项
                         reminder // 显示提醒设置
+                        DataManage//导入，导出等数据管理
                     }
 
                     .listRowBackground(
@@ -51,10 +52,9 @@ struct AppInfoView: View { // 定义 AppInfoView 结构体，遵循 View 协议
                     
      
                     Section("支持") { // 支持相关信息部分
-                        relationship // 显示关系
                         Expense // 显示记账指南
+                        relationship // 显示关系
                         ChatAIGuide // 显示ChatAI功能
-                        DataManage//导入，导出等数据管理
                         inquiry // 显示联系选项
                         version // 显示应用版本
                     }
