@@ -351,6 +351,102 @@ struct DataImportView: View {
             bannerState.show(of: .error(message: "保存失败：\(error.localizedDescription)"))
         }
     }
+
+    private func exportCSVData() -> String {
+        // 添加日期格式化器
+        let dateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            formatter.calendar = Calendar(identifier: .gregorian)
+            formatter.timeZone = TimeZone.current
+            formatter.locale = Locale(identifier: "zh_CN")
+            return formatter
+        }()
+        
+        var csvContent = ""
+        
+        // 1. 日记数据表
+        csvContent += "=== 日记数据 ===\n"
+        csvContent += "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
+        let itemRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        if let items = try? viewContext.fetch(itemRequest) {
+            for item in items {
+                // ... 现有的日记导出代码 ...
+            }
+        }
+        csvContent += "\n\n"
+        
+        // 2. 联系人数据表
+        csvContent += "=== 联系人数据 ===\n"
+        csvContent += "姓名,关系层级,生日,备注,最近联系时间,头像,创建时间,更新时间\n"
+        let contactRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
+        if let contacts = try? viewContext.fetch(contactRequest) {
+            for contact in contacts {
+                let birthdayStr = contact.birthday.map { dateFormatter.string(from: $0) } ?? ""
+                let lastInteractionStr = contact.lastInteraction.map { dateFormatter.string(from: $0) } ?? ""
+                let avatarStr = contact.avatar.map { $0.base64EncodedString() } ?? ""
+                
+                let row = [
+                    contact.name ?? "",
+                    String(contact.tier),
+                    birthdayStr,
+                    contact.notes ?? "",
+                    lastInteractionStr,
+                    avatarStr,
+                //    dateFormatter.string(from: contact.createdAt),
+                //   dateFormatter.string(from: contact.updatedAt)
+                ].map { "\"\($0)\"" }.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        csvContent += "\n\n"
+        
+        // 3. 储蓄目标数据表
+        csvContent += "=== 储蓄目标数据 ===\n"
+        csvContent += "标题,目标金额,当前金额,开始日期,目标日期,创建时间,更新时间\n"
+        let goalRequest: NSFetchRequest<SavingsGoal> = SavingsGoal.fetchRequest()
+        if let goals = try? viewContext.fetch(goalRequest) {
+            for goal in goals {
+                let startDateStr = goal.startDate.map { dateFormatter.string(from: $0) } ?? ""
+                let targetDateStr = goal.targetDate.map { dateFormatter.string(from: $0) } ?? ""
+                let createdAtStr = goal.createdAt.map { dateFormatter.string(from: $0) } ?? ""
+                let updatedAtStr = goal.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
+                
+                let row = [
+                    goal.title ?? "",
+                    String(goal.targetAmount),
+                    String(goal.currentAmount),
+                    startDateStr,
+                    targetDateStr,
+                    createdAtStr,
+                    updatedAtStr
+                ].map { "\"\($0)\"" }.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        csvContent += "\n\n"
+        
+        // 4. 清单项目数据表
+        csvContent += "=== 清单项目数据 ===\n"
+        csvContent += "标题,是否完成,创建时间,更新时间\n"
+        let checklistRequest: NSFetchRequest<CheckListItem> = CheckListItem.fetchRequest()
+        if let items = try? viewContext.fetch(checklistRequest) {
+            for item in items {
+                let createdAtStr = item.createdAt.map { dateFormatter.string(from: $0) } ?? ""
+                let updatedAtStr = item.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
+                
+                let row = [
+                    item.title ?? "",
+                    item.isCompleted ? "是" : "否",
+                    createdAtStr,
+                    updatedAtStr
+                ].map { "\"\($0)\"" }.joined(separator: ",")
+                csvContent += row + "\n"
+            }
+        }
+        
+        return csvContent
+    }
 }
 
 // 添加 FilePicker 实现
