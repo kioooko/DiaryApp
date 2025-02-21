@@ -4,7 +4,7 @@
 //
 //  Created by Higashihara Yoki on 2023/05/02.
 //
-
+import CoreData
 import SwiftUI
 
 struct DiaryItem: View {
