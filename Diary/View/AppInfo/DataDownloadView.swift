@@ -111,27 +111,40 @@ Button(action: {  downloadData(format: selectedFormat)
 
  
     private func downloadData(format: FileFormat) {
-        // 1. 从 CoreData 获取所有数据
+        // 1. 从 CoreData 获取日记数据
         let diaryEntries = CoreDataProvider.shared.exportAllDiaryEntries()
-        let savingsGoals = CoreDataProvider.shared.fetchAllSavingsGoals()
-        
+
         // 2. 将数据转换为指定格式的字符串
-        let fileContent = convertToFileContent(entries: diaryEntries, goals: savingsGoals, format: format)
+        let fileContent = convertDataToFileContent(entries: diaryEntries, format: format)
+        
+        // 获取文件名
+        let fileName = "DiaryData.\(format.rawValue.lowercased())"
+        
+        // 获取文件URL
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        
+        do {
+            try FileManager.default.setAttributes([.protectionKey: FileProtectionType.none], ofItemAtPath: fileURL.path)
+            print("✅ 取消了文件保护")
+        } catch {
+            print("❌ 取消文件保护失败: \(error)")
+        }
 
         // 3. 保存文件到本地
-        saveFile(content: fileContent, format: format)
+        saveFile(content: fileContent, fileURL: fileURL)
     }
 
-    private func convertToFileContent(entries: [Item], goals: [SavingsGoal], format: FileFormat) -> String {
+    private func convertDataToFileContent(entries: [Item], format: FileFormat) -> String {
         switch format {
         case .csv:
-            return convertToCSV(entries: entries, goals: goals)
+            return convertToCSV(entries: entries)
         case .txt:
-            return convertToTXT(entries: entries, goals: goals)
+            return convertToTXT(entries: entries)
         }
     }
 
-    private func convertToCSV(entries: [Item], goals: [SavingsGoal]) -> String {
+    private func convertToCSV(entries: [Item]) -> String {
         // CSV 头部 - 包含所有字段
         var csvString = "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
         
@@ -179,33 +192,10 @@ Button(action: {  downloadData(format: selectedFormat)
             csvString += fields.joined(separator: ",") + "\n"
         }
         
-        for goal in goals {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            
-            var fields = [String]()
-            
-            fields.append((goal.title ?? "").replacingOccurrences(of: ",", with: "，"))
-            fields.append(String(goal.targetAmount))
-            fields.append(String(goal.currentAmount))
-            fields.append(String(goal.monthlyAmount))
-            
-            fields.append(goal.monthlyDate.map { dateFormatter.string(from: $0) } ?? "")
-            fields.append(goal.startDate.map { dateFormatter.string(from: $0) } ?? "")
-            fields.append(goal.targetDate.map { dateFormatter.string(from: $0) } ?? "")
-            
-            fields.append(goal.isCompleted ? "是" : "否")
-            
-            fields.append(goal.createdAt.map { dateFormatter.string(from: $0) } ?? "")
-            fields.append(goal.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
-            
-            csvString += fields.joined(separator: ",") + "\n"
-        }
-        
         return csvString
     }
 
-    private func convertToTXT(entries: [Item], goals: [SavingsGoal]) -> String {
+    private func convertToTXT(entries: [Item]) -> String {
         var txtString = ""
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -254,77 +244,25 @@ Button(action: {  downloadData(format: selectedFormat)
             txtString += "\n-------------------\n\n"
         }
         
-        for goal in goals {
-            txtString += "储蓄目标信息:\n"
-            txtString += "标题: \(goal.title ?? "")\n"
-            txtString += "目标金额: \(goal.targetAmount)\n"
-            txtString += "当前金额: \(goal.currentAmount)\n"
-            txtString += "每月存储金额: \(goal.monthlyAmount)\n"
-            
-            if let monthlyDate = goal.monthlyDate {
-                txtString += "每月存储日期: \(dateFormatter.string(from: monthlyDate))\n"
-            }
-            
-            if let startDate = goal.startDate {
-                txtString += "开始日期: \(dateFormatter.string(from: startDate))\n"
-            }
-            
-            if let targetDate = goal.targetDate {
-                txtString += "目标日期: \(dateFormatter.string(from: targetDate))\n"
-            }
-            
-            txtString += "是否完成: \(goal.isCompleted ? "是" : "否")\n"
-            
-            if let createdAt = goal.createdAt {
-                txtString += "创建时间: \(dateFormatter.string(from: createdAt))\n"
-            }
-            
-            if let updatedAt = goal.updatedAt {
-                txtString += "更新时间: \(dateFormatter.string(from: updatedAt))\n"
-            }
-            
-            txtString += "\n-------------------\n\n"
-        }
-        
         return txtString
     }
 
-    private func saveFile(content: String, format: FileFormat) {
-        let fileName = "DiaryData.\(format.rawValue.lowercased())"
-        
-        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            bannerState.show(of: .error(message: "无法访问文档目录"))
-            return
-        }
-        
-        let fileURL = documentsPath.appendingPathComponent(fileName)
-        
+    private func saveFile(content: String, fileURL: URL) {
         do {
-            // 添加 UTF-8 BOM，确保文件编码正确
-            let bom = "\u{FEFF}"
-            
-            // 保存文件
-            try (bom + content).write(to: fileURL, atomically: true, encoding: .utf8)
-            
-            print("✅ 文件已保存: \(fileURL)")
-            
-            // 分享文件
-            let activityVC = UIActivityViewController(
-                activityItems: [fileURL],
-                applicationActivities: nil
-            )
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let rootViewController = windowScene.windows.first?.rootViewController {
-                DispatchQueue.main.async {
-                    rootViewController.present(activityVC, animated: true)
-                }
+            try content.write(to: fileURL, atomically: true, encoding: .utf8)
+            print("File saved to \(fileURL)")
+
+            // 使用 UIActivityViewController 显示分享选项
+            let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+
+            // 找到当前视图控制器并呈现 activityViewController
+            if let viewController = UIApplication.shared.windows.first?.rootViewController {
+                viewController.present(activityViewController, animated: true, completion: nil)
             }
-            
-            bannerState.show(of: .success(message: "导出成功"))
+
         } catch {
-            print("❌ 保存文件失败: \(error)")
-            bannerState.show(of: .error(message: "导出失败"))
+            print("Error saving file: \(error)")
+            // TODO: Show error alert
         }
     }
 }
