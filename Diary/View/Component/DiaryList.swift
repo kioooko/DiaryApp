@@ -75,7 +75,7 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
                 if let selectedItem = selectedItem {
                     if selectedItem.amount != 0 {
                         // 记账详情
-                        ExpenseEditor(editingItem: selectedItem)
+                        ExpenseEditor(item: selectedItem)
                     } else {
                         // 日记详情
                         DiaryDetailView(diaryDataStore: .init(item: selectedItem))

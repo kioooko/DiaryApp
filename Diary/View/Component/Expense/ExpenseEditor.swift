@@ -10,10 +10,11 @@ struct ExpenseEditor: View {
     @StateObject private var budgetAlert = BudgetAlertManager()
     
     @State private var amount: String = ""
-    @State private var isExpense: Bool = true
     @State private var note: String = ""
+    @State private var date = Date()
+    @State private var isExpense = true
     
-    var editingItem: Item?
+    var item: Item?
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)],
@@ -21,12 +22,13 @@ struct ExpenseEditor: View {
         animation: .default)
     private var goals: FetchedResults<SavingsGoal>
     
-    init(editingItem: Item? = nil) {
-        self.editingItem = editingItem
-        if let item = editingItem {
+    init(item: Item? = nil) {
+        self.item = item
+        if let item = item {
             _amount = State(initialValue: String(format: "%.2f", item.amount))
             _isExpense = State(initialValue: item.isExpense)
             _note = State(initialValue: item.note ?? "")
+            _date = State(initialValue: item.date ?? Date())
         }
     }
     
@@ -108,7 +110,7 @@ struct ExpenseEditor: View {
                         .softButtonStyle(RoundedRectangle(cornerRadius: 10))
                         .frame(maxWidth: .infinity)
                         
-                        Button(editingItem == nil ? "保存" : "更新") {
+                        Button("保存") {
                             saveExpense()
                         }
                         .softButtonStyle(RoundedRectangle(cornerRadius: 10))
@@ -119,7 +121,7 @@ struct ExpenseEditor: View {
                 }
                 .padding()
             }
-            .navigationTitle(editingItem == nil ? "" : "编辑记账")
+            .navigationTitle(item == nil ? "" : "编辑记账")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -140,49 +142,57 @@ struct ExpenseEditor: View {
     }
     
     private func saveExpense() {
-        let newAmount = (Double(amount) ?? 0) * (isExpense ? -1 : 1)
-        
-        if let editingItem = editingItem {
-            editingItem.amount = newAmount
-            editingItem.isExpense = isExpense
-            editingItem.note = note
-        } else {
-            let newItem = Item(context: viewContext)
-            //newItem.id = UUID()
-            newItem.date = Date()
-            newItem.amount = newAmount
-            newItem.isExpense = isExpense
-            newItem.note = note
-        }
-        
-        print("开始保存支出记录...")
-        
-        do {
-            try viewContext.save()
-            print("支出记录保存成功")
+        withAnimation {
+            let amountValue = Double(amount) ?? 0
+            let finalAmount = isExpense ? -abs(amountValue) : abs(amountValue)
             
-            // 检查预算状态
-            if isExpense {
-                if let budgetMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
-                    budgetAlert.showAlert(title: "预算提醒", message: budgetMessage)
+            if let item = item {
+                // 编辑现有支出
+                if item.id == nil {
+                    item.id = UUID()
                 }
+                item.amount = finalAmount
+                item.note = note
+                item.date = date
+                item.updatedAt = Date()
+            } else {
+                // 创建新支出
+                let newItem = Item(context: viewContext)
+                newItem.id = UUID()  // 确保设置新的 UUID
+                newItem.amount = finalAmount
+                newItem.note = note
+                newItem.date = date
+                newItem.createdAt = Date()
+                newItem.updatedAt = Date()
             }
             
-            // 检查储蓄目标完成状态
-            let goalRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
-            goalRequest.predicate = NSPredicate(format: "isCompleted == false")
-            
-            if let currentGoal = try? viewContext.fetch(goalRequest).first {
-                print("检查储蓄目标完成状态...")
-                if let completionMessage = budgetAlert.checkSavingsGoalCompletion(goal: currentGoal, context: viewContext) {
-                    print("显示储蓄目标完成提示")
-                    budgetAlert.showAlert(title: "储蓄目标", message: completionMessage)
+            do {
+                try viewContext.save()
+                print("支出记录保存成功")
+                
+                // 检查预算状态
+                if isExpense {
+                    if let budgetMessage = budgetAlert.checkBudgetStatus(context: viewContext) {
+                        budgetAlert.showAlert(title: "预算提醒", message: budgetMessage)
+                    }
                 }
+                
+                // 检查储蓄目标完成状态
+                let goalRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+                goalRequest.predicate = NSPredicate(format: "isCompleted == false")
+                
+                if let currentGoal = try? viewContext.fetch(goalRequest).first {
+                    print("检查储蓄目标完成状态...")
+                    if let completionMessage = budgetAlert.checkSavingsGoalCompletion(goal: currentGoal, context: viewContext) {
+                        print("显示储蓄目标完成提示")
+                        budgetAlert.showAlert(title: "储蓄目标", message: completionMessage)
+                    }
+                }
+                
+                dismiss()
+            } catch let error as NSError {
+                print("保存支出失败: \(error), \(error.userInfo)")
             }
-            
-            dismiss()
-        } catch {
-            print("保存失败: \(error)")
         }
     }
 }

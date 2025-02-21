@@ -52,6 +52,7 @@ struct ExpenseListView: View {
                         .foregroundColor(color)
                         .font(.headline)
                 }
+                .id(item.id ?? UUID())
             }
         }
         .listStyle(.plain)

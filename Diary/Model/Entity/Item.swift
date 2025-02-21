@@ -2,27 +2,47 @@ import Foundation
 import CoreData
 
 @objc(Item)
-public class Item: NSManagedObject, Identifiable {
-
+public class Item: NSManagedObject {
+    @NSManaged public var id: UUID
+    @NSManaged public var title: String
     @NSManaged public var body: String?
-    @NSManaged public var createdAt: Date?
-    @NSManaged public var date: Date?
+    @NSManaged public var date: Date
+    @NSManaged public var weather: String?
     @NSManaged public var imageData: Data?
     @NSManaged public var isBookmarked: Bool
-    @NSManaged public var title: String?
-    @NSManaged public var updatedAt: Date?
-    @NSManaged public var weather: String?
-    @NSManaged public var checkListItems: NSSet?
-    
+    @NSManaged public var createdAt: Date
+    @NSManaged public var updatedAt: Date
     @NSManaged public var amount: Double
-    @NSManaged public var isExpense: Bool
-    @NSManaged public var expenseCategory: String?
     @NSManaged public var note: String?
-
-    public override func validateTitle(_ value: AutoreleasingUnsafeMutablePointer<AnyObject?>) throws {
-        // 移除标题验证，允许为空
-        return
+    @NSManaged public var isExpense: Bool
+    @NSManaged public var checkListItems: Set<CheckListItem>?
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        id = UUID()
+        createdAt = Date()
+        updatedAt = Date()
+        date = Date()
+        isBookmarked = false
+        isExpense = false
+        amount = 0
+        title = ""
     }
+}
+
+// MARK: - Generated accessors for checkListItems
+extension Item {
+    @objc(addCheckListItemsObject:)
+    @NSManaged public func addToCheckListItems(_ value: CheckListItem)
+    
+    @objc(removeCheckListItemsObject:)
+    @NSManaged public func removeFromCheckListItems(_ value: CheckListItem)
+    
+    @objc(addCheckListItems:)
+    @NSManaged public func addToCheckListItems(_ values: NSSet)
+    
+    @objc(removeCheckListItems:)
+    @NSManaged public func removeFromCheckListItems(_ values: NSSet)
 }
 
 // MARK: - 记账相关扩展
