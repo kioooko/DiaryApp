@@ -207,6 +207,10 @@ struct DataImportView: View {
         let rows = content.components(separatedBy: .newlines)
         guard rows.count > 1 else { return }
         
+        // 打印原始数据，用于调试
+        print("📝 导入数据行数: \(rows.count)")
+        print("📝 第一行数据: \(rows[1])")  // 查看第一条实际数据
+        
         let headers = rows[0].components(separatedBy: ",")
         print("📝 CSV表头: \(headers)")
         
@@ -220,24 +224,50 @@ struct DataImportView: View {
         viewContext.performAndWait {
             for row in rows.dropFirst() where !row.isEmpty {
                 let columns = row.components(separatedBy: ",")
-                guard columns.count == headers.count else { continue }
+                guard columns.count == headers.count else {
+                    print("❌ 列数不匹配: 期望 \(headers.count), 实际 \(columns.count)")
+                    continue
+                }
                 
                 // 创建数据字典
                 var rowData: [String: String] = [:]
                 for (index, header) in headers.enumerated() {
-                    rowData[header] = columns[index]
+                    let cleanHeader = header.trimmingCharacters(in: .whitespacesAndNewlines)
+                        .replacingOccurrences(of: "\u{FEFF}", with: "")
+                    let cleanValue = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                        .replacingOccurrences(of: "\"", with: "") // 移除引号
+                    rowData[cleanHeader] = cleanValue
+                    
+                    // 调试输出标题相关信息
+                    if cleanHeader == "标题" {
+                        print("📝 导入标题: '\(cleanValue)'")
+                    }
                 }
                 
                 // 日记数据处理
                 let entry = Item(context: viewContext)
-                entry.title = (rowData["标题"]?.isEmpty ?? true) ? "未命名记录" : rowData["标题"]
-                entry.body = rowData["内容"]
                 
-                // 处理日期
-                if let dateStr = rowData["日期"], let date = dateFormatter.date(from: dateStr) {
-                    entry.date = date
+                // 标题处理
+                if let title = rowData["标题"], !title.isEmpty {
+                    print("📝 设置标题: '\(title)'")
+                    entry.title = title
                 } else {
-                    entry.date = Date()
+                    print("❌ 标题为空")
+                    continue
+                }
+                
+                // 处理日期 - 确保提供默认值
+                if let dateStr = rowData["日期"],
+                   let date = dateFormatter.date(from: dateStr) {
+                    entry.date = date
+                    entry.createdAt = date
+                    entry.updatedAt = date
+                } else {
+                    let now = Date()
+                    entry.date = now
+                    entry.createdAt = now
+                    entry.updatedAt = now
+                    print("⚠️ 使用当前时间作为默认日期")
                 }
                 
                 // 处理数值
@@ -352,8 +382,7 @@ struct DataImportView: View {
         }
     }
 
-    private func exportCSVData() -> String {
-        // 添加日期格式化器
+    private func downloadCSVData() -> String {
         let dateFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -369,80 +398,36 @@ struct DataImportView: View {
         csvContent += "=== 日记数据 ===\n"
         csvContent += "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
         let itemRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        if let items = try? viewContext.fetch(itemRequest) {
+        
+        do {
+            let items = try viewContext.fetch(itemRequest)
             for item in items {
-                // ... 现有的日记导出代码 ...
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 2. 联系人数据表
-        csvContent += "=== 联系人数据 ===\n"
-        csvContent += "姓名,关系层级,生日,备注,最近联系时间,头像,创建时间,更新时间\n"
-        let contactRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
-        if let contacts = try? viewContext.fetch(contactRequest) {
-            for contact in contacts {
-                let birthdayStr = contact.birthday.map { dateFormatter.string(from: $0) } ?? ""
-                let lastInteractionStr = contact.lastInteraction.map { dateFormatter.string(from: $0) } ?? ""
-                let avatarStr = contact.avatar.map { $0.base64EncodedString() } ?? ""
+                // 使用强制解包，因为我们已经在模型中设置了这些字段为非可选
+                let itemDate = item.date!
+                let itemCreatedAt = item.createdAt!
+                let itemUpdatedAt = item.updatedAt!
                 
-                let row = [
-                    contact.name ?? "",
-                    String(contact.tier),
-                    birthdayStr,
-                    contact.notes ?? "",
-                    lastInteractionStr,
-                    avatarStr,
-                //    dateFormatter.string(from: contact.createdAt),
-                //   dateFormatter.string(from: contact.updatedAt)
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 3. 储蓄目标数据表
-        csvContent += "=== 储蓄目标数据 ===\n"
-        csvContent += "标题,目标金额,当前金额,开始日期,目标日期,创建时间,更新时间\n"
-        let goalRequest: NSFetchRequest<SavingsGoal> = SavingsGoal.fetchRequest()
-        if let goals = try? viewContext.fetch(goalRequest) {
-            for goal in goals {
-                let startDateStr = goal.startDate.map { dateFormatter.string(from: $0) } ?? ""
-                let targetDateStr = goal.targetDate.map { dateFormatter.string(from: $0) } ?? ""
-                let createdAtStr = goal.createdAt.map { dateFormatter.string(from: $0) } ?? ""
-                let updatedAtStr = goal.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
-                
-                let row = [
-                    goal.title ?? "",
-                    String(goal.targetAmount),
-                    String(goal.currentAmount),
-                    startDateStr,
-                    targetDateStr,
-                    createdAtStr,
-                    updatedAtStr
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 4. 清单项目数据表
-        csvContent += "=== 清单项目数据 ===\n"
-        csvContent += "标题,是否完成,创建时间,更新时间\n"
-        let checklistRequest: NSFetchRequest<CheckListItem> = CheckListItem.fetchRequest()
-        if let items = try? viewContext.fetch(checklistRequest) {
-            for item in items {
-                let createdAtStr = item.createdAt.map { dateFormatter.string(from: $0) } ?? ""
-                let updatedAtStr = item.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
-                
-                let row = [
+                let fields = [
                     item.title ?? "",
-                    item.isCompleted ? "是" : "否",
-                    createdAtStr,
-                    updatedAtStr
-                ].map { "\"\($0)\"" }.joined(separator: ",")
+                    item.body ?? "",
+                    dateFormatter.string(from: itemDate),
+                    String(item.amount),
+                    item.isExpense ? "是" : "否",
+                    item.note ?? "",
+                    item.weather ?? "",
+                    item.isBookmarked ? "是" : "否",
+                    item.imageData?.base64EncodedString() ?? "",
+                    "",
+                    dateFormatter.string(from: itemCreatedAt),
+                    dateFormatter.string(from: itemUpdatedAt)
+                ]
+                
+                let quotedFields = fields.map { "\"\($0)\"" }
+                let row = quotedFields.joined(separator: ",")
                 csvContent += row + "\n"
             }
+        } catch {
+            print("❌ 获取数据失败: \(error)")
         }
         
         return csvContent
