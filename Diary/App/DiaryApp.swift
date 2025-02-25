@@ -34,6 +34,7 @@ struct DiaryApp: App {
 //        }
 
         reSyncData()
+        coreDataProvider.validateAllEntities()
     }
 
     var body: some Scene {

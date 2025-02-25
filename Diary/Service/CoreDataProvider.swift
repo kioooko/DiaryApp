@@ -168,6 +168,43 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             }
         }
     }
+
+    func validateAllEntities() {
+        let context = container.viewContext
+        
+        do {
+            // 验证 Item
+            let items = try context.fetch(Item.fetchRequest())
+            for item in items where item.id == nil {
+                item.id = UUID()
+            }
+            
+            // 验证 CheckListItem
+            let checkListItems = try context.fetch(CheckListItem.fetchRequest())
+            for item in checkListItems where item.id == nil {
+                item.id = UUID()
+            }
+            
+            // 验证 Contact
+            let contacts = try context.fetch(Contact.fetchRequest())
+            for contact in contacts where contact.id == nil {
+                contact.id = UUID()
+            }
+            
+            // 验证 SavingsGoal
+            let goals = try context.fetch(SavingsGoal.fetchRequest())
+            for goal in goals where goal.id == nil {
+                goal.id = UUID()
+            }
+            
+            // 保存更改
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            print("验证实体时出错：", error)
+        }
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 

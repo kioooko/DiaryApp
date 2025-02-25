@@ -6,6 +6,8 @@ struct DataDownloadView: View {
     @EnvironmentObject private var bannerState: BannerState
     @Environment(\.managedObjectContext) private var viewContext
     @State private var selectedFormat: FileFormat = .csv
+    @State private var isExporting = false
+    @State private var exportedItems: [ExportedItem] = []
 
     enum FileFormat: String, CaseIterable, Identifiable {
         case csv = "CSV"
@@ -108,22 +110,50 @@ Button(action: {  downloadData(format: selectedFormat)
   .padding(.horizontal)
     }
     private func downloadData(format: FileFormat) {
-        // 1. 获取所有实体数据
-        let diaryEntries = CoreDataProvider.shared.exportAllDiaryEntries()
-        let savingsGoals = CoreDataProvider.shared.fetchAllSavingsGoals()
-        let checkListItems = CoreDataProvider.shared.fetchAllCheckListItems()
-        let contacts = CoreDataProvider.shared.fetchAllContacts()
-        
-        // 2. 转换为CSV格式
-        let csvContent = convertToMultiSheetCSV(
-            items: diaryEntries,
-            goals: savingsGoals,
-            checkListItems: checkListItems,
-            contacts: contacts
-        )
-        
-        // 3. 保存并分享
-        saveFile(content: csvContent, format: .csv)
+        do {
+            // 获取所有数据
+            let items = try viewContext.fetch(Item.fetchRequest())
+            let savingsGoals = try viewContext.fetch(SavingsGoal.fetchRequest())
+            let checkListItems = try viewContext.fetch(CheckListItem.fetchRequest())
+            let contacts = try viewContext.fetch(Contact.fetchRequest())
+            
+            // 确保所有数值都有效
+            for item in items {
+                item.amount = validateNumericValues(item.amount)
+            }
+            
+            for goal in savingsGoals {
+                goal.targetAmount = validateNumericValues(goal.targetAmount)
+                goal.currentAmount = validateNumericValues(goal.currentAmount)
+                goal.monthlyAmount = validateNumericValues(goal.monthlyAmount)
+            }
+            
+            // 保存更改
+            if viewContext.hasChanges {
+                try viewContext.save()
+            }
+            
+            // 转换为CSV格式
+            let csvContent = convertToMultiSheetCSV(
+                items: items,
+                goals: savingsGoals,
+                checkListItems: checkListItems,
+                contacts: contacts
+            )
+            
+            // 保存并分享
+            saveFile(content: csvContent, format: format)
+        } catch {
+            print("导出数据时出错：", error)
+            bannerState.show(of: .error(message: "导出失败"))
+        }
+    }
+
+    private func validateNumericValues(_ value: Double) -> Double {
+        if value.isNaN || value.isInfinite {
+            return 0.0
+        }
+        return value
     }
 
     private func convertToMultiSheetCSV(
@@ -289,5 +319,20 @@ Button(action: {  downloadData(format: selectedFormat)
             print("❌ 保存文件失败: \(error)")
             bannerState.show(of: .error(message: "导出失败"))
         }
+    }
+}
+
+// 用于导出的数据模型
+struct ExportedItem: Codable {
+    let id: UUID
+    let title: String
+    let amount: Double
+    let date: Date
+    
+    init(from item: Item) {
+        self.id = item.id ?? UUID()
+        self.title = item.title ?? ""
+        self.amount = item.amount.isNaN ? 0 : item.amount
+        self.date = item.date ?? Date()
     }
 }
