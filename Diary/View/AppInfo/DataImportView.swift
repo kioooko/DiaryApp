@@ -207,8 +207,14 @@ struct DataImportView: View {
         let rows = content.components(separatedBy: .newlines)
         guard rows.count > 1 else { return }
         
-        let headers = rows[0].components(separatedBy: ",")
-        print("📝 CSV表头: \(headers)")
+        // 清理表头中的 BOM 标记
+        let rawHeaders = rows[0].components(separatedBy: ",")
+        let headers = rawHeaders.map { header in
+            return header.trimmingCharacters(in: .whitespacesAndNewlines)
+                        .replacingOccurrences(of: "\u{FEFF}", with: "")
+        }
+        
+        print("📝 清理后的CSV表头: \(headers)")
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -216,16 +222,14 @@ struct DataImportView: View {
         var importedCount = 0
         var failedCount = 0
         
-        // 使用批量插入来提高性能
         viewContext.performAndWait {
             for row in rows.dropFirst() where !row.isEmpty {
                 let columns = row.components(separatedBy: ",")
                 guard columns.count == headers.count else { continue }
                 
-                // 创建数据字典
                 var rowData: [String: String] = [:]
                 for (index, header) in headers.enumerated() {
-                    rowData[header] = columns[index]
+                    rowData[header] = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
                 }
                 
                 // 日记数据处理
