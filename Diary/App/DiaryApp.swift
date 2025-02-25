@@ -1,10 +1,3 @@
-//
-//  DiaryApp.swift
-//  Diary
-//
-//  Created by Higashihara Yoki on 2023/04/23.
-//
-
 import SwiftUI
 
 @main
