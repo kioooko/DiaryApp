@@ -111,91 +111,101 @@ Button(action: {  downloadData(format: selectedFormat)
 
  
     private func downloadData(format: FileFormat) {
-        // 1. 从 CoreData 获取所有数据
+        // 1. 获取所有实体数据
         let diaryEntries = CoreDataProvider.shared.exportAllDiaryEntries()
         let savingsGoals = CoreDataProvider.shared.fetchAllSavingsGoals()
+        let checkListItems = CoreDataProvider.shared.fetchAllCheckListItems()
+        let contacts = CoreDataProvider.shared.fetchAllContacts()
         
-        // 2. 将数据转换为指定格式的字符串
-        let fileContent = convertToFileContent(entries: diaryEntries, goals: savingsGoals, format: format)
-
-        // 3. 保存文件到本地
-        saveFile(content: fileContent, format: format)
+        // 2. 转换为CSV格式
+        let csvContent = convertToMultiSheetCSV(
+            items: diaryEntries,
+            goals: savingsGoals,
+            checkListItems: checkListItems,
+            contacts: contacts
+        )
+        
+        // 3. 保存并分享
+        saveFile(content: csvContent, format: .csv)
     }
 
-    private func convertToFileContent(entries: [Item], goals: [SavingsGoal], format: FileFormat) -> String {
-        switch format {
-        case .csv:
-            return convertToCSV(entries: entries, goals: goals)
-        case .txt:
-            return convertToTXT(entries: entries, goals: goals)
-        }
+    private func convertToMultiSheetCSV(
+        items: [Item],
+        goals: [SavingsGoal],
+        checkListItems: [CheckListItem],
+        contacts: [Contact]
+    ) -> String {
+        var csvString = ""
+        
+        // 添加工作表分隔符
+        let sheetSeparator = "\n<<<SHEET>>>\n"
+        
+        // 1. 日记工作表
+        csvString += "=== 日记数据 ===\n"
+        csvString += convertItemsToCSV(items)
+        csvString += sheetSeparator
+        
+        // 2. 储蓄目标工作表
+        csvString += "=== 储蓄目标 ===\n"
+        csvString += convertGoalsToCSV(goals)
+        csvString += sheetSeparator
+        
+        // 3. 待办事项工作表
+        csvString += "=== 待办事项 ===\n"
+        csvString += convertCheckListItemsToCSV(checkListItems)
+        csvString += sheetSeparator
+        
+        // 4. 联系人工作表
+        csvString += "=== 联系人 ===\n"
+        csvString += convertContactsToCSV(contacts)
+        
+        return csvString
     }
 
-    private func convertToCSV(entries: [Item], goals: [SavingsGoal]) -> String {
-        // CSV 头部 - 包含所有字段
-        var csvString = "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
+    // 转换日记数据
+    private func convertItemsToCSV(_ items: [Item]) -> String {
+        var csvString = "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,创建时间,更新时间\n"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        for entry in entries {
+        for item in items {
             var fields = [String]()
+            fields.append((item.title ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append((item.body ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(item.date.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append(String(item.amount))
+            fields.append(item.isExpense ? "是" : "否")
+            fields.append((item.note ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append((item.weather ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(item.isBookmarked ? "是" : "否")
+            fields.append(item.imageData?.base64EncodedString() ?? "")
+            fields.append(item.createdAt.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append(item.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             
-            // 基本文本字段 - 替换逗号为中文逗号
-            fields.append((entry.title ?? "").replacingOccurrences(of: ",", with: "，"))
-            fields.append((entry.body ?? "").replacingOccurrences(of: ",", with: "，"))
-            
-            // 日期字段
-            fields.append(entry.date.map { dateFormatter.string(from: $0) } ?? "")
-            
-            // 数值和布尔字段
-            fields.append(String(entry.amount))
-            fields.append(entry.isExpense ? "是" : "否")
-            fields.append((entry.note ?? "").replacingOccurrences(of: ",", with: "，"))
-            fields.append((entry.weather ?? "").replacingOccurrences(of: ",", with: "，"))
-            fields.append(entry.isBookmarked ? "是" : "否")
-            
-            // 图片数据 - Base64编码
-            if let imageData = entry.imageData {
-                fields.append(imageData.base64EncodedString())
-            } else {
-                fields.append("")
-            }
-            
-            // 待办事项
-            let checkListItems = (entry.checkListItems?.allObjects as? [CheckListItem])?.map { item in
-                let title = (item.title ?? "").replacingOccurrences(of: ",", with: "，")
-                                            .replacingOccurrences(of: "|", with: "｜")
-                let status = item.isCompleted ? "[✓]" : "[ ]"
-                return "\(status) \(title)"
-            }.joined(separator: "|") ?? ""
-            fields.append(checkListItems)
-            
-            // 时间戳
-            fields.append(entry.createdAt.map { dateFormatter.string(from: $0) } ?? "")
-            fields.append(entry.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
-            
-            // 添加一行记录
             csvString += fields.joined(separator: ",") + "\n"
         }
         
+        return csvString
+    }
+
+    // 转换储蓄目标数据
+    private func convertGoalsToCSV(_ goals: [SavingsGoal]) -> String {
+        var csvString = "标题,目标金额,当前金额,每月金额,每月日期,开始日期,目标日期,是否完成,创建时间,更新时间\n"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
         for goal in goals {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            
             var fields = [String]()
-            
             fields.append((goal.title ?? "").replacingOccurrences(of: ",", with: "，"))
             fields.append(String(goal.targetAmount))
             fields.append(String(goal.currentAmount))
             fields.append(String(goal.monthlyAmount))
-            
             fields.append(goal.monthlyDate.map { dateFormatter.string(from: $0) } ?? "")
             fields.append(goal.startDate.map { dateFormatter.string(from: $0) } ?? "")
             fields.append(goal.targetDate.map { dateFormatter.string(from: $0) } ?? "")
-            
             fields.append(goal.isCompleted ? "是" : "否")
-            
             fields.append(goal.createdAt.map { dateFormatter.string(from: $0) } ?? "")
             fields.append(goal.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             
@@ -205,88 +215,44 @@ Button(action: {  downloadData(format: selectedFormat)
         return csvString
     }
 
-    private func convertToTXT(entries: [Item], goals: [SavingsGoal]) -> String {
-        var txtString = ""
+    // 转换待办事项数据
+    private func convertCheckListItemsToCSV(_ items: [CheckListItem]) -> String {
+        var csvString = "标题,是否完成,创建时间,更新时间\n"
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
-        for entry in entries {
-            // 基本信息
-            txtString += "日期: \(entry.date.map { dateFormatter.string(from: $0) } ?? "")\n"
-            txtString += "标题: \(entry.title ?? "")\n"
-            txtString += "内容: \(entry.body ?? "")\n"
+        for item in items {
+            var fields = [String]()
+            fields.append((item.title ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(item.isCompleted ? "是" : "否")
+            fields.append(item.createdAt.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append(item.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             
-            // 记账信息
-            if entry.amount != 0 {
-                txtString += "金额: \(entry.amount)\n"
-                txtString += "类型: \(entry.isExpense ? "支出" : "收入")\n"
-                if let note = entry.note, !note.isEmpty {
-                    txtString += "备注: \(note)\n"
-                }
-            }
-            
-            // 天气和收藏状态
-            if let weather = entry.weather, !weather.isEmpty {
-                txtString += "天气: \(weather)\n"
-            }
-            if entry.isBookmarked {
-                txtString += "已收藏\n"
-            }
-            
-            // 图片数据
-            if let imageData = entry.imageData {
-                txtString += "图片: \(imageData.base64EncodedString())\n"
-            }
-            
-            // 待办事项
-            if let checkListItems = entry.checkListItems?.allObjects as? [CheckListItem], !checkListItems.isEmpty {
-                txtString += "\n待办事项:\n"
-                for item in checkListItems {
-                    let status = item.isCompleted ? "[✓]" : "[ ]"
-                    txtString += "\(status) \(item.title ?? "")\n"
-                }
-            }
-            
-            // 创建和更新时间
-            txtString += "创建时间: \(entry.createdAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-            txtString += "更新时间: \(entry.updatedAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-            
-            txtString += "\n-------------------\n\n"
+            csvString += fields.joined(separator: ",") + "\n"
         }
         
-        for goal in goals {
-            txtString += "储蓄目标信息:\n"
-            txtString += "标题: \(goal.title ?? "")\n"
-            txtString += "目标金额: \(goal.targetAmount)\n"
-            txtString += "当前金额: \(goal.currentAmount)\n"
-            txtString += "每月存储金额: \(goal.monthlyAmount)\n"
+        return csvString
+    }
+
+    // 转换联系人数据
+    private func convertContactsToCSV(_ contacts: [Contact]) -> String {
+        var csvString = "姓名,生日,创建时间,更新时间\n"
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        for contact in contacts {
+            var fields = [String]()
+            fields.append((contact.name ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(contact.birthday.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append(contact.createdAt.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append(contact.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             
-            if let monthlyDate = goal.monthlyDate {
-                txtString += "每月存储日期: \(dateFormatter.string(from: monthlyDate))\n"
-            }
-            
-            if let startDate = goal.startDate {
-                txtString += "开始日期: \(dateFormatter.string(from: startDate))\n"
-            }
-            
-            if let targetDate = goal.targetDate {
-                txtString += "目标日期: \(dateFormatter.string(from: targetDate))\n"
-            }
-            
-            txtString += "是否完成: \(goal.isCompleted ? "是" : "否")\n"
-            
-            if let createdAt = goal.createdAt {
-                txtString += "创建时间: \(dateFormatter.string(from: createdAt))\n"
-            }
-            
-            if let updatedAt = goal.updatedAt {
-                txtString += "更新时间: \(dateFormatter.string(from: updatedAt))\n"
-            }
-            
-            txtString += "\n-------------------\n\n"
+            csvString += fields.joined(separator: ",") + "\n"
         }
         
-        return txtString
+        return csvString
     }
 
     private func saveFile(content: String, format: FileFormat) {
