@@ -56,7 +56,9 @@ struct DiaryDetailView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                navigationToolBar
+                ToolbarItem(placement: .topBarTrailing) {
+                    navigationToolBar
+                }
             }
         }
         .alert(isPresented: $showDeleteAlert) {
@@ -234,33 +236,37 @@ private extension DiaryDetailView {
         HStack {
             Spacer()
             VStack(alignment: .trailing, spacing: 2) {
-                cratedAt
+                createdAt
                 updatedAt
             }
         }
     }
 
     @ViewBuilder
-    var cratedAt: some View {
-        if let createdAt = diaryDataStore.originalItem?.createdAt {
-            HStack {
-                Text("作成日: ")
-                Text(Locale.appLocaleFullDateFormatter.string(from: createdAt))
+    var createdAt: some View {
+        Group {
+            if let createdAt = diaryDataStore.originalItem?.createdAt {
+                HStack {
+                    Text("作成日: ")
+                    Text(Locale.appLocaleFullDateFormatter.string(from: createdAt))
+                }
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
             }
-            .font(.system(size: 14))
-            .foregroundColor(.gray)
         }
     }
 
     @ViewBuilder
     var updatedAt: some View {
-        if let updatedAt = diaryDataStore.originalItem?.updatedAt {
-            HStack {
-                Text("更新日: ")
-                Text(Locale.appLocaleFullDateFormatter.string(from: updatedAt))
+        Group {
+            if let updatedAt = diaryDataStore.originalItem?.updatedAt {
+                HStack {
+                    Text("更新日: ")
+                    Text(Locale.appLocaleFullDateFormatter.string(from: updatedAt))
+                }
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
             }
-            .font(.system(size: 14))
-            .foregroundColor(.gray)
         }
     }
 

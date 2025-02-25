@@ -1,5 +1,6 @@
 import SwiftUI
 import Neumorphic
+import CoreData
 
 struct ExpenseListView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -52,6 +53,7 @@ struct ExpenseListView: View {
                         .foregroundColor(color)
                         .font(.headline)
                 }
+                .id(item.id ?? UUID())
             }
         }
         .listStyle(.plain)

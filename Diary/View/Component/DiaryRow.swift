@@ -1,5 +1,6 @@
 import SwiftUI
 import Neumorphic
+import CoreData
 
 struct DiaryRow: View {
     let item: Item

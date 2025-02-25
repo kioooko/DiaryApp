@@ -6,7 +6,7 @@
 //
 
 import SwiftUI // 导入 SwiftUI 框架，用于构建用户界面
-
+import CoreData
 struct ShareView: View { // 定义一个名为 ShareView 的视图结构体，遵循 View 协议
     @Environment(\.dismiss) private var dismiss // 从环境中获取 dismiss 方法，用于关闭视图
     @Environment(\.displayScale) private var displayScale // 从环境中获取设备的显示比例

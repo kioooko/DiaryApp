@@ -7,6 +7,25 @@
 
 import CoreData
 
+@objc(CheckListItem)
+public class CheckListItem: NSManagedObject {
+    @NSManaged public var id: UUID
+    @NSManaged public var title: String
+    @NSManaged public var isCompleted: Bool
+    @NSManaged public var createdAt: Date
+    @NSManaged public var updatedAt: Date
+    @NSManaged public var diary: Item?
+    
+    public override func awakeFromInsert() {
+        super.awakeFromInsert()
+        id = UUID()
+        createdAt = Date()
+        updatedAt = Date()
+        isCompleted = false
+        title = ""
+    }
+}
+
 extension CheckListItem: BaseModel {
 
     static func makeRandom(
@@ -37,6 +56,7 @@ extension CheckListItem: BaseModel {
         let checkListItem = CheckListItem(context: CoreDataProvider.shared.container.viewContext)
 
         checkListItem.title = title
+        checkListItem.id = UUID()
         checkListItem.createdAt = now
         checkListItem.updatedAt = now
 

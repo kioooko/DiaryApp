@@ -11,6 +11,47 @@ import Foundation// 导入 Foundation 框架
 import _PhotosUI_SwiftUI// 导入 PhotosUI 框架
 import UIKit// 导入 UIKit 框架
 
+// MARK: - PersistenceController
+struct PersistenceController {
+    static let shared = PersistenceController()
+    let container: NSPersistentContainer
+    
+    static var preview: PersistenceController = {
+        let controller = PersistenceController(inMemory: true)
+        return controller
+    }()
+    
+    init(inMemory: Bool = false) {
+        container = NSPersistentContainer(name: "Diary")
+        
+        if inMemory {
+            container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
+        }
+        
+        container.loadPersistentStores { description, error in
+            if let error = error {
+                print("❌ CoreData 加载失败: \(error.localizedDescription)")
+                fatalError("无法加载 CoreData 存储: \(error)")
+            }
+        }
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+    }
+    
+    func save() {
+        let context = container.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                print("❌ CoreData 保存失败: \(error)")
+                context.rollback()
+            }
+        }
+    }
+}
+
 /**
  Diary item関連の状態、ロジックを保持するclass
  Itemの作成や編集などの画面で利用できる
@@ -35,21 +76,46 @@ public class DiaryDataStore: ObservableObject {
     @Published var selectedDate: Date = Date()
     @Published var selectedImage: UIImage?
     @Published var checkListItems: [CheckListItem] = []
+    @Published var id: UUID
 
     var isBookmarked = false
     var selectedWeather: WeatherSymbol = .sun
     var selectedPickerItem: PhotosPickerItem?
 
-    var originalItem: Item?
+    internal var originalItem: Item?
     private var originalItemImage: UIImage?
+    private let context: NSManagedObjectContext
 
     /*
      新規作成の場合はまだItemを生成していないのでnil。
      編集などの場合は対象のItemを渡すことで更新可能。
      */
     init(item: Item? = nil) {
-        originalItem = item
-        updateValuesWithOriginalData()
+        self.context = PersistenceController.shared.container.viewContext
+        self.originalItem = item
+        
+        if let item = item {
+            self.id = item.id ?? UUID()
+            self.title = item.title ?? ""
+            self.bodyText = item.body ?? ""
+            self.selectedDate = item.date ?? Date()
+            self.selectedWeather = WeatherSymbol.make(from: item.weather ?? "sun.max")
+            self.isBookmarked = item.isBookmarked
+            
+            if let imageData = item.imageData {
+                self.selectedImage = UIImage(data: imageData)
+            }
+            
+            if let checkListItems = item.checkListItems?.allObjects as? [CheckListItem] {
+                self.checkListItems = checkListItems
+            }
+        } else {
+            self.id = UUID()
+            // 设置其他默认值
+            self.selectedDate = Date()
+            self.selectedWeather = .sun
+            self.isBookmarked = false
+        }
     }
 
     // MARK: Validation
@@ -154,47 +220,47 @@ public class DiaryDataStore: ObservableObject {
     }
 
     func update() throws {
-        guard let originalItem else {
-            throw DiaryDataStoreError.notFoundItem
+        do {
+            let item: Item
+            if let existingItem = originalItem {
+                item = existingItem
+            } else {
+                item = Item(context: context)
+            }
+            
+            // 更新项目
+            item.title = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            item.body = bodyText.trimmingCharacters(in: .whitespacesAndNewlines)
+            item.date = selectedDate
+            item.weather = selectedWeather.symbol
+            item.isBookmarked = isBookmarked
+            item.updatedAt = Date()
+            
+            // 处理图片
+            if let image = selectedImage {
+                if let resizedImage = image.resizeImage(to: CGSize(width: 1024, height: 1024)) {
+                    item.imageData = resizedImage.jpegData(compressionQuality: 0.8)
+                } else {
+                    item.imageData = image.jpegData(compressionQuality: 0.8)
+                }
+            } else {
+                item.imageData = nil
+            }
+            
+            // 验证并保存
+            try validateItem()
+            try context.save()
+            
+        } catch {
+            print("❌ 保存失败: \(error.localizedDescription)")
+            context.rollback()
+            throw DiaryDataStoreError.notValidData
         }
-
-        var updated: Bool = false
-
-        // 値の変更があるかどうかを元の値との比較より行い、変更されている場合のみプロパティの更新を行う
-
-        if originalItem.date != selectedDate {
-            originalItem.date = selectedDate
-            updated = true
-        }
-
-        if originalItem.title != title,
-           !title.isEmpty {
-            originalItem.title = title
-            updated = true
-        }
-
-        if originalItem.body != bodyText {
-            originalItem.body = bodyText
-            updated = true
-        }
-
-        if originalItem.weather != selectedWeather.symbol {
-            originalItem.weather = selectedWeather.symbol
-            updated = true
-        }
-
-        if originalItemImage != selectedImage {
-            originalItem.imageData = selectedImage?.jpegData(compressionQuality: 0.5)
-            updated = true
-        }
-
-        if originalItem.checkListItemsArray != checkListItems {
-            originalItem.checkListItems = NSSet(array: checkListItems)
-            updated = true
-        }
-
-        if updated {
-            try saveItem()
+    }
+    
+    private func validateItem() throws {
+        guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw DiaryDataStoreError.notValidData
         }
     }
 
@@ -232,6 +298,19 @@ public class DiaryDataStore: ObservableObject {
         }
         originalItem.updatedAt = Date()
         try self.originalItem?.save()
+    }
+
+    // 添加公开访问方法
+    var item: Item? {
+        return originalItem
+    }
+    
+    var createdAt: Date? {
+        return originalItem?.createdAt
+    }
+    
+    var updatedAt: Date? {
+        return originalItem?.updatedAt
     }
 }
 

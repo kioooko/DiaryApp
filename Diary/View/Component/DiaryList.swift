@@ -4,7 +4,7 @@
 //
 //  Created by Higashihara Yoki on 2023/05/09.
 //
-
+import CoreData // 导入 CoreData 框架，用于管理数据
 import SwiftUI // 导入 SwiftUI 框架，用于构建用户界面
 
 struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，遵循 View 协议
@@ -75,7 +75,7 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
                 if let selectedItem = selectedItem {
                     if selectedItem.amount != 0 {
                         // 记账详情
-                        ExpenseEditor(editingItem: selectedItem)
+                        ExpenseEditor(item: selectedItem)
                     } else {
                         // 日记详情
                         DiaryDetailView(diaryDataStore: .init(item: selectedItem))
