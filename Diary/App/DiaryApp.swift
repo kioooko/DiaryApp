@@ -24,6 +24,8 @@ struct DiaryApp: App {
     @AppStorage(UserDefaultsKey.reSyncPerformed.rawValue)
     private var reSyncPerformed: Bool = false
 
+    @StateObject private var persistenceController = CoreDataProvider.shared
+
     init() {
 //        let now = Date()
 //        for i in -3 ... 0 {
@@ -54,7 +56,46 @@ struct DiaryApp: App {
                     .environmentObject(notificationSetting)
                     .environmentObject(weatherData)
             }
+            .onAppear {
+                checkAndFixDatabase()
+            }
         }
+    }
+
+    private func checkAndFixDatabase() {
+        let context = persistenceController.container.viewContext
+        
+        do {
+            // 检查是否有无效数据
+            let invalidData = try checkForInvalidData(in: context)
+            
+            if invalidData {
+                print("发现无效数据，正在重置数据库...")
+                persistenceController.resetAllData()
+            } else {
+                print("数据库检查通过")
+            }
+        } catch {
+            print("❌ 检查数据库时出错: \(error)")
+        }
+    }
+    
+    private func checkForInvalidData(in context: NSManagedObjectContext) throws -> Bool {
+        // 检查每个实体类型
+        let entities = ["Item", "CheckListItem", "Contact", "SavingsGoal"]
+        
+        for entityName in entities {
+            let request = NSFetchRequest<NSManagedObject>(entityName: entityName)
+            let objects = try context.fetch(request)
+            
+            for object in objects {
+                if object.value(forKey: "id") == nil {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
 }
 

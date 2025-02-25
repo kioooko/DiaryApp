@@ -205,6 +205,57 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             print("验证实体时出错：", error)
         }
     }
+
+    func resetAllData() {
+        let context = container.viewContext
+        
+        // 删除所有现有数据
+        let entities = ["Item", "CheckListItem", "Contact", "SavingsGoal"]
+        
+        for entityName in entities {
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            
+            do {
+                try container.persistentStoreCoordinator.execute(deleteRequest, with: context)
+            } catch {
+                print("❌ 删除 \(entityName) 失败: \(error)")
+            }
+        }
+        
+        // 删除数据库文件
+        guard let storeURL = container.persistentStoreDescriptions.first?.url else { return }
+        
+        do {
+            try container.persistentStoreCoordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
+            
+            // 删除相关文件
+            let urls = [
+                storeURL,
+                storeURL.appendingPathExtension("sqlite-shm"),
+                storeURL.appendingPathExtension("sqlite-wal")
+            ]
+            
+            for url in urls {
+                try? FileManager.default.removeItem(at: url)
+            }
+            
+            // 重新创建存储
+            try container.persistentStoreCoordinator.addPersistentStore(
+                ofType: NSSQLiteStoreType,
+                configurationName: nil,
+                at: storeURL,
+                options: [
+                    NSMigratePersistentStoresAutomaticallyOption: true,
+                    NSInferMappingModelAutomaticallyOption: true
+                ]
+            )
+            
+            print("✅ 数据库重置成功")
+        } catch {
+            print("❌ 重置数据库失败: \(error)")
+        }
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 
