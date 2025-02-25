@@ -56,6 +56,9 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         
+        // 确保所有实体都有 ID
+        ensureEntityIDs()
+        
         // 验证实体
         validateEntities()
     }
@@ -133,6 +136,36 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             try context.save()
         } catch {
             print("Failed to save validation changes: \(error)")
+        }
+    }
+
+    // 添加一个辅助方法来确保所有实体都有 id
+    private func ensureEntityIDs() {
+        let context = container.viewContext
+        
+        // 检查所有实体类型
+        let entities = ["Item", "CheckListItem", "Contact", "SavingsGoal"]
+        
+        for entityName in entities {
+            let request = NSFetchRequest<NSManagedObject>(entityName: entityName)
+            
+            do {
+                let objects = try context.fetch(request)
+                var needsSave = false
+                
+                for object in objects {
+                    if object.value(forKey: "id") == nil {
+                        object.setValue(UUID(), forKey: "id")
+                        needsSave = true
+                    }
+                }
+                
+                if needsSave {
+                    try context.save()
+                }
+            } catch {
+                print("检查 \(entityName) ID 时出错: \(error)")
+            }
         }
     }
 }
