@@ -1,10 +1,3 @@
-//
-//  CoreDataProvider.swift
-//  Diary
-//
-//  Created by Higashihara Yoki on 2023/04/23.
-//
-
 import CoreData// 导入 CoreData 框架
 
 public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvider 类，继承自 ObservableObject
