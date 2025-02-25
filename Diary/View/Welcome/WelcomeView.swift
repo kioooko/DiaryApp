@@ -30,6 +30,8 @@ struct WelcomeView: View {
     @EnvironmentObject private var notificationSetting: NotificationSetting
     @EnvironmentObject private var weatherData: WeatherData
     @EnvironmentObject private var bannerState: BannerState
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate
     
     // App Storage
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
@@ -37,6 +39,7 @@ struct WelcomeView: View {
     
     // Constants
     private let maxPageCount = 4
+
 // MARK: - Body
 var body: some View {
     NavigationView {
@@ -87,6 +90,7 @@ var body: some View {
              print("WelcomeView appeared with weatherData: \(weatherData)")
         }
     }
+    .environmentObject(sceneDelegate) // 确保子视图也能访问 SceneDelegate
 }
 
 // MARK: Navigation Button

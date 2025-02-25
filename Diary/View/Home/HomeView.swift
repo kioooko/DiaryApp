@@ -14,10 +14,10 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     @Environment(\.managedObjectContext) var viewContext // 获取 Core Data 的上下文
     @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate // 注入 DiaryAppSceneDelegate 对象
     @EnvironmentObject private var bannerState: BannerState // 注入 BannerState 对象
-    @ObservedObject var apiKeyManager: APIKeyManager
+    @StateObject private var viewModel = HomeViewModel()
 
     @AppStorage(UserDefaultsKey.hasBeenLaunchedBefore.rawValue)
-    private var hasBeenLaunchedBefore: Bool = true // 使用 AppStorage 存储应用是否启动过
+    private var hasBeenLaunchedBefore: Bool = false // 使用 AppStorage 存储应用是否启动过
 
     @State private var isCreateDiaryViewPresented = false // 控制是否显示创建日记视图的状态
     @State private var isCalendarPresented = false // 控制是否显示日历的状态
@@ -33,6 +33,8 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
         formatter.locale = .appLanguageLocale // 设置语言区域
         return formatter
     }()
+
+    let apiKeyManager: APIKeyManager
 
     // 确保初始化方法是可访问的
     init(apiKeyManager: APIKeyManager) {
@@ -93,17 +95,21 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
         .tint(.adaptiveBlack) // 设置全局的 tint 颜色
         .sheet(isPresented: $isCreateDiaryViewPresented) { // 显示创建日记视图
             CreateDiaryView()
+                .environmentObject(sceneDelegate) // 添加 SceneDelegate
+                .environmentObject(bannerState)
                 .interactiveDismissDisabled() // 禁用交互式关闭
         }
         .sheet(isPresented: $hasBeenLaunchedBefore.not) { // 显示欢迎视图
-            WelcomeView(apiKeyManager: APIKeyManager())
-               .interactiveDismissDisabled() // 禁用交互式关闭
+            WelcomeView(apiKeyManager: apiKeyManager)
+                .environmentObject(sceneDelegate) // 添加 SceneDelegate
+                .environmentObject(bannerState)
+                .interactiveDismissDisabled() // 禁用交互式关闭
         }
         .onAppear {
-           sceneDelegate.bannerState = bannerState // 设置 bannerState
+            viewModel.loadItems(of: viewModel.diaryListInterval, in: viewContext)
         }
-        .onChange(of: diaryListInterval) { _, newValue in // 监听 diaryListInterval 的变化
-            loadItems(of: newValue) // 加载新日期间隔的条目
+        .onChange(of: viewModel.diaryListInterval) { _, newValue in
+            viewModel.loadItems(of: newValue, in: viewContext)
         }
     }
 }
