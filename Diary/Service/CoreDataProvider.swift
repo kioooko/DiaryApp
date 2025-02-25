@@ -50,6 +50,30 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             return []
         }
     }
+
+    // 获取所有待办事项
+    func fetchAllCheckListItems() -> [CheckListItem] {
+        let request = NSFetchRequest<CheckListItem>(entityName: "checkListItem")
+        
+        do {
+            return try container.viewContext.fetch(request)
+        } catch {
+            print("❌ 获取待办事项失败: \(error)")
+            return []
+        }
+    }
+    
+    // 获取所有联系人
+    func fetchAllContacts() -> [Contact] {
+        let request = NSFetchRequest<Contact>(entityName: "contact")
+        
+        do {
+            return try container.viewContext.fetch(request)
+        } catch {
+            print("❌ 获取联系人失败: \(error)")
+            return []
+        }
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 

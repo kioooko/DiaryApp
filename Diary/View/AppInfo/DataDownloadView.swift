@@ -106,10 +106,7 @@ Button(action: {  downloadData(format: selectedFormat)
 }
 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
   .padding(.horizontal)
-  
     }
-
- 
     private func downloadData(format: FileFormat) {
         // 1. 获取所有实体数据
         let diaryEntries = CoreDataProvider.shared.exportAllDiaryEntries()
