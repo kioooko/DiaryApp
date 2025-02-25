@@ -230,13 +230,17 @@ struct DataImportView: View {
                 
                 // 日记数据处理
                 let entry = Item(context: viewContext)
-                  // 修复标题处理逻辑
-        if let title = rowData["标题"], !title.isEmpty {
-            entry.title = title
-        } else {
-            entry.title = "未命名记录"
-        }
-    
+                
+                // 修复标题处理逻辑
+                print("📝 处理标题字段，原始值: \(rowData["标题"] ?? "nil")")
+                if let title = rowData["标题"], !title.isEmpty {
+                    print("✅ 使用标题: \(title)")
+                    entry.title = title
+                } else {
+                    print("⚠️ 使用默认标题: 未命名记录")
+                    entry.title = "未命名记录"
+                }
+                
                 entry.body = rowData["内容"]
                 
                 // 处理日期
