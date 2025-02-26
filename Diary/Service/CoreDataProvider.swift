@@ -12,11 +12,27 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
 
     @Published var coreDataProviderError: CoreDataProviderError?// 定义一个 @Published 属性 coreDataProviderError，用于存储 CoreDataProviderError 的实例
 
-    let container: NSPersistentCloudKitContainer
+    lazy var container: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "Diary")
+        
+        // 启用轻量级迁移
+        let description = container.persistentStoreDescriptions.first
+        description?.shouldMigrateStoreAutomatically = true
+        description?.shouldInferMappingModelAutomatically = true
+        
+        container.loadPersistentStores { description, error in
+            if let error = error {
+                print("❌ 加载 Core Data 存储失败: \(error)")
+            } else {
+                print("✅ Core Data 迁移成功")
+            }
+        }
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return container
+    }()
 
     init() {
-        container = NSPersistentCloudKitContainer(name: "Diary")// 创建一个 NSPersistentCloudKitContainer 对象，用于存储 CoreData 数据
-
         container.loadPersistentStores(completionHandler: { [weak self] (storeDescription, error) in// 加载持久化存储
             if let self,// 如果 self 存在
                let error = error as NSError? {// 如果 error 存在
@@ -85,7 +101,7 @@ extension CoreDataProvider {// 扩展 CoreDataProvider 类
         }// 如果保存成功
         return result// 返回 result
     }()
-
+//启用 Core Data 轻量级迁移01
     static func deleteAll(container: NSPersistentContainer) {// 定义一个静态方法 deleteAll，用于删除所有数据
         let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = Item.fetchRequest()// 创建一个 NSFetchRequest 对象，用于获取 Item 实体
         let batchDeleteRequestForItem = NSBatchDeleteRequest(fetchRequest: itemFetchRequest)// 创建一个 NSBatchDeleteRequest 对象，用于删除 Item 实体
