@@ -60,6 +60,7 @@
 		075EB2382D12A5040039A3B9 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2362D12A5040039A3B9 /* APIKeyManager.swift */; };
 		075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
+		07B384932D6EE96B00ECD5A8 /* Diary.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07B384912D6EE96B00ECD5A8 /* Diary.xcdatamodeld */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
 		07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
 		07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
@@ -77,7 +78,6 @@
 		F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CA829F52468005FD6C8 /* Assets.xcassets */; };
 		F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CAB29F52468005FD6C8 /* Preview Assets.xcassets */; };
 		F5358CAE29F52468005FD6C8 /* CoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CAD29F52468005FD6C8 /* CoreDataProvider.swift */; };
-		F5358CB129F52468005FD6C8 /* Diary.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */; };
 		F5358CBE29F691E8005FD6C8 /* BaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CBD29F691E8005FD6C8 /* BaseModel.swift */; };
 		F5358CC029F69276005FD6C8 /* Item+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CBF29F69276005FD6C8 /* Item+Extension.swift */; };
 		F5358CC229F6DFE5005FD6C8 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CC129F6DFE5005FD6C8 /* Date+Extension.swift */; };
@@ -189,6 +189,7 @@
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		075EB2392D13B9790039A3B9 /* Chatapi.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chatapi.txt; sourceTree = "<group>"; };
+		07B384922D6EE96B00ECD5A8 /* Diary.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Diary.xcdatamodel; sourceTree = "<group>"; };
 		07E13D162D1D530E008C13A9 /* BannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerState.swift; sourceTree = "<group>"; };
 		07E13D192D1D5322008C13A9 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppDelegate.swift; sourceTree = "<group>"; };
@@ -201,7 +202,6 @@
 		F5358CA829F52468005FD6C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5358CAB29F52468005FD6C8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5358CAD29F52468005FD6C8 /* CoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataProvider.swift; sourceTree = "<group>"; };
-		F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Diary.xcdatamodel; sourceTree = "<group>"; };
 		F5358CB229F52468005FD6C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F5358CB829F53BB5005FD6C8 /* Diary.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Diary.entitlements; sourceTree = "<group>"; };
 		F5358CBD29F691E8005FD6C8 /* BaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseModel.swift; sourceTree = "<group>"; };
@@ -517,7 +517,7 @@
 		F550BC9A2A0E58C100BCB0F2 /* Entity */ = {
 			isa = PBXGroup;
 			children = (
-				F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */,
+				07B384912D6EE96B00ECD5A8 /* Diary.xcdatamodeld */,
 				F5358CBD29F691E8005FD6C8 /* BaseModel.swift */,
 				F5737D4A2A30AE4700D706E8 /* CheckListItem+Extension.swift */,
 				F5358CBF29F69276005FD6C8 /* Item+Extension.swift */,
@@ -812,6 +812,7 @@
 				F550BCA92A1281EC00BCB0F2 /* ResizableLayer.swift in Sources */,
 				07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */,
 				F5358D2E29FF53E6005FD6C8 /* DiaryDataStore.swift in Sources */,
+				07B384932D6EE96B00ECD5A8 /* Diary.xcdatamodeld in Sources */,
 				F5BE68892A7225DA00A92F00 /* ShareContentPattern.swift in Sources */,
 				F54395E22A45C40600C74D59 /* CreateDiaryView.swift in Sources */,
 				F5358D382A00B621005FD6C8 /* Direction.swift in Sources */,
@@ -829,7 +830,6 @@
 				075EB2352D1291140039A3B9 /* ChatAISetting.swift in Sources */,
 				F5358D2629FEB2E9005FD6C8 /* UserDefaults.swift in Sources */,
 				F53CE9632A153CB400E63078 /* WeatherSymbol.swift in Sources */,
-				F5358CB129F52468005FD6C8 /* Diary.xcdatamodeld in Sources */,
 				0701CD2D2D67187F006888A6 /* AddContactView.swift in Sources */,
 				0745A3382D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */,
 				0745A3392D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */,
@@ -1208,14 +1208,14 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */ = {
+		07B384912D6EE96B00ECD5A8 /* Diary.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */,
+				07B384922D6EE96B00ECD5A8 /* Diary.xcdatamodel */,
 			);
-			currentVersion = F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */;
+			currentVersion = 07B384922D6EE96B00ECD5A8 /* Diary.xcdatamodel */;
 			path = Diary.xcdatamodeld;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
