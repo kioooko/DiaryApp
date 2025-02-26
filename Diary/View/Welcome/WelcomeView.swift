@@ -136,11 +136,12 @@ var nextButton: some View {
     // MARK: Introduction Page
     var appIntroduction: some View {
         VStack(spacing: 40) {
-         title("你好哇👋！", description: "编织生活是一款直观而简洁的生活助手应用。")
+         title("你好哇👋！", description: "编织生活是一款专注于探索普通人如何满足自身生活需求的应用，致力于填补学校教育中缺失的部分。它主要聚焦于心灵成长与基本生活支援，帮助每个人在日常生活中找到力量与方向。")
 featureRow(icon: "book", color: .orange, description: "直观简洁的日记工具，用文字和图片记录生活点滴，编织属于你的故事。")
-featureRow(icon: "message", color: .yellow, description: "与ChatAI对话，理清思路、释放压力，记录一天的心情感悟。支持自定义ChatAI的API接口，打造专属智能体验。")
-featureRow(icon: "checkmark", color: .green, description: "轻松追踪日常习惯的CheckList，通过可视化目标感受每天的进步与成长。")
-featureRow(icon: "icloud", color: .blue, description: "iCloud全同步，重要内容随时访问，多设备切换无缝体验，安心又便捷。")
+featureRow(icon: "message", color: purple, description: "与ChatAI对话，理清思路、释放压力，记录一天的心情感悟。支持自定义ChatAI的API接口，打造专属智能体验。")
+featureRow(icon: "checkmark", color: .cyan, description: "轻松追踪日常习惯的CheckList，通过可视化目标感受每天的进步与成长。")
+featureRow(icon: "dollarsign.circle", color: .green, description: "养成记账的好习惯，为自己的财务负责，设置储蓄目标，提高自己的生活质量。")
+featureRow(icon: "person.2", color: .blue, description: "基于邓巴数的社交圈层概念，高效管理人际关系，更好地维持和改善社交互动。")
         }
         .frame(maxHeight: .infinity)
         .padding(.horizontal)
