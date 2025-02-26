@@ -47,6 +47,7 @@
 		0745A3372D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */; };
 		0745A3382D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3342D6460FD00BB6F8B /* SavingsGoalCard.swift */; };
 		0745A3392D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */; };
+		0749523E2D6EFE57001654FF /* Diary.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0749523C2D6EFE57001654FF /* Diary.xcdatamodeld */; };
 		07536BBC2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
 		07536BBD2D56121900E23444 /* DataDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBB2D56121900E23444 /* DataDownloadView.swift */; };
 		07536BBF2D5C97B300E23444 /* DataImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07536BBE2D5C97B300E23444 /* DataImportView.swift */; };
@@ -60,7 +61,6 @@
 		075EB2382D12A5040039A3B9 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2362D12A5040039A3B9 /* APIKeyManager.swift */; };
 		075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
-		07B384932D6EE96B00ECD5A8 /* Diary.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07B384912D6EE96B00ECD5A8 /* Diary.xcdatamodeld */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
 		07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
 		07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
@@ -183,13 +183,13 @@
 		07414B262D01B2B200D9AB42 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		0745A3342D6460FD00BB6F8B /* SavingsGoalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoalCard.swift; sourceTree = "<group>"; };
 		0745A3352D6460FD00BB6F8B /* SavingsGoalSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoalSettingView.swift; sourceTree = "<group>"; };
+		0749523D2D6EFE57001654FF /* Diary.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Diary.xcdatamodel; sourceTree = "<group>"; };
 		07536BBB2D56121900E23444 /* DataDownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDownloadView.swift; sourceTree = "<group>"; };
 		07536BBE2D5C97B300E23444 /* DataImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataImportView.swift; sourceTree = "<group>"; };
 		075EB2302D1263B10039A3B9 /* ChatAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAI.swift; sourceTree = "<group>"; };
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		075EB2392D13B9790039A3B9 /* Chatapi.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chatapi.txt; sourceTree = "<group>"; };
-		07B384922D6EE96B00ECD5A8 /* Diary.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Diary.xcdatamodel; sourceTree = "<group>"; };
 		07E13D162D1D530E008C13A9 /* BannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerState.swift; sourceTree = "<group>"; };
 		07E13D192D1D5322008C13A9 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppDelegate.swift; sourceTree = "<group>"; };
@@ -390,6 +390,7 @@
 				0701CD252D670F75006888A6 /* Relationship.swift */,
 				F5BF44402A5348CF00217119 /* AppVersion.swift */,
 				075EB2362D12A5040039A3B9 /* APIKeyManager.swift */,
+				0749523C2D6EFE57001654FF /* Diary.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -517,7 +518,6 @@
 		F550BC9A2A0E58C100BCB0F2 /* Entity */ = {
 			isa = PBXGroup;
 			children = (
-				07B384912D6EE96B00ECD5A8 /* Diary.xcdatamodeld */,
 				F5358CBD29F691E8005FD6C8 /* BaseModel.swift */,
 				F5737D4A2A30AE4700D706E8 /* CheckListItem+Extension.swift */,
 				F5358CBF29F69276005FD6C8 /* Item+Extension.swift */,
@@ -812,7 +812,7 @@
 				F550BCA92A1281EC00BCB0F2 /* ResizableLayer.swift in Sources */,
 				07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */,
 				F5358D2E29FF53E6005FD6C8 /* DiaryDataStore.swift in Sources */,
-				07B384932D6EE96B00ECD5A8 /* Diary.xcdatamodeld in Sources */,
+				0749523E2D6EFE57001654FF /* Diary.xcdatamodeld in Sources */,
 				F5BE68892A7225DA00A92F00 /* ShareContentPattern.swift in Sources */,
 				F54395E22A45C40600C74D59 /* CreateDiaryView.swift in Sources */,
 				F5358D382A00B621005FD6C8 /* Direction.swift in Sources */,
@@ -1208,14 +1208,14 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		07B384912D6EE96B00ECD5A8 /* Diary.xcdatamodeld */ = {
+		0749523C2D6EFE57001654FF /* Diary.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				07B384922D6EE96B00ECD5A8 /* Diary.xcdatamodel */,
+				0749523D2D6EFE57001654FF /* Diary.xcdatamodel */,
 			);
-			currentVersion = 07B384922D6EE96B00ECD5A8 /* Diary.xcdatamodel */;
+			currentVersion = 0749523D2D6EFE57001654FF /* Diary.xcdatamodel */;
 			path = Diary.xcdatamodeld;
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
