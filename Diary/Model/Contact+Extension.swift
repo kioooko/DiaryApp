@@ -11,7 +11,7 @@ extension Contact {
     
     // 用于预览的示例数据
     static var example: Contact {
-        let viewContext = NSPersistentContainer(name: "Diary").viewContext
+        let viewContext = NSPersistentContainer(name: "Diary 2").viewContext
         let contact = Contact(context: viewContext)
         contact.id = UUID()
         contact.name = "示例联系人"

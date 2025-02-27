@@ -60,8 +60,6 @@
 		075EB2382D12A5040039A3B9 /* APIKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075EB2362D12A5040039A3B9 /* APIKeyManager.swift */; };
 		075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
-		076B39B62D6FFE5800EEAA67 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076B39B52D6FFE5800EEAA67 /* Item.swift */; };
-		076B39B72D6FFE5900EEAA67 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076B39B52D6FFE5800EEAA67 /* Item.swift */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
 		07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
 		07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
@@ -191,7 +189,6 @@
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		075EB2392D13B9790039A3B9 /* Chatapi.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chatapi.txt; sourceTree = "<group>"; };
-		076B39B52D6FFE5800EEAA67 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		07E13D162D1D530E008C13A9 /* BannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerState.swift; sourceTree = "<group>"; };
 		07E13D192D1D5322008C13A9 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppDelegate.swift; sourceTree = "<group>"; };
@@ -523,7 +520,6 @@
 			children = (
 				F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */,
 				F5358CBD29F691E8005FD6C8 /* BaseModel.swift */,
-				076B39B52D6FFE5800EEAA67 /* Item.swift */,
 				F5737D4A2A30AE4700D706E8 /* CheckListItem+Extension.swift */,
 				F5358CBF29F69276005FD6C8 /* Item+Extension.swift */,
 				F53CE9622A153CB400E63078 /* WeatherSymbol.swift */,
@@ -825,7 +821,6 @@
 				F5405B942A93BD4B002FA0C9 /* DiaryDateButton.swift in Sources */,
 				F5BF44412A5348CF00217119 /* AppVersion.swift in Sources */,
 				F53E3A8E2A0C07680064CB62 /* TextOptions.swift in Sources */,
-				076B39B72D6FFE5900EEAA67 /* Item.swift in Sources */,
 				F5BF443B2A5059F100217119 /* XButton.swift in Sources */,
 				F5BF443F2A53170E00217119 /* SafariView.swift in Sources */,
 				F550BCAB2A1284AC00BCB0F2 /* FluidGradientView.swift in Sources */,
@@ -858,7 +853,6 @@
 				0709B08D2D5F156D00446520 /* ExpenseListView.swift in Sources */,
 				0701CD2F2D672028006888A6 /* Contact+Extension.swift in Sources */,
 				0709B0852D5EDFA800446520 /* ExpenseStatsView.swift in Sources */,
-				076B39B62D6FFE5800EEAA67 /* Item.swift in Sources */,
 				0701CD1C2D657D3A006888A6 /* BudgetAlertManager.swift in Sources */,
 				0709B0862D5EDFA800446520 /* ExpenseEditor.swift in Sources */,
 				0709B0872D5EDFA800446520 /* ExpenseContent.swift in Sources */,

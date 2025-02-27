@@ -12,7 +12,7 @@ final public class MockCoreData {
     let container:NSPersistentContainer
 
     init() {
-        container = NSPersistentContainer(name: "Diary")
+        container = NSPersistentContainer(name: "Diary 2")
 
         let description = NSPersistentStoreDescription()
         description.url = URL(fileURLWithPath: "/dev/null")

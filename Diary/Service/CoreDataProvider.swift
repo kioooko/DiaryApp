@@ -6,6 +6,7 @@
 //
 
 import CoreData// 导入 CoreData 框架
+import Foundation
 
 public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvider 类，继承自 ObservableObject
     static let shared = CoreDataProvider()// 定义一个静态属性 shared，用于存储 CoreDataProvider 的实例
@@ -15,7 +16,7 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
     let container: NSPersistentCloudKitContainer
 
     init() {
-        container = NSPersistentCloudKitContainer(name: "Diary")// 创建一个 NSPersistentCloudKitContainer 对象，用于存储 CoreData 数据
+        container = NSPersistentCloudKitContainer(name: "Diary 2")// 创建一个 NSPersistentCloudKitContainer 对象，用于存储 CoreData 数据
 
         container.loadPersistentStores(completionHandler: { [weak self] (storeDescription, error) in// 加载持久化存储
             if let self,// 如果 self 存在
@@ -35,8 +36,8 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
      // 新增：导出所有 DiaryEntry 数据
-    func exportAllDiaryEntries() -> [Item] {
-        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+    func exportAllDiaryEntries() -> [NSManagedObject] {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Item")
         do {
             let diaryEntries = try container.viewContext.fetch(fetchRequest)
             return diaryEntries
@@ -46,9 +47,9 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
         }
     }
 
-    func fetchAllSavingsGoals() -> [SavingsGoal] {
-        let request = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)]
+    func fetchAllSavingsGoals() -> [NSManagedObject] {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "SavingsGoal")
+        request.sortDescriptors = [NSSortDescriptor(key: "startDate", ascending: false)]
         
         do {
             return try container.viewContext.fetch(request)
@@ -68,26 +69,28 @@ extension CoreDataProvider {// 扩展 CoreDataProvider 类
         deleteAll(container: result.container)
         
         for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.id = UUID()
-            newItem.date = Date()
-            newItem.createdAt = Date()
-            newItem.updatedAt = Date()
-            newItem.title = "预览标题"
-            newItem.body = "预览内容"
-            newItem.amount = Double.random(in: 1...1000)
-            newItem.isExpense = Bool.random()
-            newItem.note = "预览备注"
+            // 使用 NSEntityDescription 创建实体以避免歧义
+            let newItem = NSEntityDescription.insertNewObject(forEntityName: "Item", into: viewContext)
+            newItem.setValue(UUID(), forKey: "id")
+            newItem.setValue(Date(), forKey: "date")
+            newItem.setValue(Date(), forKey: "createdAt")
+            newItem.setValue(Date(), forKey: "updatedAt")
+            newItem.setValue("预览标题", forKey: "title")
+            newItem.setValue("预览内容", forKey: "body")
+            newItem.setValue(Double.random(in: 1...1000), forKey: "amount")
+            newItem.setValue(Bool.random(), forKey: "isExpense")
+            newItem.setValue("预览备注", forKey: "note")
             print("newItem: \(newItem)")
         }
 
         for _ in 0..<5 {// 创建 5 个 CheckListItem 的实例
-            let newCheckList = CheckListItem(context: viewContext)
-            newCheckList.id = UUID()
-            newCheckList.title = "预览待办事项"
-            newCheckList.isCompleted = Bool.random()
-            newCheckList.createdAt = Date()
-            newCheckList.updatedAt = Date()
+            // 使用 NSEntityDescription 创建实体以避免歧义
+            let newCheckList = NSEntityDescription.insertNewObject(forEntityName: "CheckListItem", into: viewContext)
+            newCheckList.setValue(UUID(), forKey: "id")
+            newCheckList.setValue("预览待办事项", forKey: "title")
+            newCheckList.setValue(Bool.random(), forKey: "isCompleted")
+            newCheckList.setValue(Date(), forKey: "createdAt")
+            newCheckList.setValue(Date(), forKey: "updatedAt")
             print("newCheckList: \(newCheckList)")
         }
 
@@ -101,11 +104,12 @@ extension CoreDataProvider {// 扩展 CoreDataProvider 类
     }()
 
     static func deleteAll(container: NSPersistentContainer) {// 定义一个静态方法 deleteAll，用于删除所有数据
-        let itemFetchRequest: NSFetchRequest<NSFetchRequestResult> = Item.fetchRequest()// 创建一个 NSFetchRequest 对象，用于获取 Item 实体
-        let batchDeleteRequestForItem = NSBatchDeleteRequest(fetchRequest: itemFetchRequest)// 创建一个 NSBatchDeleteRequest 对象，用于删除 Item 实体
+        // 使用字符串实体名称避免类型歧义
+        let itemFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Item")
+        let batchDeleteRequestForItem = NSBatchDeleteRequest(fetchRequest: itemFetchRequest)
 
-        let checkListItemFetchRequest: NSFetchRequest<NSFetchRequestResult> = CheckListItem.fetchRequest()// 创建一个 NSFetchRequest 对象，用于获取 CheckListItem 实体
-        let batchDeleteRequestForCheckListItem = NSBatchDeleteRequest(fetchRequest: checkListItemFetchRequest)// 创建一个 NSBatchDeleteRequest 对象，用于删除 CheckListItem 实体
+        let checkListItemFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CheckListItem")
+        let batchDeleteRequestForCheckListItem = NSBatchDeleteRequest(fetchRequest: checkListItemFetchRequest)
 
         _ = try? container.viewContext.execute(batchDeleteRequestForItem)// 执行删除 Item 实体的请求
         _ = try? container.viewContext.execute(batchDeleteRequestForCheckListItem)// 执行删除 CheckListItem 实体的请求
