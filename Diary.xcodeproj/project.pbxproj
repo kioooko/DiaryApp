@@ -73,11 +73,11 @@
 		07E13D242D1D5346008C13A9 /* PassThroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D222D1D5346008C13A9 /* PassThroughWindow.swift */; };
 		07E13D262D1D5354008C13A9 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D252D1D5354008C13A9 /* DiaryApp.swift */; };
 		07E13D272D1D5354008C13A9 /* DiaryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D252D1D5354008C13A9 /* DiaryApp.swift */; };
+		07EBC2A32D702F2700A5DCFD /* Diary.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 07EBC2A12D702F2700A5DCFD /* Diary.xcdatamodeld */; };
 		F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */; };
 		F5358CA929F52468005FD6C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CA829F52468005FD6C8 /* Assets.xcassets */; };
 		F5358CAC29F52468005FD6C8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5358CAB29F52468005FD6C8 /* Preview Assets.xcassets */; };
 		F5358CAE29F52468005FD6C8 /* CoreDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CAD29F52468005FD6C8 /* CoreDataProvider.swift */; };
-		F5358CB129F52468005FD6C8 /* Diary.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */; };
 		F5358CBE29F691E8005FD6C8 /* BaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CBD29F691E8005FD6C8 /* BaseModel.swift */; };
 		F5358CC029F69276005FD6C8 /* Item+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CBF29F69276005FD6C8 /* Item+Extension.swift */; };
 		F5358CC229F6DFE5005FD6C8 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5358CC129F6DFE5005FD6C8 /* Date+Extension.swift */; };
@@ -149,7 +149,6 @@
 		F5BF443F2A53170E00217119 /* SafariView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BF443E2A53170E00217119 /* SafariView.swift */; };
 		F5BF44412A5348CF00217119 /* AppVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BF44402A5348CF00217119 /* AppVersion.swift */; };
 		F5BF44432A54714300217119 /* Locale+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BF44422A54714300217119 /* Locale+Extension.swift */; };
-		F5BF44462A557E8600217119 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BF44452A557E8600217119 /* WelcomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -195,13 +194,13 @@
 		07E13D1D2D1D533F008C13A9 /* DiaryAppSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppSceneDelegate.swift; sourceTree = "<group>"; };
 		07E13D222D1D5346008C13A9 /* PassThroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThroughWindow.swift; sourceTree = "<group>"; };
 		07E13D252D1D5354008C13A9 /* DiaryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryApp.swift; sourceTree = "<group>"; };
+		07EBC2A22D702F2700A5DCFD /* Diary.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Diary.xcdatamodel; sourceTree = "<group>"; };
 		F514464F2A5BE346002DA8CC /* CheckListEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckListEditButton.swift; sourceTree = "<group>"; };
 		F51446522A5C1B20002DA8CC /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		F5358CA129F52467005FD6C8 /* Diary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Diary.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5358CA829F52468005FD6C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5358CAB29F52468005FD6C8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F5358CAD29F52468005FD6C8 /* CoreDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataProvider.swift; sourceTree = "<group>"; };
-		F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Diary.xcdatamodel; sourceTree = "<group>"; };
 		F5358CB229F52468005FD6C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F5358CB829F53BB5005FD6C8 /* Diary.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Diary.entitlements; sourceTree = "<group>"; };
 		F5358CBD29F691E8005FD6C8 /* BaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseModel.swift; sourceTree = "<group>"; };
@@ -242,7 +241,6 @@
 		F54395E12A45C40600C74D59 /* CreateDiaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateDiaryView.swift; sourceTree = "<group>"; };
 		F54395E32A47F43300C74D59 /* DiaryTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryTextEditor.swift; sourceTree = "<group>"; };
 		F549A54E2A57970C003E7F68 /* Binding+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+Extension.swift"; sourceTree = "<group>"; };
-		F54C58392CC6A680001DBD7B /* Diary 2.xcdatamodel */ = {isa = PBXFileReference; explicitFileType = wrapper.xcdatamodel; path = "Diary 2.xcdatamodel"; sourceTree = "<group>"; };
 		F550BC942A0E499600BCB0F2 /* ReminderSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSettingView.swift; sourceTree = "<group>"; };
 		F550BC982A0E58BD00BCB0F2 /* NotificationSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSetting.swift; sourceTree = "<group>"; };
 		F550BC9B2A111C0B00BCB0F2 /* Button+Haptic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Button+Haptic.swift"; sourceTree = "<group>"; };
@@ -518,11 +516,11 @@
 		F550BC9A2A0E58C100BCB0F2 /* Entity */ = {
 			isa = PBXGroup;
 			children = (
-				F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */,
 				F5358CBD29F691E8005FD6C8 /* BaseModel.swift */,
 				F5737D4A2A30AE4700D706E8 /* CheckListItem+Extension.swift */,
 				F5358CBF29F69276005FD6C8 /* Item+Extension.swift */,
 				F53CE9622A153CB400E63078 /* WeatherSymbol.swift */,
+				07EBC2A12D702F2700A5DCFD /* Diary.xcdatamodeld */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -672,7 +670,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					F5358CA029F52467005FD6C8 = {
 						CreatedOnToolsVersion = 14.3;
@@ -779,7 +777,6 @@
 				F56FF3A12C0AB35300C0D1D3 /* DiaryText.swift in Sources */,
 				07536BBD2D56121900E23444 /* DataDownloadView.swift in Sources */,
 				F51446502A5BE346002DA8CC /* CheckListEditButton.swift in Sources */,
-				F5BF44462A557E8600217119 /* WelcomeView.swift in Sources */,
 				F54395E42A47F43400C74D59 /* DiaryTextEditor.swift in Sources */,
 				F5BF44342A4C2CAE00217119 /* CheckListContent.swift in Sources */,
 				F550BC992A0E58BD00BCB0F2 /* NotificationSetting.swift in Sources */,
@@ -813,6 +810,7 @@
 				F550BCA92A1281EC00BCB0F2 /* ResizableLayer.swift in Sources */,
 				07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */,
 				F5358D2E29FF53E6005FD6C8 /* DiaryDataStore.swift in Sources */,
+				07EBC2A32D702F2700A5DCFD /* Diary.xcdatamodeld in Sources */,
 				F5BE68892A7225DA00A92F00 /* ShareContentPattern.swift in Sources */,
 				F54395E22A45C40600C74D59 /* CreateDiaryView.swift in Sources */,
 				F5358D382A00B621005FD6C8 /* Direction.swift in Sources */,
@@ -830,7 +828,6 @@
 				075EB2352D1291140039A3B9 /* ChatAISetting.swift in Sources */,
 				F5358D2629FEB2E9005FD6C8 /* UserDefaults.swift in Sources */,
 				F53CE9632A153CB400E63078 /* WeatherSymbol.swift in Sources */,
-				F5358CB129F52468005FD6C8 /* Diary.xcdatamodeld in Sources */,
 				0701CD2D2D67187F006888A6 /* AddContactView.swift in Sources */,
 				0745A3382D6460FD00BB6F8B /* SavingsGoalCard.swift in Sources */,
 				0745A3392D6460FD00BB6F8B /* SavingsGoalSettingView.swift in Sources */,
@@ -895,6 +892,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -927,6 +926,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -955,6 +955,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -987,6 +989,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1209,12 +1212,12 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */ = {
+		07EBC2A12D702F2700A5DCFD /* Diary.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */,
+				07EBC2A22D702F2700A5DCFD /* Diary.xcdatamodel */,
 			);
-			currentVersion = F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */;
+			currentVersion = 07EBC2A22D702F2700A5DCFD /* Diary.xcdatamodel */;
 			path = Diary.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

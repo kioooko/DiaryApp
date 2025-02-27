@@ -17,7 +17,7 @@ class BudgetAlertManager: ObservableObject {
     
     // 检查储蓄目标完成状态
     func checkSavingsGoalCompletion(goal: SavingsGoal, context: NSManagedObjectContext) -> String? {
-        guard let targetAmount = goal.targetAmount as? Double else { return nil }
+        let targetAmount = goal.targetAmount  // 直接使用，不需要解包
         
         let startDate: NSDate = (goal.startDate ?? Date()) as NSDate
         let targetDate: NSDate = (goal.targetDate ?? Date()) as NSDate
@@ -66,11 +66,10 @@ class BudgetAlertManager: ObservableObject {
         
         do {
             let goals = try context.fetch(budgetRequest)
-            guard let currentGoal = goals.first,
-                  let monthlyAmount = currentGoal.monthlyAmount as? Double,
-                  monthlyAmount > 0 else {
-                return nil
-            }
+            guard let currentGoal = goals.first else { return nil }
+            let monthlyBudget = currentGoal.monthlyBudget  // 直接使用，不需要解包
+            
+            if monthlyBudget <= 0 { return nil }  // 单独检查是否大于0
             
             // 获取当月支出
             let calendar = Calendar.current
@@ -92,7 +91,7 @@ class BudgetAlertManager: ObservableObject {
             let totalExpense = abs(expenses.map { $0.amount }.reduce(0, +))
             
             // 计算使用比例
-            let usageRatio = totalExpense / monthlyAmount
+            let usageRatio = totalExpense / monthlyBudget
             
             // 返回提醒消息
             if usageRatio >= 1.0 {
@@ -168,13 +167,14 @@ class BudgetAlertManager: ObservableObject {
         
         // 获取月度预算
         let budgetRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
-        budgetRequest.predicate = NSPredicate(format: "monthlyDate >= %@ AND monthlyDate <= %@",
-                                            startOfMonth as CVarArg,
-                                            endOfMonth as CVarArg)
+        budgetRequest.predicate = NSPredicate(format: "isCompleted == false")
+        budgetRequest.sortDescriptors = [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)]
+        budgetRequest.fetchLimit = 1
         
         do {
             let budgets = try context.fetch(budgetRequest)
-            guard let monthlyBudget = budgets.first?.monthlyAmount else { return nil }
+            guard let currentGoal = budgets.first else { return nil }
+            let monthlyBudget = currentGoal.monthlyBudget  // 直接使用，不需要解包
             
             // 获取当月总支出
             let expenseRequest = NSFetchRequest<Item>(entityName: "Item")
@@ -245,10 +245,11 @@ class BudgetAlertManager: ObservableObject {
 
     func checkSavingGoalCompletion(goal: SavingsGoal, context: NSManagedObjectContext) -> Bool {
         guard let startDate = goal.startDate,
-              let targetDate = goal.targetDate,
-              let targetAmount = goal.targetAmount as? Double else {
+              let targetDate = goal.targetDate else {
             return false
         }
+        
+        let targetAmount = goal.targetAmount  // 直接使用，不需要解包
         
         // 计算时间进度
         let totalDays = Calendar.current.dateComponents([.day], from: startDate, to: targetDate).day ?? 0
@@ -337,9 +338,9 @@ struct SavingsGoalProgressView: View {
             // 视图出现时检查完成状态
             alertManager.checkSavingGoalCompletion(goal: goal, in: viewContext)
         }
-        .onChange(of: goal.isCompleted) { completed in
+        .onChange(of: goal.isCompleted) { oldValue, newValue in
             // 当完成状态改变时检查
-            if !completed {
+            if !newValue {
                 alertManager.checkSavingGoalCompletion(goal: goal, in: viewContext)
             }
         }
@@ -365,9 +366,6 @@ extension Calendar {
 
 // 扩展 SavingsGoal 实体
 extension SavingsGoal {
-    // 添加完成日期属性（需要在Core Data模型中添加对应字段）
-    @NSManaged var completedDate: Date?
-    
     var isTimeCompleted: Bool {
         guard let targetDate = targetDate else { return false }
         return Date() >= targetDate
@@ -487,8 +485,8 @@ struct ExpenseInputView: View {
                 )
             }
         }
-        .onChange(of: alertManager.shouldDismissParentView) { shouldDismiss in
-            if shouldDismiss {
+        .onChange(of: alertManager.shouldDismissParentView) { oldValue, newValue in
+            if newValue {
                 dismiss()  // 只有在确认按钮点击后才关闭记账页面
             }
         }
