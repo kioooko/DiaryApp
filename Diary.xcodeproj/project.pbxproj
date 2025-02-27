@@ -1212,10 +1212,9 @@
 		F5358CAF29F52468005FD6C8 /* Diary.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				F54C58392CC6A680001DBD7B /* Diary 2.xcdatamodel */,
 				F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */,
 			);
-			currentVersion = F54C58392CC6A680001DBD7B /* Diary 2.xcdatamodel */;
+			currentVersion = F5358CB029F52468005FD6C8 /* Diary.xcdatamodel */;
 			path = Diary.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
