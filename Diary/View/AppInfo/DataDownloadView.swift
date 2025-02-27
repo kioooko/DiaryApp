@@ -141,9 +141,9 @@ Button(action: {  downloadData(format: selectedFormat)
         let diaryObjects = CoreDataProvider.shared.exportAllDiaryEntries()
         let savingsObjects = CoreDataProvider.shared.fetchAllSavingsGoals()
         
-        // 将 NSManagedObject 转换为具体类型
-        let diaryEntries = diaryObjects.compactMap { $0 as? Item }
-        let savingsGoals = savingsObjects.compactMap { $0 as? SavingsGoal }
+        // 将 NSManagedObject 转换为具体类型 - 移除不必要的类型转换
+        let diaryEntries = diaryObjects // 直接使用，不需要转换
+        let savingsGoals = savingsObjects // 直接使用，不需要转换
         
         // 添加安全检查
         guard !diaryEntries.isEmpty else {
@@ -269,8 +269,19 @@ Button(action: {  downloadData(format: selectedFormat)
                     txtString.append("名称: \(title)\n")
                 }
                 
-                txtString.append("目标金额: \(String(format: "%.2f", goal.targetAmount))\n")
-                txtString.append("当前金额: \(String(format: "%.2f", goal.currentAmount))\n")
+                // 处理 targetAmount（可能是 NSNumber?）
+                let targetAmountValue: Double
+                if let targetAmount = goal.targetAmount as? NSNumber {
+                    targetAmountValue = targetAmount.doubleValue
+                } else {
+                    targetAmountValue = 0.0
+                }
+                
+                // currentAmount 应该是非可选的 Double
+                let currentAmountValue = goal.currentAmount
+                
+                txtString.append("目标金额: \(String(format: "%.2f", targetAmountValue))\n")
+                txtString.append("当前金额: \(String(format: "%.2f", currentAmountValue))\n")
                 
                 if let startDate = goal.startDate {
                     txtString.append("开始日期: \(dateFormatter.string(from: startDate))\n")
@@ -280,7 +291,8 @@ Button(action: {  downloadData(format: selectedFormat)
                     txtString.append("目标日期: \(dateFormatter.string(from: targetDate))\n")
                 }
                 
-                let progress = goal.targetAmount > 0 ? (goal.currentAmount / goal.targetAmount) * 100 : 0
+                // 使用处理后的值计算进度
+                let progress = targetAmountValue > 0 ? (currentAmountValue / targetAmountValue) * 100 : 0
                 txtString.append("进度: \(String(format: "%.1f%%", progress))\n")
                 txtString.append("\n-------------------\n\n")
             }

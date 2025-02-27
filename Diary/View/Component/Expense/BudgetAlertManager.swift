@@ -17,8 +17,6 @@ class BudgetAlertManager: ObservableObject {
     
     // 检查储蓄目标完成状态
     func checkSavingsGoalCompletion(goal: SavingsGoal, context: NSManagedObjectContext) -> String? {
-        let targetAmount = goal.targetAmount  // 直接使用，不需要解包
-        
         let startDate: NSDate = (goal.startDate ?? Date()) as NSDate
         let targetDate: NSDate = (goal.targetDate ?? Date()) as NSDate
         
@@ -33,10 +31,10 @@ class BudgetAlertManager: ObservableObject {
             let items = try context.fetch(request)
             let totalSaving = items.map { $0.amount }.reduce(0, +)
             
-            print("目标金额: \(targetAmount), 实际储蓄: \(totalSaving)")
+            print("目标金额: \(goal.targetAmount?.doubleValue ?? 0.0), 实际储蓄: \(totalSaving)")
             
             // 如果达到目标金额且未标记为完成
-            if totalSaving >= targetAmount && !goal.isCompleted {
+            if let targetAmount = goal.targetAmount?.doubleValue, totalSaving >= targetAmount && !goal.isCompleted {
                 goal.isCompleted = true
                 try context.save()  // 确保保存状态
                 print("储蓄目标已完成！")
@@ -227,15 +225,15 @@ class BudgetAlertManager: ObservableObject {
         do {
             let items = try context.fetch(request)
             let actualSaving = items.reduce(0.0) { $0 + $1.amount }
-            print("目标金额: \(goal.targetAmount), 实际储蓄: \(actualSaving)")
+            print("目标金额: \(goal.targetAmount?.doubleValue ?? 0.0), 实际储蓄: \(actualSaving)")
             
             // 只有在达到目标日期且达到目标金额时才标记为完成
-            if actualSaving >= goal.targetAmount && !goal.isCompleted {
+            if let targetAmount = goal.targetAmount?.doubleValue, actualSaving >= targetAmount && !goal.isCompleted {
                 print("检测到储蓄目标达成且时间已到，显示完成弹窗")
                 DispatchQueue.main.async {
                     self.showCompletionModal(for: goal, in: context)
                 }
-            } else if actualSaving < goal.targetAmount {
+            } else if let targetAmount = goal.targetAmount?.doubleValue, actualSaving < targetAmount {
                 print("未达到目标金额，不触发完成状态")
             }
         } catch {
@@ -245,11 +243,10 @@ class BudgetAlertManager: ObservableObject {
 
     func checkSavingGoalCompletion(goal: SavingsGoal, context: NSManagedObjectContext) -> Bool {
         guard let startDate = goal.startDate,
-              let targetDate = goal.targetDate else {
+              let targetDate = goal.targetDate,
+              let targetAmount = goal.targetAmount else {
             return false
         }
-        
-        let targetAmount = goal.targetAmount  // 直接使用，不需要解包
         
         // 计算时间进度
         let totalDays = Calendar.current.dateComponents([.day], from: startDate, to: targetDate).day ?? 0
@@ -270,7 +267,8 @@ class BudgetAlertManager: ObservableObject {
             let actualSavings = income - expense
             
             // 计算进度
-            let savingsProgress = min(1.0, actualSavings / targetAmount)
+            let targetAmountValue = targetAmount.doubleValue
+            let savingsProgress = min(1.0, actualSavings / targetAmountValue)
             let timeProgress = Double(passedDays) / Double(totalDays)
             let finalProgress = savingsProgress * timeProgress
             
@@ -373,7 +371,8 @@ extension SavingsGoal {
     
     var isAmountCompleted: Bool {
         guard let startDate = startDate,
-              let targetDate = targetDate else { return false }
+              let targetDate = targetDate,
+              let targetAmount = targetAmount else { return false }
         
         let request = NSFetchRequest<Item>(entityName: "Item")
         request.predicate = NSPredicate(
@@ -386,7 +385,7 @@ extension SavingsGoal {
             if let context = self.managedObjectContext {
                 let items = try context.fetch(request)
                 let actualSaving = items.reduce(0.0) { $0 + $1.amount }
-                return actualSaving >= targetAmount
+                return actualSaving >= targetAmount.doubleValue
             }
         } catch {
             print("计算储蓄金额失败: \(error)")
@@ -433,7 +432,7 @@ struct CompletionModalView: View {
                         .font(.body)
                     Text(goal.title ?? "")
                         .font(.headline)
-                    Text("目标金额：¥\(String(format: "%.2f", goal.targetAmount))")
+                    Text("目标金额：¥\(String(format: "%.2f", goal.targetAmount?.doubleValue ?? 0.0))")
                         .font(.body)
                 }
                 .multilineTextAlignment(.center)
@@ -471,8 +470,7 @@ struct CompletionModalView: View {
 struct ExpenseInputView: View {
     @StateObject private var alertManager = BudgetAlertManager()
     @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
+        var body: some View {
         VStack {
             // ... 现有的记账输入界面 ...
         }
