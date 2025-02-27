@@ -16,7 +16,9 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
     let container: NSPersistentCloudKitContainer
 
     init() {
-        container = NSPersistentCloudKitContainer(name: "Diary 2")// 创建一个 NSPersistentCloudKitContainer 对象，用于存储 CoreData 数据
+        // 使用正确的模型名称 - 这里我们尝试使用 "Diary" 作为默认值
+        // 如果仍然失败，请尝试其他可能的名称，如 "Diary2" 或 "DiaryV2"
+        container = NSPersistentCloudKitContainer(name: "Diary")
 
         container.loadPersistentStores(completionHandler: { [weak self] (storeDescription, error) in// 加载持久化存储
             if let self,// 如果 self 存在
@@ -36,23 +38,24 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
      // 新增：导出所有 DiaryEntry 数据
-    func exportAllDiaryEntries() -> [NSManagedObject] {
+    func exportAllDiaryEntries() -> [Item] {
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Item")
         do {
             let diaryEntries = try container.viewContext.fetch(fetchRequest)
-            return diaryEntries
+            return diaryEntries.compactMap { $0 as? Item }
         } catch {
             print("Failed to fetch DiaryEntry: \(error)")
             return []
         }
     }
 
-    func fetchAllSavingsGoals() -> [NSManagedObject] {
+    func fetchAllSavingsGoals() -> [SavingsGoal] {
         let request = NSFetchRequest<NSManagedObject>(entityName: "SavingsGoal")
         request.sortDescriptors = [NSSortDescriptor(key: "startDate", ascending: false)]
         
         do {
-            return try container.viewContext.fetch(request)
+            let objects = try container.viewContext.fetch(request)
+            return objects.compactMap { $0 as? SavingsGoal }
         } catch {
             print("❌ 获取储蓄目标失败: \(error)")
             return []
