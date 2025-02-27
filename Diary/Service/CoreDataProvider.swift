@@ -68,12 +68,26 @@ extension CoreDataProvider {// 扩展 CoreDataProvider 类
         deleteAll(container: result.container)
         
         for _ in 0..<10 {
-            let newItem: Item = .makeRandom(context: viewContext)// 创建一个 Item 的实例
+            let newItem = Item(context: viewContext)
+            newItem.id = UUID()
+            newItem.date = Date()
+            newItem.createdAt = Date()
+            newItem.updatedAt = Date()
+            newItem.title = "预览标题"
+            newItem.body = "预览内容"
+            newItem.amount = Double.random(in: 1...1000)
+            newItem.isExpense = Bool.random()
+            newItem.note = "预览备注"
             print("newItem: \(newItem)")
         }
 
         for _ in 0..<5 {// 创建 5 个 CheckListItem 的实例
-            let newCheckList: CheckListItem = .makeRandom(context: viewContext)// 创建一个 CheckListItem 的实例
+            let newCheckList = CheckListItem(context: viewContext)
+            newCheckList.id = UUID()
+            newCheckList.title = "预览待办事项"
+            newCheckList.isCompleted = Bool.random()
+            newCheckList.createdAt = Date()
+            newCheckList.updatedAt = Date()
             print("newCheckList: \(newCheckList)")
         }
 
@@ -116,3 +130,6 @@ public enum CoreDataProviderError: Error, LocalizedError {// 定义一个 CoreDa
         }
     }
 }
+
+// 为了兼容性，添加 PersistenceController 别名
+typealias PersistenceController = CoreDataProvider
