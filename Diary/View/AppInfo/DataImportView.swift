@@ -220,7 +220,6 @@ struct DataImportView: View {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
         var importedCount = 0
-        var failedCount = 0
         
         viewContext.performAndWait {
             for row in rows.dropFirst() where !row.isEmpty {
@@ -407,8 +406,8 @@ struct DataImportView: View {
                     contact.notes ?? "",
                     lastInteractionStr,
                     avatarStr,
-                //    dateFormatter.string(from: contact.createdAt),
-                //   dateFormatter.string(from: contact.updatedAt)
+                    dateFormatter.string(from: contact.createdAt ?? Date()),
+                    dateFormatter.string(from: contact.updatedAt ?? Date())
                 ].map { "\"\($0)\"" }.joined(separator: ",")
                 csvContent += row + "\n"
             }
@@ -423,13 +422,18 @@ struct DataImportView: View {
             for goal in goals {
                 let startDateStr = goal.startDate.map { dateFormatter.string(from: $0) } ?? ""
                 let targetDateStr = goal.targetDate.map { dateFormatter.string(from: $0) } ?? ""
-                let createdAtStr = goal.createdAt.map { dateFormatter.string(from: $0) } ?? ""
-                let updatedAtStr = goal.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
+                let createdAtStr = dateFormatter.string(from: goal.createdAt ?? Date())
+                let updatedAtStr = dateFormatter.string(from: goal.updatedAt ?? Date())
+                
+                // 处理 targetAmount 和 currentAmount
+                let targetAmountStr = goal.targetAmount != nil ? 
+                    String(format: "%.2f", goal.targetAmount!.doubleValue) : "0.00"
+                let currentAmountStr = String(format: "%.2f", goal.currentAmount)
                 
                 let row = [
                     goal.title ?? "",
-                    String(goal.targetAmount),
-                    String(goal.currentAmount),
+                    targetAmountStr,
+                    currentAmountStr,
                     startDateStr,
                     targetDateStr,
                     createdAtStr,
@@ -470,9 +474,15 @@ struct FilePicker: UIViewControllerRepresentable {
     let onFileSelected: (URL?) -> Void
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        // 使用简单的文件类型定义
-        let types: [String] = ["public.comma-separated-values-text", "public.plain-text"]
-        let picker = UIDocumentPickerViewController(documentTypes: types, in: .import)
+        // 使用更新的 API 来创建文档选择器
+        let picker: UIDocumentPickerViewController
+        if #available(iOS 14.0, *) {
+            picker = UIDocumentPickerViewController(forOpeningContentTypes: [.commaSeparatedText, .plainText], asCopy: true)
+        } else {
+            // 兼容 iOS 14 以下版本
+            let types: [String] = ["public.comma-separated-values-text", "public.plain-text"]
+            picker = UIDocumentPickerViewController(documentTypes: types, in: .import)
+        }
         
         // 基本配置
         picker.delegate = context.coordinator
