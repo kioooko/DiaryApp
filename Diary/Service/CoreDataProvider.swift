@@ -16,9 +16,10 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
     let container: NSPersistentCloudKitContainer
 
     init() {
-        // 使用正确的模型名称 - 这里我们尝试使用 "Diary" 作为默认值
-        // 如果仍然失败，请尝试其他可能的名称，如 "Diary2" 或 "DiaryV2"
-        container = NSPersistentCloudKitContainer(name: "Diary")
+        // 使用正确的模型名称 "Diary 2"
+        container = NSPersistentCloudKitContainer(name: "Diary 2")
+        
+        print("尝试加载 Core Data 模型: Diary 2")
 
         container.loadPersistentStores(completionHandler: { [weak self] (storeDescription, error) in// 加载持久化存储
             if let self,// 如果 self 存在
@@ -33,6 +34,11 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
                  */
                 self.coreDataProviderError = .failedToInit(error: error)// 将错误信息传递给 coreDataProviderError
                 print("Failed to load persistent stores: \(error), \(error.userInfo)")// 打印错误信息
+                print("错误域: \(error.domain)")
+                print("错误代码: \(error.code)")
+                print("错误用户信息: \(error.userInfo)")
+            } else {
+                print("成功加载 Core Data 模型: Diary 2")
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
