@@ -22,7 +22,6 @@ struct CreateDiaryView: View {
     @State private var isPresentedDatePicker: Bool = false
     @State private var isTextEditorPresented: Bool = false
     @State private var selectedContentType: DiaryContentType = .text
-    @FocusState private var focusedField: FocusField?
 
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -31,11 +30,6 @@ struct CreateDiaryView: View {
         return formatter
     }()
     private let dateRange: ClosedRange<Date> = Date(timeIntervalSince1970: 0)...Date()
-
-    enum FocusField {
-        case title
-        case body
-    }
 
     var body: some View {
         NavigationStack {
@@ -64,17 +58,7 @@ struct CreateDiaryView: View {
             }
         }
         .animation(.easeOut(duration: 0.16), value: keyboardManager.keyboardHeight)
-        .onTapGesture {
-            hideKeyboard()
-        }
-    }
-
-    private func hideKeyboard() {
-        focusedField = nil
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                      to: nil,
-                                      from: nil,
-                                      for: nil)
+        .hideKeyboardWhenTappedAround()
     }
 }
 
@@ -119,7 +103,6 @@ private extension CreateDiaryView {
                 .padding(.horizontal, 20)
             }
         }
-        .optimizedKeyboardHandling()
     }
 
     @ViewBuilder
@@ -142,7 +125,6 @@ private extension CreateDiaryView {
                     isTextEditorPresented = true
                 }
             }
-            .focused($focusedField, equals: .body)
         case .checkList:
             VStack(spacing: 60) {
                 CheckList(diaryDataStore: diaryDataStore)
