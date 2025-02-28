@@ -1,8 +1,9 @@
 import Foundation
 import CoreData
+import Diary  // 导入包含 CoreData 实体的模块
 
-// 删除 public 修饰符，因为这可能与其他地方的定义冲突
-struct ExportData {
+// 重命名以避免冲突
+struct DataExport: Codable {
     let items: [ItemExport]
     let contacts: [ContactExport]
     let savingsGoals: [SavingsGoalExport]
@@ -53,7 +54,7 @@ struct SavingsGoalExport: Codable {
     let currentAmount: Double
     let deadline: Double?
     let monthlyBudget: Double
-    let monthlyAmount: Date
+    let monthlyAmount: Double  // 修正为 Double 类型
     let startDate: Date?
     let targetDate: Date?
     let isCompleted: Bool
@@ -76,14 +77,14 @@ struct ExpenseExport: Codable {
 }
 
 // 扩展方法移到单独的扩展中
-extension ExportData: Codable {
+extension DataExport {
     static func from(
         items: [Item],
         contacts: [Contact],
         savingsGoals: [SavingsGoal],
         expenses: [Expense]
-    ) -> ExportData {
-        return ExportData(
+    ) -> DataExport {
+        return DataExport(
             items: items.map { item in
                 ItemExport(
                     id: item.id ?? UUID(),
@@ -126,11 +127,11 @@ extension ExportData: Codable {
                 SavingsGoalExport(
                     id: goal.id ?? UUID(),
                     title: goal.title ?? "",
-                    targetAmount: goal.targetAmount,
+                    targetAmount: (goal.targetAmount as? NSNumber)?.doubleValue ?? 0.0,
                     currentAmount: goal.currentAmount,
                     deadline: goal.deadline,
                     monthlyBudget: goal.monthlyBudget,
-                    monthlyAmount: goal.monthlyAmount ?? Date(),
+                    monthlyAmount: goal.monthlyAmount,  // 直接使用 Double
                     startDate: goal.startDate,
                     targetDate: goal.targetDate,
                     isCompleted: goal.isCompleted,

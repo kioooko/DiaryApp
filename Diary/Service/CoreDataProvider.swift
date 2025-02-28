@@ -7,6 +7,9 @@
 
 import CoreData// 导入 CoreData 框架
 import Foundation
+@_exported import Model  // 假设 ExportData 在 Model 组中
+// 或者直接相对路径导入
+// import "../Model/ExportData"
 
 public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvider 类，继承自 ObservableObject
     static let shared = CoreDataProvider()// 定义一个静态属性 shared，用于存储 CoreDataProvider 的实例
@@ -239,72 +242,3 @@ public enum CoreDataProviderError: Error, LocalizedError {// 定义一个 CoreDa
 
 // 为了兼容性，添加 PersistenceController 别名
 typealias PersistenceController = CoreDataProvider
-
-// 导出数据结构
-struct ExportData: Codable {
-    let items: [ItemExport]
-    let contacts: [ContactExport]
-    let savingsGoals: [SavingsGoalExport]
-    let expenses: [ExpenseExport]
-    
-    struct ItemExport: Codable {
-        let id: UUID
-        let title: String
-        let body: String?
-        let date: Date
-        let amount: Double
-        let isExpense: Bool
-        let note: String?
-        let weather: String?
-        let isBookmarked: Bool
-        let imageData: Data?
-        let checkListItems: [CheckListItemExport]
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct CheckListItemExport: Codable {
-        let id: UUID
-        let title: String
-        let isCompleted: Bool
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct ContactExport: Codable {
-        let id: UUID
-        let name: String
-        let tier: Int16
-        let birthday: Date?
-        let notes: String?
-        let lastInteraction: Date?
-        let avatar: Data?
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct SavingsGoalExport: Codable {
-        let id: UUID
-        let title: String
-        let targetAmount: Double
-        let currentAmount: Double
-        let startDate: Date?
-        let targetDate: Date?
-        let monthlyBudget: Double
-        let isCompleted: Bool
-        let completedDate: Date?
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct ExpenseExport: Codable {
-        let id: UUID
-        let title: String
-        let amount: Double
-        let date: Date
-        let isExpense: Bool
-        let note: String?
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-}
