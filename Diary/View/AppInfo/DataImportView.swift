@@ -271,15 +271,15 @@ struct DataImportView: View {
                 
                 // 处理待办事项
                 if let checkListStr = rowData["待办事项"], !checkListStr.isEmpty {
-                    let items = checkListStr.components(separatedBy: "|")
-                    for item in items {
+                    let checkListItems = checkListStr.components(separatedBy: "|")
+                    for checkListItemStr in checkListItems {
                         let checkItem = CheckListItem(context: viewContext)
-                        let isCompleted = item.hasPrefix("[✓]")
-                        let title = item.replacingOccurrences(of: "[✓] ", with: "")
+                        let isCompleted = checkListItemStr.hasPrefix("[✓]")
+                        let title = checkListItemStr.replacingOccurrences(of: "[✓] ", with: "")
                                        .replacingOccurrences(of: "[ ] ", with: "")
                         checkItem.title = title
                         checkItem.isCompleted = isCompleted
-                      //  checkItem.item = entry
+                        checkItem.diaryItems = entry
                         checkItem.createdAt = Date()
                         checkItem.updatedAt = Date()
                     }
@@ -298,40 +298,10 @@ struct DataImportView: View {
                     entry.updatedAt = Date()
                 }
                 
-                importedCount += 1  // 计数日记数据
-                
-                // 联系人数据处理
-                if rowData["联系人姓名"] != nil {
-                    let contact = Contact(context: viewContext)
-                    contact.id = UUID()
-                    contact.name = rowData["联系人姓名"] ?? "未命名"
-                    contact.tier = Int16(rowData["关系层级"] ?? "3") ?? 3
-                    
-                    if let birthdayStr = rowData["生日"],
-                       let birthday = dateFormatter.date(from: birthdayStr) {
-                        contact.birthday = birthday
-                    }
-                    
-                    contact.notes = rowData["备注"]
-                    
-                    if let lastInteractionStr = rowData["最近联系时间"],
-                       let lastInteraction = dateFormatter.date(from: lastInteractionStr) {
-                        contact.lastInteraction = lastInteraction
-                    }
-                    
-                    if let avatarStr = rowData["头像"],
-                       let avatarData = Data(base64Encoded: avatarStr) {
-                        contact.avatar = avatarData
-                    }
-                    
-                    contact.createdAt = Date()
-                    contact.updatedAt = Date()
-                    
-                    importedCount += 1  // 计数联系人数据
-                }
+                importedCount += 1
                 
                 // 每处理50条记录保存一次
-                if (importedCount + 1) % 50 == 0 {
+                if importedCount % 50 == 0 {
                     saveContext()
                 }
             }
@@ -346,12 +316,7 @@ struct DataImportView: View {
     
     private func showImportResult(success: Bool, message: String) {
         DispatchQueue.main.async {
-            // 即使有验证错误，只要有成功导入的记录就显示成功信息
-            if importedCount > 0 {
-                alertMessage = "成功导入 \(importedCount) 条记录"
-            } else {
-                alertMessage = message
-            }
+            alertMessage = importedCount > 0 ? "成功导入 \(importedCount) 条记录" : message
             showAlert = true
         }
     }
@@ -364,173 +329,23 @@ struct DataImportView: View {
             bannerState.show(of: .error(message: "保存失败：\(error.localizedDescription)"))
         }
     }
-
-    private func exportCSVData() -> String {
-        // 添加日期格式化器
-        let dateFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            formatter.calendar = Calendar(identifier: .gregorian)
-            formatter.timeZone = TimeZone.current
-            formatter.locale = Locale(identifier: "zh_CN")
-            return formatter
-        }()
-        
-        var csvContent = ""
-        
-        // 1. 日记数据表
-        csvContent += "=== 日记数据 ===\n"
-        csvContent += "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
-        let itemRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        if let items = try? viewContext.fetch(itemRequest) {
-            for item in items {
-                // ... 现有的日记导出代码 ...
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 2. 联系人数据表
-        csvContent += "=== 联系人数据 ===\n"
-        csvContent += "姓名,关系层级,生日,备注,最近联系时间,头像,创建时间,更新时间\n"
-        let contactRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
-        if let contacts = try? viewContext.fetch(contactRequest) {
-            for contact in contacts {
-                let birthdayStr = contact.birthday.map { dateFormatter.string(from: $0) } ?? ""
-                let lastInteractionStr = contact.lastInteraction.map { dateFormatter.string(from: $0) } ?? ""
-                let avatarStr = contact.avatar.map { $0.base64EncodedString() } ?? ""
-                
-                let row = [
-                    contact.name ?? "",
-                    String(contact.tier),
-                    birthdayStr,
-                    contact.notes ?? "",
-                    lastInteractionStr,
-                    avatarStr,
-                    dateFormatter.string(from: contact.createdAt ?? Date()),
-                    dateFormatter.string(from: contact.updatedAt ?? Date())
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 3. 储蓄目标数据表
-        csvContent += "=== 储蓄目标数据 ===\n"
-        csvContent += "标题,目标金额,当前金额,开始日期,目标日期,创建时间,更新时间\n"
-        let goalRequest: NSFetchRequest<SavingsGoal> = SavingsGoal.fetchRequest()
-        if let goals = try? viewContext.fetch(goalRequest) {
-            for goal in goals {
-                let startDateStr = goal.startDate.map { dateFormatter.string(from: $0) } ?? ""
-                let targetDateStr = goal.targetDate.map { dateFormatter.string(from: $0) } ?? ""
-                let createdAtStr = dateFormatter.string(from: goal.createdAt ?? Date())
-                let updatedAtStr = dateFormatter.string(from: goal.updatedAt ?? Date())
-                
-                // 处理 targetAmount 和 currentAmount
-                let targetAmountStr = goal.targetAmount != nil ? 
-                    String(format: "%.2f", goal.targetAmount!.doubleValue) : "0.00"
-                let currentAmountStr = String(format: "%.2f", goal.currentAmount)
-                
-                let row = [
-                    goal.title ?? "",
-                    targetAmountStr,
-                    currentAmountStr,
-                    startDateStr,
-                    targetDateStr,
-                    createdAtStr,
-                    updatedAtStr
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 4. 清单项目数据表
-        csvContent += "=== 清单项目数据 ===\n"
-        csvContent += "标题,是否完成,创建时间,更新时间\n"
-        let checklistRequest: NSFetchRequest<CheckListItem> = CheckListItem.fetchRequest()
-        if let items = try? viewContext.fetch(checklistRequest) {
-            for item in items {
-                let createdAtStr = item.createdAt.map { dateFormatter.string(from: $0) } ?? ""
-                let updatedAtStr = item.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
-                
-                let row = [
-                    item.title ?? "",
-                    item.isCompleted ? "是" : "否",
-                    createdAtStr,
-                    updatedAtStr
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        
-        return csvContent
-    }
-
-    private func importData(_ exportData: ExportData, into context: NSManagedObjectContext) {
-        context.performAndWait {
-            // 导入联系人
-            let contactMap = importContacts(exportData.contacts, into: context)
-            
-            // 导入储蓄目标
-            let goalMap = importSavingsGoals(exportData.savingsGoals, into: context)
-            
-            // 导入支出记录
-            importExpenses(exportData.expenses, into: context, contactMap: contactMap, goalMap: goalMap)
-            
-            // 导入日记条目
-            importItems(exportData.items, into: context)
-            
-            // 保存更改
-            do {
-                try context.save()
-            } catch {
-                print("导入数据失败: \(error)")
-            }
-        }
-    }
-
-    private func importContacts(_ contacts: [ExportData.ContactExport], into context: NSManagedObjectContext) -> [UUID: Contact] {
-        var contactMap: [UUID: Contact] = [:]
-        
-        for contactData in contacts {
-            let contact = Contact(context: context)
-            contact.id = contactData.id
-            contact.name = contactData.name
-            contact.tier = contactData.tier
-            contact.birthday = contactData.birthday
-            contact.notes = contactData.notes
-            contact.lastInteraction = contactData.lastInteraction
-            contact.avatar = contactData.avatar
-            contact.createdAt = contactData.createdAt
-            contact.updatedAt = contactData.updatedAt
-            
-            contactMap[contactData.id] = contact
-        }
-        
-        return contactMap
-    }
-
-    // ... 其他导入方法
 }
 
-// 添加 FilePicker 实现
+// FilePicker 实现
 struct FilePicker: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
     @Binding var selectedFile: URL?
     let onFileSelected: (URL?) -> Void
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        // 使用更新的 API 来创建文档选择器
         let picker: UIDocumentPickerViewController
         if #available(iOS 14.0, *) {
             picker = UIDocumentPickerViewController(forOpeningContentTypes: [.commaSeparatedText, .plainText], asCopy: true)
         } else {
-            // 兼容 iOS 14 以下版本
             let types: [String] = ["public.comma-separated-values-text", "public.plain-text"]
             picker = UIDocumentPickerViewController(documentTypes: types, in: .import)
         }
         
-        // 基本配置
         picker.delegate = context.coordinator
         picker.allowsMultipleSelection = false
         
@@ -571,7 +386,7 @@ struct FilePicker: UIViewControllerRepresentable {
     }
 }
 
-// 添加 DateFormatter 扩展
+// DateFormatter 扩展
 private extension DateFormatter {
     static let yyyyMMdd: DateFormatter = {
         let formatter = DateFormatter()
@@ -582,5 +397,3 @@ private extension DateFormatter {
         return formatter
     }()
 }
-
-// 📌 `importedCount` 是导入的联系人数量，而不是总记录数。

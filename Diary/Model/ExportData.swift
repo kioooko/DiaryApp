@@ -1,0 +1,157 @@
+import Foundation
+
+// 导出数据结构
+public struct ExportData: Codable {
+    let items: [ItemExport]
+    let contacts: [ContactExport]
+    let savingsGoals: [SavingsGoalExport]
+    let expenses: [ExpenseExport]
+    
+    struct ItemExport: Codable {
+        let id: UUID
+        let title: String
+        let body: String?
+        let date: Date
+        let amount: Double?
+        let isExpense: Bool?
+        let note: String?
+        let weather: String?
+        let isBookmarked: Bool
+        let imageData: Data?
+        let checkListItems: [CheckListItemExport]
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct CheckListItemExport: Codable {
+        let id: UUID
+        let title: String
+        let isCompleted: Bool
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct ContactExport: Codable {
+        let id: UUID
+        let name: String
+        let tier: Int16
+        let birthday: Date?
+        let notes: String?
+        let lastInteraction: Date?
+        let avatar: Data?
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct SavingsGoalExport: Codable {
+        let id: UUID
+        let title: String
+        let targetAmount: Double
+        let currentAmount: Double
+        let deadline: Double?
+        let monthlyBudget: Double
+        let monthlyAmount: Date  // 注意：这里是 Date 类型，根据数据模型
+        let startDate: Date?
+        let targetDate: Date?
+        let isCompleted: Bool
+        let completedDate: Date?
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct ExpenseExport: Codable {
+        let id: UUID
+        let title: String
+        let amount: Double
+        let date: Date
+        let isExpense: Bool
+        let note: String?
+        let createdAt: Date
+        let updatedAt: Date?
+        let contactId: UUID?  // 关联的联系人ID
+        let goalId: UUID?     // 关联的储蓄目标ID
+    }
+}
+
+// 用于导入导出的辅助扩展
+extension ExportData {
+    // 从 CoreData 实体创建导出数据
+    static func from(
+        items: [Item],
+        contacts: [Contact],
+        savingsGoals: [SavingsGoal],
+        expenses: [Expense]
+    ) -> ExportData {
+        return ExportData(
+            items: items.map { item in
+                ItemExport(
+                    id: item.id ?? UUID(),
+                    title: item.title ?? "",
+                    body: item.body,
+                    date: item.date ?? Date(),
+                    amount: item.amount,
+                    isExpense: item.isExpense,
+                    note: item.note,
+                    weather: item.weather,
+                    isBookmarked: item.isBookmarked,
+                    imageData: item.imageData,
+                    checkListItems: (item.checkListItems?.allObjects as? [CheckListItem] ?? []).map { checkListItem in
+                        CheckListItemExport(
+                            id: checkListItem.id ?? UUID(),
+                            title: checkListItem.title ?? "",
+                            isCompleted: checkListItem.isCompleted,
+                            createdAt: checkListItem.createdAt ?? Date(),
+                            updatedAt: checkListItem.updatedAt
+                        )
+                    },
+                    createdAt: item.createdAt ?? Date(),
+                    updatedAt: item.updatedAt
+                )
+            },
+            contacts: contacts.map { contact in
+                ContactExport(
+                    id: contact.id ?? UUID(),
+                    name: contact.name ?? "",
+                    tier: contact.tier,
+                    birthday: contact.birthday,
+                    notes: contact.notes,
+                    lastInteraction: contact.lastInteraction,
+                    avatar: contact.avatar,
+                    createdAt: contact.createdAt ?? Date(),
+                    updatedAt: contact.updatedAt
+                )
+            },
+            savingsGoals: savingsGoals.map { goal in
+                SavingsGoalExport(
+                    id: goal.id ?? UUID(),
+                    title: goal.title ?? "",
+                    targetAmount: goal.targetAmount,
+                    currentAmount: goal.currentAmount,
+                    deadline: goal.deadline,
+                    monthlyBudget: goal.monthlyBudget,
+                    monthlyAmount: goal.monthlyAmount ?? Date(),
+                    startDate: goal.startDate,
+                    targetDate: goal.targetDate,
+                    isCompleted: goal.isCompleted,
+                    completedDate: goal.completedDate,
+                    createdAt: goal.createdAt ?? Date(),
+                    updatedAt: goal.updatedAt
+                )
+            },
+            expenses: expenses.map { expense in
+                ExpenseExport(
+                    id: expense.id ?? UUID(),
+                    title: expense.title ?? "",
+                    amount: expense.amount,
+                    date: expense.date ?? Date(),
+                    isExpense: expense.isExpense,
+                    note: expense.note,
+                    createdAt: expense.createdAt ?? Date(),
+                    updatedAt: expense.updatedAt,
+                    contactId: expense.contact?.id,
+                    goalId: expense.goal?.id
+                )
+            }
+        )
+    }
+}

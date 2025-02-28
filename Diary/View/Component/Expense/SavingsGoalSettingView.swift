@@ -4,16 +4,10 @@ import CoreData
 // SavingsGoal 扩展
 extension SavingsGoal {
     var remainingDays: Int {
-        // 拆分计算步骤
-        guard let targetDate = targetDate else { 
-            return 0 
-        }
-        
+        guard let targetDate = targetDate else { return 0 }
         let calendar = Calendar.current
         let components = calendar.dateComponents([.day], from: Date(), to: targetDate)
-        let days = components.day ?? 0
-        
-        return days
+        return components.day ?? 0
     }
     
     var progress: Double {
@@ -268,7 +262,6 @@ struct SavingsGoalCardUI: View {
                 Text("¥\(Int(goal.targetAmount))")
                     .font(.subheadline)
                 
-                // 显示完成标记
                 if goal.isCompleted {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
@@ -355,15 +348,12 @@ struct NewSavingsGoalView: View {
         let newGoal = SavingsGoal(context: viewContext)
         newGoal.title = goalTitle
         newGoal.targetAmount = Double(targetAmount) ?? 0
+        newGoal.currentAmount = 0.0
         newGoal.startDate = Date()
         newGoal.targetDate = targetDate
         newGoal.isCompleted = false
-        
-        // 处理 monthlyAmount 的类型转换
-        let monthlyAmount = newGoal.monthlyAmount?.doubleValue ?? 0.0
-        
-        // 在设置值时
-        newGoal.monthlyAmount = NSNumber(value: monthlyAmount)
+        newGoal.monthlyBudget = 0.0
+        newGoal.monthlyAmount = Date() // 设置为当前日期，因为数据模型中是 Date 类型
         
         do {
             try viewContext.save()

@@ -89,6 +89,77 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
         let request = NSFetchRequest<T>(entityName: String(describing: type))
         return (try? context.fetch(request)) ?? []
     }
+
+    private func convertItemToExport(_ item: Item) -> ExportData.ItemExport {
+        return ExportData.ItemExport(
+            id: item.id ?? UUID(),
+            title: item.title ?? "",
+            body: item.body,
+            date: item.date ?? Date(),
+            amount: item.amount,
+            isExpense: item.isExpense,
+            note: item.note,
+            weather: item.weather,
+            isBookmarked: item.isBookmarked,
+            imageData: item.imageData,
+            checkListItems: (item.checkListItems?.allObjects as? [CheckListItem] ?? []).map(convertCheckListItemToExport),
+            createdAt: item.createdAt ?? Date(),
+            updatedAt: item.updatedAt
+        )
+    }
+    
+    private func convertCheckListItemToExport(_ item: CheckListItem) -> ExportData.CheckListItemExport {
+        return ExportData.CheckListItemExport(
+            id: item.id ?? UUID(),
+            title: item.title ?? "",
+            isCompleted: item.isCompleted,
+            createdAt: item.createdAt ?? Date(),
+            updatedAt: item.updatedAt
+        )
+    }
+    
+    private func convertContactToExport(_ contact: Contact) -> ExportData.ContactExport {
+        return ExportData.ContactExport(
+            id: contact.id ?? UUID(),
+            name: contact.name ?? "",
+            tier: contact.tier,
+            birthday: contact.birthday,
+            notes: contact.notes,
+            lastInteraction: contact.lastInteraction,
+            avatar: contact.avatar,
+            createdAt: contact.createdAt ?? Date(),
+            updatedAt: contact.updatedAt
+        )
+    }
+    
+    private func convertSavingsGoalToExport(_ goal: SavingsGoal) -> ExportData.SavingsGoalExport {
+        return ExportData.SavingsGoalExport(
+            id: goal.id ?? UUID(),
+            title: goal.title ?? "",
+            targetAmount: goal.targetAmount?.doubleValue ?? 0.0,
+            currentAmount: goal.currentAmount,
+            startDate: goal.startDate,
+            targetDate: goal.targetDate,
+            monthlyBudget: goal.monthlyBudget,
+            isCompleted: goal.isCompleted,
+            completedDate: goal.completedDate,
+            createdAt: goal.createdAt ?? Date(),
+            updatedAt: goal.updatedAt
+        )
+    }
+    
+    private func convertExpenseToExport(_ expense: Expense) -> ExportData.ExpenseExport {
+        return ExportData.ExpenseExport(
+            id: expense.id ?? UUID(),
+            title: expense.title ?? "",
+            amount: expense.amount,
+            date: expense.date ?? Date(),
+            isExpense: expense.isExpense,
+            note: expense.note,
+            createdAt: expense.createdAt ?? Date(),
+            updatedAt: expense.updatedAt
+        )
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 
@@ -200,5 +271,40 @@ struct ExportData: Codable {
         let updatedAt: Date?
     }
     
-    // ... 其他导出结构体定义
+    struct ContactExport: Codable {
+        let id: UUID
+        let name: String
+        let tier: Int16
+        let birthday: Date?
+        let notes: String?
+        let lastInteraction: Date?
+        let avatar: Data?
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct SavingsGoalExport: Codable {
+        let id: UUID
+        let title: String
+        let targetAmount: Double
+        let currentAmount: Double
+        let startDate: Date?
+        let targetDate: Date?
+        let monthlyBudget: Double
+        let isCompleted: Bool
+        let completedDate: Date?
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct ExpenseExport: Codable {
+        let id: UUID
+        let title: String
+        let amount: Double
+        let date: Date
+        let isExpense: Bool
+        let note: String?
+        let createdAt: Date
+        let updatedAt: Date?
+    }
 }
