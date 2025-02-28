@@ -7,9 +7,79 @@
 
 import CoreData// 导入 CoreData 框架
 import Foundation
-@_exported import Model  // 假设 ExportData 在 Model 组中
-// 或者直接相对路径导入
-// import "../Model/ExportData"
+
+// 由于 ExportData.swift 在 Model 文件夹中，且在同一个 target (Diary) 内
+// 不需要特殊的导入语句，但需要确保 Model 文件夹被包含在编译目标中
+
+// 导入生成的 CoreData 实体类型
+@objc(Item)
+public class Item: NSManagedObject {
+    @NSManaged public var id: UUID?
+    @NSManaged public var title: String?
+    @NSManaged public var body: String?
+    @NSManaged public var date: Date?
+    @NSManaged public var amount: Double
+    @NSManaged public var isExpense: Bool
+    @NSManaged public var note: String?
+    @NSManaged public var weather: String?
+    @NSManaged public var isBookmarked: Bool
+    @NSManaged public var imageData: Data?
+    @NSManaged public var checkListItems: NSSet?
+    @NSManaged public var createdAt: Date?
+    @NSManaged public var updatedAt: Date?
+}
+
+@objc(Contact)
+public class Contact: NSManagedObject {
+    @NSManaged public var id: UUID?
+    @NSManaged public var name: String?
+    @NSManaged public var tier: Int16
+    @NSManaged public var birthday: Date?
+    @NSManaged public var notes: String?
+    @NSManaged public var lastInteraction: Date?
+    @NSManaged public var avatar: Data?
+    @NSManaged public var createdAt: Date?
+    @NSManaged public var updatedAt: Date?
+}
+
+@objc(SavingsGoal)
+public class SavingsGoal: NSManagedObject {
+    @NSManaged public var id: UUID?
+    @NSManaged public var title: String?
+    @NSManaged public var targetAmount: NSNumber?
+    @NSManaged public var currentAmount: Double
+    @NSManaged public var deadline: Double
+    @NSManaged public var monthlyBudget: Double
+    @NSManaged public var monthlyAmount: Double
+    @NSManaged public var startDate: Date?
+    @NSManaged public var targetDate: Date?
+    @NSManaged public var isCompleted: Bool
+    @NSManaged public var completedDate: Date?
+    @NSManaged public var createdAt: Date?
+    @NSManaged public var updatedAt: Date?
+}
+
+@objc(Expense)
+public class Expense: NSManagedObject {
+    @NSManaged public var id: UUID?
+    @NSManaged public var title: String?
+    @NSManaged public var amount: Double
+    @NSManaged public var date: Date?
+    @NSManaged public var isExpense: Bool
+    @NSManaged public var note: String?
+    @NSManaged public var createdAt: Date?
+    @NSManaged public var updatedAt: Date?
+}
+
+@objc(CheckListItem)
+public class CheckListItem: NSManagedObject {
+    @NSManaged public var id: UUID?
+    @NSManaged public var title: String?
+    @NSManaged public var isCompleted: Bool
+    @NSManaged public var createdAt: Date?
+    @NSManaged public var updatedAt: Date?
+    @NSManaged public var diaryItems: Item?
+}
 
 public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvider 类，继承自 ObservableObject
     static let shared = CoreDataProvider()// 定义一个静态属性 shared，用于存储 CoreDataProvider 的实例
