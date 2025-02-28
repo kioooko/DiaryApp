@@ -359,6 +359,12 @@ struct NewSavingsGoalView: View {
         newGoal.targetDate = targetDate
         newGoal.isCompleted = false
         
+        // 处理 monthlyAmount 的类型转换
+        let monthlyAmount = newGoal.monthlyAmount?.doubleValue ?? 0.0
+        
+        // 在设置值时
+        newGoal.monthlyAmount = NSNumber(value: monthlyAmount)
+        
         do {
             try viewContext.save()
             dismiss()

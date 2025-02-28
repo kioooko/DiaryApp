@@ -465,6 +465,52 @@ struct DataImportView: View {
         
         return csvContent
     }
+
+    private func importData(_ exportData: ExportData, into context: NSManagedObjectContext) {
+        context.performAndWait {
+            // 导入联系人
+            let contactMap = importContacts(exportData.contacts, into: context)
+            
+            // 导入储蓄目标
+            let goalMap = importSavingsGoals(exportData.savingsGoals, into: context)
+            
+            // 导入支出记录
+            importExpenses(exportData.expenses, into: context, contactMap: contactMap, goalMap: goalMap)
+            
+            // 导入日记条目
+            importItems(exportData.items, into: context)
+            
+            // 保存更改
+            do {
+                try context.save()
+            } catch {
+                print("导入数据失败: \(error)")
+            }
+        }
+    }
+
+    private func importContacts(_ contacts: [ExportData.ContactExport], into context: NSManagedObjectContext) -> [UUID: Contact] {
+        var contactMap: [UUID: Contact] = [:]
+        
+        for contactData in contacts {
+            let contact = Contact(context: context)
+            contact.id = contactData.id
+            contact.name = contactData.name
+            contact.tier = contactData.tier
+            contact.birthday = contactData.birthday
+            contact.notes = contactData.notes
+            contact.lastInteraction = contactData.lastInteraction
+            contact.avatar = contactData.avatar
+            contact.createdAt = contactData.createdAt
+            contact.updatedAt = contactData.updatedAt
+            
+            contactMap[contactData.id] = contact
+        }
+        
+        return contactMap
+    }
+
+    // ... 其他导入方法
 }
 
 // 添加 FilePicker 实现

@@ -54,7 +54,7 @@
         <attribute name="deadline" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="UUID" defaultValueString="00000000-0000-0000-0000-000000000001" usesScalarValueType="NO"/>
         <attribute name="isCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="monthlyAmount" attributeType="Date" defaultDateTimeInterval="762339240" usesScalarValueType="NO"/>
+        <attribute name="monthlyAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="monthlyBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="targetAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="NO"/>

@@ -67,6 +67,28 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             return []
         }
     }
+
+    func exportAllData() -> ExportData {
+        let context = container.viewContext
+        
+        // 获取所有实体数据
+        let items = fetchEntities(Item.self, in: context)
+        let contacts = fetchEntities(Contact.self, in: context)
+        let savingsGoals = fetchEntities(SavingsGoal.self, in: context)
+        let expenses = fetchEntities(Expense.self, in: context)
+        
+        return ExportData(
+            items: items.map { convertItemToExport($0) },
+            contacts: contacts.map { convertContactToExport($0) },
+            savingsGoals: savingsGoals.map { convertSavingsGoalToExport($0) },
+            expenses: expenses.map { convertExpenseToExport($0) }
+        )
+    }
+    
+    private func fetchEntities<T: NSManagedObject>(_ type: T.Type, in context: NSManagedObjectContext) -> [T] {
+        let request = NSFetchRequest<T>(entityName: String(describing: type))
+        return (try? context.fetch(request)) ?? []
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 
@@ -146,3 +168,37 @@ public enum CoreDataProviderError: Error, LocalizedError {// 定义一个 CoreDa
 
 // 为了兼容性，添加 PersistenceController 别名
 typealias PersistenceController = CoreDataProvider
+
+// 导出数据结构
+struct ExportData: Codable {
+    let items: [ItemExport]
+    let contacts: [ContactExport]
+    let savingsGoals: [SavingsGoalExport]
+    let expenses: [ExpenseExport]
+    
+    struct ItemExport: Codable {
+        let id: UUID
+        let title: String
+        let body: String?
+        let date: Date
+        let amount: Double
+        let isExpense: Bool
+        let note: String?
+        let weather: String?
+        let isBookmarked: Bool
+        let imageData: Data?
+        let checkListItems: [CheckListItemExport]
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    struct CheckListItemExport: Codable {
+        let id: UUID
+        let title: String
+        let isCompleted: Bool
+        let createdAt: Date
+        let updatedAt: Date?
+    }
+    
+    // ... 其他导出结构体定义
+}
