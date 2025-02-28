@@ -8,6 +8,7 @@
 import PhotosUI
 import SwiftUI
 import Neumorphic
+import Combine
 
 struct CreateDiaryView: View {
     @Environment(\.dismiss) private var dismiss
@@ -16,10 +17,12 @@ struct CreateDiaryView: View {
     @EnvironmentObject private var textOptions: TextOptions
 
     @StateObject private var diaryDataStore: DiaryDataStore = DiaryDataStore()
+    @StateObject private var keyboardManager = KeyboardManager()
 
     @State private var isPresentedDatePicker: Bool = false
     @State private var isTextEditorPresented: Bool = false
     @State private var selectedContentType: DiaryContentType = .text
+    @FocusState private var focusedField: FocusField?
 
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -29,12 +32,17 @@ struct CreateDiaryView: View {
     }()
     private let dateRange: ClosedRange<Date> = Date(timeIntervalSince1970: 0)...Date()
 
+    enum FocusField {
+        case title
+        case body
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
-                  Color.Neumorphic.main // 设置背景颜色为 Neumorphic 风格
-                .edgesIgnoringSafeArea(.all) // 确保背景颜色覆盖整个视图
-
+                Color.Neumorphic.main
+                    .edgesIgnoringSafeArea(.all)
+                
                 VStack {
                     dismissButton
                         .padding(.top)
@@ -42,18 +50,31 @@ struct CreateDiaryView: View {
                         .padding(.top)
                     scrollContent
                 }
+                .padding(.bottom, keyboardManager.isVisible ? keyboardManager.keyboardHeight : 0)
             }
         }
         .tint(.adaptiveBlack)
-        .onReceive(weatherData.$todayWeather , perform: { todayWeather in
+        .onReceive(weatherData.$todayWeather) { todayWeather in
             guard let todayWeather else { return }
             diaryDataStore.selectedWeather = .make(from: todayWeather.symbolName)
-        })
-        .sheet(isPresented: $isTextEditorPresented, content: {
-            DiaryTextEditor(bodyText: $diaryDataStore.bodyText) {
+        }
+        .sheet(isPresented: $isTextEditorPresented) {
+            OptimizedDiaryTextEditor(bodyText: $diaryDataStore.bodyText) {
                 isTextEditorPresented = false
             }
-        })
+        }
+        .animation(.easeOut(duration: 0.16), value: keyboardManager.keyboardHeight)
+        .onTapGesture {
+            hideKeyboard()
+        }
+    }
+
+    private func hideKeyboard() {
+        focusedField = nil
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                      to: nil,
+                                      from: nil,
+                                      for: nil)
     }
 }
 
@@ -85,13 +106,11 @@ private extension CreateDiaryView {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 DiaryImageView(selectedImage: $diaryDataStore.selectedImage)
-                .padding(.horizontal, diaryDataStore.selectedImage == nil ? 20 : 0)
+                    .padding(.horizontal, diaryDataStore.selectedImage == nil ? 20 : 0)
 
                 VStack(alignment: .leading, spacing: 20) {
-                    // 画像以外に水平方向のpaddingを設定したいので別のStackで管理
                     HStack {
-                        InputTitle(title: $diaryDataStore.title)
-                     //   weather
+                        OptimizedInputTitle(title: $diaryDataStore.title)
                     }
                     ContentTypeSegmentedPicker(selectedContentType: $selectedContentType)
                     diaryContent
@@ -100,6 +119,7 @@ private extension CreateDiaryView {
                 .padding(.horizontal, 20)
             }
         }
+        .optimizedKeyboardHandling()
     }
 
     @ViewBuilder
@@ -122,6 +142,7 @@ private extension CreateDiaryView {
                     isTextEditorPresented = true
                 }
             }
+            .focused($focusedField, equals: .body)
         case .checkList:
             VStack(spacing: 60) {
                 CheckList(diaryDataStore: diaryDataStore)
