@@ -20,4 +20,13 @@ extension View {
     func optimizedKeyboardHandling() -> some View {
         self.modifier(KeyboardOptimizationModifier())
     }
+
+    func hideKeyboardWhenTappedAround() -> some View {
+        self.onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                          to: nil,
+                                          from: nil,
+                                          for: nil)
+        }
+    }
 } 

@@ -58,7 +58,12 @@ struct CreateDiaryView: View {
             }
         }
         .animation(.easeOut(duration: 0.16), value: keyboardManager.keyboardHeight)
-        .hideKeyboardWhenTappedAround()
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                          to: nil,
+                                          from: nil,
+                                          for: nil)
+        }
     }
 }
 
