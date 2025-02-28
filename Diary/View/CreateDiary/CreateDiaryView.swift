@@ -1,4 +1,4 @@
-//
+
 //  CreateDiaryView.swift
 //  Diary
 //
@@ -14,6 +14,7 @@ struct CreateDiaryView: View {
     @EnvironmentObject private var weatherData: WeatherData
     @EnvironmentObject private var bannerState: BannerState
     @EnvironmentObject private var textOptions: TextOptions
+    @EnvironmentObject private var sceneDelegate: DiaryAppSceneDelegate
 
     @StateObject private var diaryDataStore: DiaryDataStore = DiaryDataStore()
 
@@ -54,6 +55,7 @@ struct CreateDiaryView: View {
                 isTextEditorPresented = false
             }
         })
+        .environmentObject(sceneDelegate)
     }
 }
 
