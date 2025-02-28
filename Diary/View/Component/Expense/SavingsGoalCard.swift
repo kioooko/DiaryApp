@@ -25,7 +25,7 @@ struct SavingsGoalCard: View {
                 Text(goal.title ?? "储蓄目标")
                     .font(.headline)
                 Spacer()
-                Text("¥\(Int(goal.targetAmount))")
+                Text("¥\(Int(goal.targetAmount?.doubleValue ?? 0.0))")
                     .font(.subheadline)
             }
             
@@ -99,7 +99,7 @@ struct SavingsGoalCard: View {
         // 计算实际存储的金额（收入-支出）
         let actualSavings = totalIncome - totalExpense
         debugPrint("Debug: 实际存储 - ¥\(actualSavings)")
-        debugPrint("Debug: 目标金额 - ¥\(goal.targetAmount)")
+        debugPrint("Debug: 目标金额 - ¥\(goal.targetAmount?.doubleValue ?? 0.0)")
         
         // 计算时间进度
         let totalDays = max(1, calendar.dateComponents([.day], from: startDate, to: targetDate).day ?? 1)
@@ -109,8 +109,10 @@ struct SavingsGoalCard: View {
         debugPrint("Debug: 总天数 - \(totalDays)")
         debugPrint("Debug: 已过天数 - \(passedDays)")
         
+        // 修复第113行错误：解包 NSNumber? 类型并转换为 Double
+        let targetAmountValue = goal.targetAmount?.doubleValue ?? 1.0
         // 计算进度：(收入-支出)/目标金额 × 已过去天数/总天数
-        let savingsProgress = min(1.0, actualSavings / goal.targetAmount) // 限制最大为 100%
+        let savingsProgress = min(1.0, actualSavings / targetAmountValue) // 限制最大为 100%
         let timeProgress = Double(passedDays) / Double(totalDays)
         let finalProgress = savingsProgress * timeProgress
         
