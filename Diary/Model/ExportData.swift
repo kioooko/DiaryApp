@@ -1,81 +1,82 @@
 import Foundation
+import CoreData
 
-// 导出数据结构
-public struct ExportData: Codable {
+// 删除 public 修饰符，因为这可能与其他地方的定义冲突
+struct ExportData {
     let items: [ItemExport]
     let contacts: [ContactExport]
     let savingsGoals: [SavingsGoalExport]
     let expenses: [ExpenseExport]
-    
-    struct ItemExport: Codable {
-        let id: UUID
-        let title: String
-        let body: String?
-        let date: Date
-        let amount: Double?
-        let isExpense: Bool?
-        let note: String?
-        let weather: String?
-        let isBookmarked: Bool
-        let imageData: Data?
-        let checkListItems: [CheckListItemExport]
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct CheckListItemExport: Codable {
-        let id: UUID
-        let title: String
-        let isCompleted: Bool
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct ContactExport: Codable {
-        let id: UUID
-        let name: String
-        let tier: Int16
-        let birthday: Date?
-        let notes: String?
-        let lastInteraction: Date?
-        let avatar: Data?
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct SavingsGoalExport: Codable {
-        let id: UUID
-        let title: String
-        let targetAmount: Double
-        let currentAmount: Double
-        let deadline: Double?
-        let monthlyBudget: Double
-        let monthlyAmount: Date  // 注意：这里是 Date 类型，根据数据模型
-        let startDate: Date?
-        let targetDate: Date?
-        let isCompleted: Bool
-        let completedDate: Date?
-        let createdAt: Date
-        let updatedAt: Date?
-    }
-    
-    struct ExpenseExport: Codable {
-        let id: UUID
-        let title: String
-        let amount: Double
-        let date: Date
-        let isExpense: Bool
-        let note: String?
-        let createdAt: Date
-        let updatedAt: Date?
-        let contactId: UUID?  // 关联的联系人ID
-        let goalId: UUID?     // 关联的储蓄目标ID
-    }
 }
 
-// 用于导入导出的辅助扩展
-extension ExportData {
-    // 从 CoreData 实体创建导出数据
+// 将所有内部结构体移到外部，避免命名冲突
+struct ItemExport: Codable {
+    let id: UUID
+    let title: String
+    let body: String?
+    let date: Date
+    let amount: Double?
+    let isExpense: Bool?
+    let note: String?
+    let weather: String?
+    let isBookmarked: Bool
+    let imageData: Data?
+    let checkListItems: [CheckListItemExport]
+    let createdAt: Date
+    let updatedAt: Date?
+}
+
+struct CheckListItemExport: Codable {
+    let id: UUID
+    let title: String
+    let isCompleted: Bool
+    let createdAt: Date
+    let updatedAt: Date?
+}
+
+struct ContactExport: Codable {
+    let id: UUID
+    let name: String
+    let tier: Int16
+    let birthday: Date?
+    let notes: String?
+    let lastInteraction: Date?
+    let avatar: Data?
+    let createdAt: Date
+    let updatedAt: Date?
+}
+
+struct SavingsGoalExport: Codable {
+    let id: UUID
+    let title: String
+    let targetAmount: Double
+    let currentAmount: Double
+    let deadline: Double?
+    let monthlyBudget: Double
+    let monthlyAmount: Date
+    let startDate: Date?
+    let targetDate: Date?
+    let isCompleted: Bool
+    let completedDate: Date?
+    let createdAt: Date
+    let updatedAt: Date?
+}
+
+struct ExpenseExport: Codable {
+    let id: UUID
+    let title: String
+    let amount: Double
+    let date: Date
+    let isExpense: Bool
+    let note: String?
+    let createdAt: Date
+    let updatedAt: Date?
+    let contactId: UUID?
+    let goalId: UUID?
+}
+
+// 扩展方法移到单独的扩展中
+extension ExportData: Codable {
     static func from(
         items: [Item],
         contacts: [Contact],

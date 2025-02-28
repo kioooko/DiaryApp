@@ -61,6 +61,8 @@
 		075EB23A2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		075EB23B2D13B9790039A3B9 /* Chatapi.txt in Resources */ = {isa = PBXBuildFile; fileRef = 075EB2392D13B9790039A3B9 /* Chatapi.txt */; };
 		07BC0C182D0AE70700C2AFD8 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = 07BC0C172D0AE70700C2AFD8 /* Neumorphic */; };
+		07CD6BDD2D71971E0017A8DC /* ExportData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CD6BDC2D71971E0017A8DC /* ExportData.swift */; };
+		07CD6BDE2D71971E0017A8DC /* ExportData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07CD6BDC2D71971E0017A8DC /* ExportData.swift */; };
 		07E13D172D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
 		07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D162D1D530E008C13A9 /* BannerState.swift */; };
 		07E13D1A2D1D5322008C13A9 /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E13D192D1D5322008C13A9 /* BannerView.swift */; };
@@ -188,6 +190,7 @@
 		075EB2332D1291140039A3B9 /* ChatAISetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAISetting.swift; sourceTree = "<group>"; };
 		075EB2362D12A5040039A3B9 /* APIKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeyManager.swift; sourceTree = "<group>"; };
 		075EB2392D13B9790039A3B9 /* Chatapi.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Chatapi.txt; sourceTree = "<group>"; };
+		07CD6BDC2D71971E0017A8DC /* ExportData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportData.swift; sourceTree = "<group>"; };
 		07E13D162D1D530E008C13A9 /* BannerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerState.swift; sourceTree = "<group>"; };
 		07E13D192D1D5322008C13A9 /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
 		07E13D1C2D1D533F008C13A9 /* DiaryAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAppDelegate.swift; sourceTree = "<group>"; };
@@ -381,6 +384,7 @@
 			children = (
 				F550BC9A2A0E58C100BCB0F2 /* Entity */,
 				F5358D2D29FF53E6005FD6C8 /* DiaryDataStore.swift */,
+				07CD6BDC2D71971E0017A8DC /* ExportData.swift */,
 				F550BC982A0E58BD00BCB0F2 /* NotificationSetting.swift */,
 				F53E3A8D2A0C07680064CB62 /* TextOptions.swift */,
 				0701CD2E2D672028006888A6 /* Contact+Extension.swift */,
@@ -813,6 +817,7 @@
 				07EBC2A32D702F2700A5DCFD /* Diary.xcdatamodeld in Sources */,
 				F5BE68892A7225DA00A92F00 /* ShareContentPattern.swift in Sources */,
 				F54395E22A45C40600C74D59 /* CreateDiaryView.swift in Sources */,
+				07CD6BDE2D71971E0017A8DC /* ExportData.swift in Sources */,
 				F5358D382A00B621005FD6C8 /* Direction.swift in Sources */,
 				F550BC9C2A111C0B00BCB0F2 /* Button+Haptic.swift in Sources */,
 				F5BE68872A7115CD00A92F00 /* ShareImageRender.swift in Sources */,
@@ -869,6 +874,7 @@
 				0701CD2C2D67187F006888A6 /* AddContactView.swift in Sources */,
 				07414B2B2D01B2B200D9AB42 /* WelcomeSplineView.swift in Sources */,
 				07E13D1A2D1D5322008C13A9 /* BannerView.swift in Sources */,
+				07CD6BDD2D71971E0017A8DC /* ExportData.swift in Sources */,
 				0701CD262D670F75006888A6 /* Relationship.swift in Sources */,
 				07E13D182D1D530F008C13A9 /* BannerState.swift in Sources */,
 				F5358D0829F8B602005FD6C8 /* MockCoreData.swift in Sources */,
