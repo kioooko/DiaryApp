@@ -12,6 +12,24 @@ struct AddContactView: View {
     @State private var notes = ""
     @State private var showingImagePicker = false
     @State private var avatarImage: UIImage?
+    @State private var showingDeleteAlert = false
+    
+    // 用于编辑现有联系人的属性
+    var contactToEdit: Contact?
+    
+    // 初始化时检查是否有要编辑的联系人
+    init(contactToEdit: Contact? = nil) {
+        self.contactToEdit = contactToEdit
+        if let contact = contactToEdit {
+            _name = State(initialValue: contact.name ?? "")
+            _selectedTier = State(initialValue: RelationshipTier(rawValue: contact.tier ?? "") ?? .acquaintance)
+            _birthday = State(initialValue: contact.birthday ?? Date())
+            _notes = State(initialValue: contact.notes ?? "")
+            if let avatarData = contact.avatar {
+                _avatarImage = State(initialValue: UIImage(data: avatarData))
+            }
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -96,11 +114,31 @@ struct AddContactView: View {
                             .softOuterShadow()
                             .padding(.horizontal)
                         }
+                        
+                        // 删除按钮 - 仅在编辑模式下显示
+                        if contactToEdit != nil {
+                            Button {
+                                showingDeleteAlert = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "trash")
+                                    Text("删除联系人")
+                                }
+                                .foregroundColor(.red)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.Neumorphic.main)
+                                .cornerRadius(8)
+                                .softOuterShadow()
+                            }
+                            .padding(.horizontal)
+                            .padding(.top, 20)
+                        }
                     }
                     .padding()
                 }
             }
-            .navigationTitle("添加联系人")
+            .navigationTitle(contactToEdit == nil ? "添加联系人" : "编辑联系人")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -111,8 +149,8 @@ struct AddContactView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("保存") {
-                        saveContact()
+                    Button(contactToEdit == nil ? "保存" : "更新") {
+                        saveOrUpdateContact()
                     }
                     .disabled(name.isEmpty)
                 }
@@ -120,18 +158,29 @@ struct AddContactView: View {
             .sheet(isPresented: $showingImagePicker) {
                 ImagePicker(image: $avatarImage)
             }
+            .alert("确定删除该联系人？", isPresented: $showingDeleteAlert) {
+                Button("取消", role: .cancel) { }
+                Button("删除", role: .destructive) {
+                    deleteContact()
+                }
+            } message: {
+                Text("此操作无法撤销")
+            }
         }
     }
     
-    private func saveContact() {
-        let contact = Contact(context: viewContext)
-        contact.id = UUID()
+    private func saveOrUpdateContact() {
+        let contact = contactToEdit ?? Contact(context: viewContext)
+        contact.id = contactToEdit?.id ?? UUID()
         contact.name = name
         contact.tier = selectedTier.rawValue
         contact.birthday = birthday
         contact.notes = notes
         contact.lastInteraction = Date()
-        contact.createdAt = Date()
+        
+        if contactToEdit == nil {
+            contact.createdAt = Date()
+        }
         contact.updatedAt = Date()
         
         if let imageData = avatarImage?.jpegData(compressionQuality: 0.8) {
@@ -140,10 +189,23 @@ struct AddContactView: View {
         
         do {
             try viewContext.save()
-            bannerState.show(of: .success(message: "联系人添加成功"))
+            bannerState.show(of: .success(message: contactToEdit == nil ? "联系人添加成功" : "联系人更新成功"))
             dismiss()
         } catch {
             bannerState.show(of: .error(message: "保存失败：\(error.localizedDescription)"))
+        }
+    }
+    
+    private func deleteContact() {
+        if let contact = contactToEdit {
+            viewContext.delete(contact)
+            do {
+                try viewContext.save()
+                bannerState.show(of: .success(message: "联系人删除成功"))
+                dismiss()
+            } catch {
+                bannerState.show(of: .error(message: "删除失败：\(error.localizedDescription)"))
+            }
         }
     }
 }
