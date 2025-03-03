@@ -8,12 +8,20 @@ struct RelationshipView: View {
     
     @State private var searchText = ""
     @State private var showingAddContact = false
-    @State private var contactToEdit: Contact?
+    @State private var selectedContactID: NSManagedObjectID? = nil
     
     @FetchRequest(
         entity: Contact.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Contact.name, ascending: true)]
     ) private var contacts: FetchedResults<Contact>
+    
+    // 获取选中的联系人
+    private var selectedContact: Contact? {
+        if let id = selectedContactID {
+            return viewContext.object(with: id) as? Contact
+        }
+        return nil
+    }
     
     // 按关系层级过滤联系人
     private func contactsForTier(_ tier: RelationshipTier) -> [Contact] {
@@ -41,15 +49,50 @@ struct RelationshipView: View {
                     SearchBar(text: $searchText)
                         .padding(.horizontal)
                     
+                    // 调试按钮
+                    Button("测试添加联系人") {
+                        selectedContactID = nil
+                        showingAddContact = true
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.2))
+                    .cornerRadius(8)
+                    
                     ForEach(RelationshipTier.allCases, id: \.self) { tier in
-                        RelationshipTierSection(
-                            tier: tier,
-                            contacts: filteredContacts(for: tier),
-                            onContactSelected: { contact in
-                                self.contactToEdit = contact
-                                self.showingAddContact = true
+                        VStack(alignment: .leading) {
+                            Text(tier.title)
+                                .font(.headline)
+                                .padding(.horizontal)
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(filteredContacts(for: tier), id: \.objectID) { contact in
+                                        VStack {
+                                            if let name = contact.name {
+                                                Text(name)
+                                                    .foregroundColor(.primary)
+                                            }
+                                            
+                                            Button("编辑") {
+                                                print("点击编辑: \(contact.name ?? "")")
+                                                selectedContactID = contact.objectID
+                                                showingAddContact = true
+                                            }
+                                            .padding(8)
+                                            .background(Color.blue)
+                                            .foregroundColor(.white)
+                                            .cornerRadius(4)
+                                        }
+                                        .padding()
+                                        .background(Color.Neumorphic.main)
+                                        .cornerRadius(12)
+                                        .softOuterShadow()
+                                    }
+                                }
+                                .padding(.horizontal)
                             }
-                        )
+                        }
+                        .padding(.vertical)
                     }
                 }
                 .padding(.vertical)
@@ -61,8 +104,8 @@ struct RelationshipView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    self.contactToEdit = nil
-                    self.showingAddContact = true
+                    selectedContactID = nil
+                    showingAddContact = true
                 } label: {
                     Image(systemName: "person.badge.plus")
                         .foregroundColor(.blue)
@@ -70,19 +113,29 @@ struct RelationshipView: View {
             }
         }
         .sheet(isPresented: $showingAddContact) {
-            // 显式传递环境以确保上下文正确
-            AddContactView(contactToEdit: contactToEdit)
-                .environmentObject(bannerState)
-                .environment(\.managedObjectContext, viewContext)
+            if let contact = selectedContact {
+                AddContactView(contactToEdit: contact)
+                    .environmentObject(bannerState)
+                    .environment(\.managedObjectContext, viewContext)
+            } else {
+                AddContactView()
+                    .environmentObject(bannerState)
+                    .environment(\.managedObjectContext, viewContext)
+            }
+        }
+        .onChange(of: showingAddContact) { showing in
+            if !showing {
+                selectedContactID = nil
+            }
         }
     }
 }
 
-// 关系层级区块
-struct RelationshipTierSection: View {
+// 联系人区域
+struct ContactSection: View {
     let tier: RelationshipTier
     let contacts: [Contact]
-    let onContactSelected: (Contact) -> Void
+    let onSelect: (Contact) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -106,18 +159,20 @@ struct RelationshipTierSection: View {
                             .padding(.horizontal)
                     } else {
                         ForEach(contacts, id: \.objectID) { contact in
-                            ContactCard(contact: contact)
-                                .onTapGesture {
-                                    onContactSelected(contact)
-                                }
+                            Button {
+                                onSelect(contact)
+                            } label: {
+                                ContactCard(contact: contact)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
                 }
                 .padding(.horizontal)
             }
         }
-        .padding(.vertical, 10)
-        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
     }
 }
 
