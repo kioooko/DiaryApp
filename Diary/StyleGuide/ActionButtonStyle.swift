@@ -13,6 +13,7 @@ public struct ActionButtonStyle: ButtonStyle {
     let cornerRadius: CGFloat
     let isActive: Bool
     let size: Size
+    let animationDuration: Double
 
     public enum Size {
         case extraSmall
@@ -49,13 +50,15 @@ public struct ActionButtonStyle: ButtonStyle {
         foregroundColor: Color = .adaptiveWhite,
         cornerRadius: CGFloat = 13,
         isActive: Bool = true,
-        size: Size = .medium
+        size: Size = .medium,
+        animationDuration: Double = 0.3
     ) {
         self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor
         self.cornerRadius = cornerRadius
         self.isActive = isActive
         self.size = size
+        self.animationDuration = animationDuration
     }
 
     public func makeBody(configuration: Self.Configuration) -> some View {
@@ -76,6 +79,30 @@ public struct ActionButtonStyle: ButtonStyle {
                     .frame(minWidth: size.buttonWidth)
             }
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.spring(response: animationDuration, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+// 添加一个扩展，提供悬停功能
+public extension View {
+    func withHoverEffect(scale: CGFloat = 1.05, duration: Double = 0.3) -> some View {
+        self.modifier(HoverEffectViewModifier(scale: scale, duration: duration))
+    }
+}
+
+// 创建一个视图修饰符来处理悬停效果
+struct HoverEffectViewModifier: ViewModifier {
+    let scale: CGFloat
+    let duration: Double
+    @State private var isHovered = false
+    
+    func body(content: Content) -> some View {
+        content
+            .scaleEffect(isHovered ? scale : 1.0)
+            .animation(.spring(response: duration, dampingFraction: 0.6), value: isHovered)
+            .onHover { hovering in
+                isHovered = hovering
+            }
     }
 }
 
