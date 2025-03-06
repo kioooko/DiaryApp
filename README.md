@@ -1,7 +1,7 @@
 #编织生活
 
 </br>
-<img width="120" alt="截屏2025-02" src="https://github.com/user-attachments/assets/2237d47d-4117-4f20-a36f-f56ce7f02da6" />
+<img width="120" alt="截屏2025-02" src="https://github.com/user-attachments/assets/0970fc88-ca84-4a84-98ab-20d02e169a87" />
 </br>
 </br>
 
