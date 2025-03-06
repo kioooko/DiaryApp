@@ -1,4 +1,3 @@
-
 //  CreateDiaryView.swift
 //  Diary
 //
@@ -145,9 +144,15 @@ private extension CreateDiaryView {
         Button(actionWithHapticFB: {
             createItemFromInput()
         }) {
-            Image("BZicon20w")
-        }  
-      //  .softButtonStyle(RoundedRectangle(isActive: diaryDataStore.canCreate , cornerRadius: 10))
+            HStack(spacing: 8) {
+                Image("BZicon20w")
+                
+                Text("编织")  // 添加文字
+                    .font(.system(size: 16))
+                    .bold()
+                    .foregroundColor(.white)  // 假设需要白色文字，可以根据需求调整
+            }
+        }
         .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))
         .disabled(!diaryDataStore.canCreate)
     }
