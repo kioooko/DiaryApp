@@ -89,7 +89,7 @@ struct DiaryList: View { // 定义一个名为 DiaryList 的视图结构体，�
 private extension DiaryList { // 扩展 DiaryList，添加私有方法和属性
     var empty: some View { // 定义空视图
         VStack {
-            Text("只需点击「+」按钮，就可以开始你的日记啦！") // 显示提示文本
+            Text("只需点击「编织」按钮，就可以开始编织你的日记啦！") // 显示提示文本
                 .foregroundColor(.gray) // 设置文本颜色
                 .font(.system(size: 20)) // 设置字体大小
                 .frame(height: 100) // 设置视图高度
