@@ -145,7 +145,7 @@ private extension CreateDiaryView {
         Button(actionWithHapticFB: {
             createItemFromInput()
         }) {
-            Text("作成")
+            Image("BZicon20w")
         }  
       //  .softButtonStyle(RoundedRectangle(isActive: diaryDataStore.canCreate , cornerRadius: 10))
         .buttonStyle(ActionButtonStyle(isActive: diaryDataStore.canCreate , size: .extraSmall))

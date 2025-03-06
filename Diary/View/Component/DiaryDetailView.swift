@@ -244,7 +244,7 @@ private extension DiaryDetailView {
     var cratedAt: some View {
         if let createdAt = diaryDataStore.originalItem?.createdAt {
             HStack {
-                Text("作成日: ")
+                Text("编织日: ")
                 Text(Locale.appLocaleFullDateFormatter.string(from: createdAt))
             }
             .font(.system(size: 14))

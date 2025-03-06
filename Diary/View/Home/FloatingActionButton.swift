@@ -13,13 +13,13 @@ struct FloatingButton: View {
     var body: some View { // 定义视图主体
         Button(actionWithHapticFB: action) { // 创建一个带有触觉反馈的按钮，执行传入的 action 闭包
             HStack(alignment: .center, spacing: 8) { // 水平排列的元素，居中对齐，间距为 8
-                Image("Image") // 添加一个系统 "plus" 图标
+                Image("BZicon20") // 添加一个系统 "plus" 图标
                     .bold() // 使图标变粗
                     .font(.system(size: 20)) // 设置图标字体大小为 20
                     .foregroundColor(.greenLight) // 设置图标颜色为浅绿色
                     .padding(1) // 图标周围添加 1 点的内边距
                    
-                Text("作成") // 添加文本"作成"（日语，意为"创建"）
+                Text("编织") // 添加文本"作成"（日语，意为"创建"）
                     .font(.system(size: 16)) // 设置文本字体大小为 16
                     .bold() // 使文本变粗
                     .foregroundColor(.gray) // 设置文本颜色为灰色
