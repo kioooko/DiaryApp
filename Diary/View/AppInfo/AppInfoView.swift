@@ -315,8 +315,8 @@ struct NeumorphicCardModifier: ViewModifier {
             .frame(height: 100)
             .background {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.Neumorphic.main)
-                    .softOuterShadow()
+                    .fill(Color.neumorphicLight)
+                    .softOuterShadow(darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
             }
     }
 }

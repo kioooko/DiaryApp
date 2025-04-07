@@ -154,8 +154,8 @@ struct ChatAI: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.Neumorphic.main)
-                            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
+                            .fill(Color.neumorphicLight)
+                            .softInnerShadow(RoundedRectangle(cornerRadius: 12), darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
                     )
                     .accentColor(.primary)
                 
@@ -166,13 +166,13 @@ struct ChatAI: View {
                     Text("发送")
                         .fontWeight(.bold)
                 }
-                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12), darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
                 .frame(width: 80, height: 44)
             }
             .padding(.bottom, 20)
             .padding(.horizontal)
         }
-        .background(Color.Neumorphic.main)
+        .background(Color.neumorphicLight)
     }
 }
 

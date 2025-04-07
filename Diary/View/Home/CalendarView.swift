@@ -25,10 +25,10 @@ struct CalendarView: UIViewRepresentable {
         view.availableDateRange = calendarViewDateRange
 
         // 设置背景颜色为 Neumorphic 风格
-        view.backgroundColor = UIColor(Color.Neumorphic.main)
+        view.backgroundColor = UIColor(Color.neumorphicLight)
 
         // 添加阴影效果
-        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowColor = UIColor(Color.neumorphicDark).cgColor
         view.layer.shadowOpacity = 0.2
         view.layer.shadowOffset = CGSize(width: 5, height: 5)
         view.layer.shadowRadius = 10

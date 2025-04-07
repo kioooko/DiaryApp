@@ -42,7 +42,7 @@ struct HomeView: View { // 定义 HomeView 结构体，遵循 View 协议
     var body: some View { // 定义视图的主体
         NavigationStack { // 使用 NavigationStack 包裹内容
             ZStack(alignment: .bottomTrailing) { // 使用 ZStack 布局，右下角对齐
-                Color.Neumorphic.main.edgesIgnoringSafeArea(.all) // 设置背景颜色为 Neumorphic 风格
+                Color.neumorphicLight.edgesIgnoringSafeArea(.all) // 设置背景颜色为 Neumorphic 风格
                 // メインコンテンツ
                 ZStack(alignment: .topTrailing) { // 使用 ZStack 布局，右上角对齐
                     appInfo // 显示应用信息按钮

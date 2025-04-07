@@ -42,6 +42,19 @@ extension Color {
         $0.userInterfaceStyle == .dark ? hex(0x525252) : hex(0xefefef)
     }
 
+    // Neumorphic 风格的颜色扩展
+    public static let neumorphicLight = Self {
+        $0.userInterfaceStyle == .dark ? hex(0x2C2C2E) : hex(0xE0E0E0)
+    }
+    
+    public static let neumorphicDark = Self {
+        $0.userInterfaceStyle == .dark ? hex(0x1C1C1E) : hex(0xD0D0D0)
+    }
+    
+    public static let neumorphicAccent = Self {
+        $0.userInterfaceStyle == .dark ? hex(0x3A3A3C) : hex(0xFFFFFF)
+    }
+
     public static func hex(_ hex: UInt) -> Self {
         Self(
             red: Double((hex & 0xff0000) >> 16) / 255,

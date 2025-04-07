@@ -1,4 +1,3 @@
-
 import SwiftUI
 import Neumorphic
 
@@ -32,12 +31,12 @@ private extension ReminderSettingView {
             Spacer()  // 添加顶部空间
             VStack(spacing: 40) {
                 title("设置提醒事项", description: "让书写成为一种习惯。我们不会发送任何烦人的垃圾通知。")
-                    .multilineTextAlignment(.center)  // 文本居中
+                    .multilineTextAlignment(.center)
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.Neumorphic.main)
-                            .softOuterShadow()
+                            .fill(Color.neumorphicLight)
+                            .softOuterShadow(darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
                     )
                 
                 HStack {
@@ -47,8 +46,8 @@ private extension ReminderSettingView {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.Neumorphic.main)
-                        .softOuterShadow()
+                        .fill(Color.neumorphicLight)
+                        .softOuterShadow(darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
                 )
             }
             
@@ -57,15 +56,15 @@ private extension ReminderSettingView {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.Neumorphic.main)
-                        .softOuterShadow()
+                        .fill(Color.neumorphicLight)
+                        .softOuterShadow(darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
                 )
             
             Spacer()  // 添加底部空间
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)  // 使用最大宽度和高度
         .padding(.horizontal)
-        .background(Color.Neumorphic.main.ignoresSafeArea()) // 使用 Neumorphic 风格的背景色
+        .background(Color.neumorphicLight.ignoresSafeArea()) // 使用 Neumorphic 风格的背景色
     }
     
     var hourAndMinutePicker: some View {
