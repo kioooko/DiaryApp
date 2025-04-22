@@ -57,6 +57,153 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
             return []
         }
     }
+
+    // MARK: - 新模型支持
+    // 获取所有联系人
+    func fetchAllContacts() -> [Contact] {
+        let request = NSFetchRequest<Contact>(entityName: "Contact")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Contact.name, ascending: true)]
+        
+        do {
+            return try container.viewContext.fetch(request)
+        } catch {
+            print("❌ 获取联系人失败: \(error)")
+            return []
+        }
+    }
+    
+    // 获取所有支出记录
+    func fetchAllExpenses() -> [Expense] {
+        let request = NSFetchRequest<Expense>(entityName: "Expense")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Expense.date, ascending: false)]
+        
+        do {
+            return try container.viewContext.fetch(request)
+        } catch {
+            print("❌ 获取支出记录失败: \(error)")
+            return []
+        }
+    }
+    
+    // 获取所有待办事项
+    func fetchAllCheckListItems() -> [CheckListItem] {
+        let request = NSFetchRequest<CheckListItem>(entityName: "CheckListItem")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \CheckListItem.createdAt, ascending: false)]
+        
+        do {
+            return try container.viewContext.fetch(request)
+        } catch {
+            print("❌ 获取待办事项失败: \(error)")
+            return []
+        }
+    }
+    
+    // 迁移旧数据到新结构
+    func migrateOldData() {
+        migrateItemData()
+        migrateSavingsGoalData()
+        migrateCheckListItemData()
+        
+        do {
+            try container.viewContext.save()
+            print("✅ 数据迁移完成")
+        } catch {
+            print("❌ 数据迁移保存失败: \(error)")
+        }
+    }
+    
+    // 迁移Item数据
+    private func migrateItemData() {
+        let request = NSFetchRequest<Item>(entityName: "Item")
+        request.predicate = NSPredicate(format: "id == nil")
+        
+        do {
+            let items = try container.viewContext.fetch(request)
+            print("📝 需要迁移的Item数量: \(items.count)")
+            
+            for item in items {
+                item.id = UUID()
+                
+                // 迁移图片数据
+                if let imageData = item.imageData {
+                    item.imageData = imageData // 这会触发计算属性的setter，保存为文件
+                }
+                
+                // 确保日期字段
+                if item.createdAt == nil {
+                    item.createdAt = Date()
+                }
+                
+                if item.updatedAt == nil {
+                    item.updatedAt = Date()
+                }
+            }
+        } catch {
+            print("❌ 迁移Item数据失败: \(error)")
+        }
+    }
+    
+    // 迁移SavingsGoal数据
+    private func migrateSavingsGoalData() {
+        let request = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
+        request.predicate = NSPredicate(format: "id == nil")
+        
+        do {
+            let goals = try container.viewContext.fetch(request)
+            print("📝 需要迁移的SavingsGoal数量: \(goals.count)")
+            
+            for goal in goals {
+                goal.id = UUID()
+                
+                // 确保日期字段
+                if goal.createdAt == nil {
+                    goal.createdAt = Date()
+                }
+                
+                if goal.updatedAt == nil {
+                    goal.updatedAt = Date()
+                }
+                
+                // 原模型中的startDate映射到createdAt
+                if goal.createdAt == nil && goal.startDate != nil {
+                    goal.createdAt = goal.startDate
+                }
+                
+                // 原模型中的targetDate映射到deadline
+                if goal.deadline == nil && goal.targetDate != nil {
+                    goal.deadline = goal.targetDate
+                }
+            }
+        } catch {
+            print("❌ 迁移SavingsGoal数据失败: \(error)")
+        }
+    }
+    
+    // 迁移CheckListItem数据
+    private func migrateCheckListItemData() {
+        let request = NSFetchRequest<CheckListItem>(entityName: "CheckListItem")
+        request.predicate = NSPredicate(format: "id == nil")
+        
+        do {
+            let items = try container.viewContext.fetch(request)
+            print("📝 需要迁移的CheckListItem数量: \(items.count)")
+            
+            for item in items {
+                item.id = UUID()
+                
+                // 确保日期字段
+                if item.createdAt == nil {
+                    item.createdAt = Date()
+                }
+                
+                if item.updatedAt == nil {
+                    item.updatedAt = Date()
+                }
+            }
+        } catch {
+            print("❌ 迁移CheckListItem数据失败: \(error)")
+        }
+    }
 }
 
 extension CoreDataProvider {// 扩展 CoreDataProvider 类 

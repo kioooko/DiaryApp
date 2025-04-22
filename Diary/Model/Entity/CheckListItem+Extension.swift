@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import Foundation
 
 extension CheckListItem: BaseModel {
 
@@ -28,19 +29,14 @@ extension CheckListItem: BaseModel {
         return newItem
     }
 
-    static func create(title: String) throws {
-        guard titleRange.contains(title.count) else {
-            throw CheckListItemError.validationError
-        }
-
-        let now = Date()
-        let checkListItem = CheckListItem(context: CoreDataProvider.shared.container.viewContext)
-
-        checkListItem.title = title
-        checkListItem.createdAt = now
-        checkListItem.updatedAt = now
-
-        try checkListItem.save()
+    static func create(title: String, isCompleted: Bool = false, in context: NSManagedObjectContext) -> CheckListItem {
+        let item = CheckListItem(context: context)
+        item.id = UUID()
+        item.title = title
+        item.isCompleted = isCompleted
+        item.createdAt = Date()
+        item.updatedAt = Date()
+        return item
     }
 
     func update(title: String) throws {
@@ -56,6 +52,53 @@ extension CheckListItem: BaseModel {
 
     // Validation
     static let titleRange = 0...100
+
+    var id: UUID? {
+        get { primitiveValue(forKey: "id") as? UUID }
+        set { setPrimitiveValue(newValue, forKey: "id") }
+    }
+    
+    var title: String? {
+        get { primitiveValue(forKey: "title") as? String }
+        set { setPrimitiveValue(newValue, forKey: "title") }
+    }
+    
+    var isCompleted: Bool {
+        get { (primitiveValue(forKey: "isCompleted") as? Bool) ?? false }
+        set { setPrimitiveValue(newValue, forKey: "isCompleted") }
+    }
+    
+    var createdAt: Date? {
+        get { primitiveValue(forKey: "createdAt") as? Date }
+        set { setPrimitiveValue(newValue, forKey: "createdAt") }
+    }
+    
+    var updatedAt: Date? {
+        get { primitiveValue(forKey: "updatedAt") as? Date }
+        set { setPrimitiveValue(newValue, forKey: "updatedAt") }
+    }
+    
+    var diary: Item? {
+        get { primitiveValue(forKey: "diary") as? Item }
+        set { setPrimitiveValue(newValue, forKey: "diary") }
+    }
+    
+    // 确保在创建时生成UUID
+    @objc func awakeFromInsert() {
+        super.awakeFromInsert()
+        
+        if id == nil {
+            id = UUID()
+        }
+        
+        if createdAt == nil {
+            createdAt = Date()
+        }
+        
+        if updatedAt == nil {
+            updatedAt = Date()
+        }
+    }
 }
 
 public enum CheckListItemError: Error, LocalizedError {

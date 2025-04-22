@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24B83" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<entity name="CheckListItem" representedClassName="CheckListItem" syncable="YES">
+       <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+       <attribute name="isCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+       <attribute name="title" attributeType="String" optional="NO"/>
+       <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+       <relationship name="diary" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="checkListItems" inverseEntity="Item"/>
+       <fetchIndex name="byCompletionIndex">
+           <fetchIndexElement property="isCompleted" type="Binary" order="ascending"/>
+       </fetchIndex>
+   </entity>
+  <entity name="Contact" representedClassName="Contact" syncable="YES">
+       <attribute name="avatarURL" optional="YES" attributeType="String"/>
+       <attribute name="birthday" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+       <attribute name="lastInteraction" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="name" attributeType="String" optional="NO"/>
+       <attribute name="notes" optional="YES" attributeType="String"/>
+       <attribute name="tier" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+       <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+       <relationship name="expenses" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Expense" inverseName="contact" inverseEntity="Expense"/>
+       <fetchIndex name="byNameIndex">
+           <fetchIndexElement property="name" type="Binary" order="ascending"/>
+       </fetchIndex>
+   </entity>
+   <entity name="Expense" representedClassName="Expense" syncable="YES">
+       <attribute name="amount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+       <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+       <attribute name="isExpense" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+       <attribute name="note" optional="YES" attributeType="String"/>
+       <attribute name="title" attributeType="String" optional="NO"/>
+       <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+       <relationship name="contact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Contact" inverseName="expenses" inverseEntity="Contact"/>
+       <relationship name="goal" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavingsGoal" inverseName="expenses" inverseEntity="SavingsGoal"/>
+       <fetchIndex name="byDateIndex">
+           <fetchIndexElement property="date" type="Binary" order="ascending"/>
+       </fetchIndex>
+   </entity>
+   <entity name="Item" representedClassName="Item" syncable="YES">
+       <attribute name="body" optional="YES" attributeType="String"/>
+       <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+       <attribute name="imageURL" optional="YES" attributeType="String"/>
+       <attribute name="isBookmarked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+       <attribute name="note" optional="YES" attributeType="String"/>
+       <attribute name="title" attributeType="String" optional="NO"/>
+       <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="weather" optional="YES" attributeType="String"/>
+       <relationship name="checkListItems" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CheckListItem" inverseName="diary" inverseEntity="CheckListItem"/>
+       <fetchIndex name="byDateIndex">
+           <fetchIndexElement property="date" type="Binary" order="ascending"/>
+       </fetchIndex>
+       <fetchIndex name="byBookmarkIndex">
+           <fetchIndexElement property="isBookmarked" type="Binary" order="ascending"/>
+       </fetchIndex>
+   </entity>
+   <entity name="SavingsGoal" representedClassName="SavingsGoal" syncable="YES">
+       <attribute name="currentAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+       <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="deadline" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+       <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+       <attribute name="targetAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+       <attribute name="title" attributeType="String" optional="NO"/>
+       <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+       <relationship name="expenses" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Expense" inverseName="goal" inverseEntity="Expense"/>
+   </entity>
+</model> 

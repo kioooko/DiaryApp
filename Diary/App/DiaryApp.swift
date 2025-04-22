@@ -24,6 +24,10 @@ struct DiaryApp: App {
     @AppStorage(UserDefaultsKey.reSyncPerformed.rawValue)
     private var reSyncPerformed: Bool = false
 
+    @AppStorage("hasCompletedDataMigration") private var hasCompletedDataMigration = false
+
+    @StateObject private var diaryAppSceneDelegate = DiaryAppSceneDelegate()
+
     init() {
 //        let now = Date()
 //        for i in -3 ... 0 {
@@ -34,6 +38,7 @@ struct DiaryApp: App {
 //        }
 
         reSyncData()
+        setupEnvironment()
     }
 
     var body: some Scene {
@@ -52,6 +57,14 @@ struct DiaryApp: App {
                     .environmentObject(textOptions)
                     .environmentObject(notificationSetting)
                     .environmentObject(weatherData)
+            }
+            .environment(\.managedObjectContext, CoreDataProvider.shared.container.viewContext)
+            .environmentObject(diaryAppSceneDelegate)
+            .onAppear {
+                if !hasCompletedDataMigration {
+                    print("✅ 开始执行数据迁移...")
+                    migrateDatabase()
+                }
             }
         }
     }
@@ -99,5 +112,23 @@ private extension DiaryApp {
         } else {
             reSyncPerformed = true
         }
+    }
+
+    private func migrateDatabase() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            print("📝 开始数据库迁移...")
+            CoreDataProvider.shared.migrateOldData()
+            
+            DispatchQueue.main.async {
+                hasCompletedDataMigration = true
+                print("✅ 数据库迁移完成")
+                
+                bannerState.show(of: .success(message: "数据库升级完成"))
+            }
+        }
+    }
+
+    private func setupEnvironment() {
+        UILabel.appearance().adjustsFontSizeToFitWidth = true
     }
 }

@@ -130,76 +130,26 @@ struct DataImportView: View {
         }
         
         selectedFile = url
-        importData(fileURL: url)
-    }
-    
-    private func importData(fileURL: URL) {
-        isImporting = true
-        importProgress = 0
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
-                let lines = fileContent.components(separatedBy: .newlines)
-                    .filter { !$0.isEmpty }
-                
-                print("📝 开始导入，总行数: \(lines.count)")
-                
-                DispatchQueue.main.async {
-                    for (index, line) in lines.enumerated() {
-                        let components = line.components(separatedBy: ",")
-                        guard components.count >= 2 else { continue }
-                        
-                        let item = Item(context: viewContext)
-                        
-                        // 设置日期
-                        if let date = DateFormatter.yyyyMMdd.date(from: components[0].trimmingCharacters(in: .whitespaces)) {
-                            item.date = date
-                            item.createdAt = date
-                            item.updatedAt = date
-                        } else {
-                            item.date = Date()
-                            item.createdAt = Date()
-                            item.updatedAt = Date()
-                        }
-                        
-                        // 设置内容
-                        let content = components[1].trimmingCharacters(in: .whitespaces)
-                        item.body = content
-                        
-                        // 设置标题（取内容前10个字符）
-                        item.title = String(content.prefix(10))
-                        
-                        // 设置其他默认值
-                        item.isBookmarked = false
-                        
-                        // 更新进度
-                        importProgress = Double(index + 1) / Double(lines.count)
-                        
-                        // 每处理50条记录保存一次
-                        if (index + 1) % 50 == 0 {
-                            saveContext()
-                        }
-                    }
-                    
-                    // 最后保存一次
-                    saveContext()
-                    
-                    // 完成导入
-                    isImporting = false
-                    selectedFile = nil
-                    importProgress = 0
-                    bannerState.show(of: .success(message: "成功导入 \(lines.count) 条日记"))
-                }
-            } catch {
-                print("❌ 导入失败: \(error)")
-                DispatchQueue.main.async {
-                    isImporting = false
-                    selectedFile = nil
-                    importProgress = 0
-                    bannerState.show(of: .error(message: "导入失败：\(error.localizedDescription)"))
-                }
+        // 使用DataImportManager处理导入
+        let importManager = DataImportManager(context: viewContext)
+        
+        // 监控进度
+        self.importProgress = 0
+        
+        importManager.importData(from: url) { success, message in
+            self.importProgress = 1.0
+            
+            if success {
+                self.bannerState.show(of: .success(message: message))
+            } else {
+                self.bannerState.show(of: .error(message: message))
             }
+            
+            self.showAlert = true
+            self.alertMessage = message
+            self.selectedFile = nil
+            self.importProgress = 0
         }
     }
     

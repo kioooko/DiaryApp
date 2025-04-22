@@ -100,25 +100,31 @@ var ImportData: some View { // 导入数据
     }
 
   var saveButton: some View {
-Button(action: {  downloadData(format: selectedFormat)
-            bannerState.show(of: .success(message: "导出成功🎉"))}) {
-    Text("下载").fontWeight(.bold)
-}
-.softButtonStyle(RoundedRectangle(cornerRadius: 12))
-  .padding(.horizontal)
-  
+    Button(action: {  
+        downloadData(format: selectedFormat)
+        bannerState.show(of: .success(message: "导出成功🎉"))
+    }) {
+        Text("下载").fontWeight(.bold)
     }
+    .softButtonStyle(RoundedRectangle(cornerRadius: 12))
+    .padding(.horizontal)
+  }
 
  
     private func downloadData(format: FileFormat) {
-        // 1. 从 CoreData 获取所有数据
-        let diaryEntries = CoreDataProvider.shared.exportAllDiaryEntries()
-        let savingsGoals = CoreDataProvider.shared.fetchAllSavingsGoals()
+        // 创建数据导出管理器
+        let exportManager = DataExportManager(context: viewContext)
         
-        // 2. 将数据转换为指定格式的字符串
-        let fileContent = convertToFileContent(entries: diaryEntries, goals: savingsGoals, format: format)
+        // 根据选择的格式导出数据
+        let fileContent: String
+        switch format {
+        case .csv:
+            fileContent = exportManager.exportAllDataAsCSV()
+        case .txt:
+            fileContent = exportManager.exportDiaryAsTXT()
+        }
 
-        // 3. 保存文件到本地
+        // 保存文件到本地
         saveFile(content: fileContent, format: format)
     }
 
