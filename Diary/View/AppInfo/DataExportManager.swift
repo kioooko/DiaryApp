@@ -119,7 +119,9 @@ class DataExportManager {
         csvContent += "ID,标题,金额,是否支出,日期,备注,联系人ID,储蓄目标ID,创建时间,更新时间\n"
         
         let expenses = CoreDataProvider.shared.fetchAllExpenses()
-        for expense in expenses {
+        for expenseObj in expenses {
+            guard let expense = expenseObj as? Expense else { continue }
+            
             let dateStr = expense.date.map { dateFormatter.string(from: $0) } ?? ""
             let createdAtStr = expense.createdAt.map { dateFormatter.string(from: $0) } ?? ""
             let updatedAtStr = expense.updatedAt.map { dateFormatter.string(from: $0) } ?? ""

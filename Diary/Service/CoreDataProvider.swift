@@ -6,6 +6,9 @@
 //
 
 import CoreData// 导入 CoreData 框架
+import Foundation
+// 显式导入实体模型
+@_exported import class Diary.Expense
 
 public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvider 类，继承自 ObservableObject
     static let shared = CoreDataProvider()// 定义一个静态属性 shared，用于存储 CoreDataProvider 的实例
@@ -73,9 +76,9 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
     }
     
     // 获取所有支出记录
-    func fetchAllExpenses() -> [Expense] {
-        let request = NSFetchRequest<Expense>(entityName: "Expense")
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \Expense.date, ascending: false)]
+    func fetchAllExpenses() -> [NSManagedObject] {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "Expense")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
         
         do {
             return try container.viewContext.fetch(request)

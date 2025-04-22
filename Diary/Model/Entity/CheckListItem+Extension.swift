@@ -31,7 +31,6 @@ extension CheckListItem: BaseModel {
 
     static func create(title: String, isCompleted: Bool = false, in context: NSManagedObjectContext) -> CheckListItem {
         let item = CheckListItem(context: context)
-        item.id = UUID()
         item.title = title
         item.isCompleted = isCompleted
         item.createdAt = Date()
