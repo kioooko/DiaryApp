@@ -53,50 +53,20 @@ extension CheckListItem: BaseModel {
     // Validation
     static let titleRange = 0...100
 
-    var id: UUID? {
-        get { primitiveValue(forKey: "id") as? UUID }
-        set { setPrimitiveValue(newValue, forKey: "id") }
-    }
-    
-    var title: String? {
-        get { primitiveValue(forKey: "title") as? String }
-        set { setPrimitiveValue(newValue, forKey: "title") }
-    }
-    
-    var isCompleted: Bool {
-        get { (primitiveValue(forKey: "isCompleted") as? Bool) ?? false }
-        set { setPrimitiveValue(newValue, forKey: "isCompleted") }
-    }
-    
-    var createdAt: Date? {
-        get { primitiveValue(forKey: "createdAt") as? Date }
-        set { setPrimitiveValue(newValue, forKey: "createdAt") }
-    }
-    
-    var updatedAt: Date? {
-        get { primitiveValue(forKey: "updatedAt") as? Date }
-        set { setPrimitiveValue(newValue, forKey: "updatedAt") }
-    }
-    
-    var diary: Item? {
-        get { primitiveValue(forKey: "diary") as? Item }
-        set { setPrimitiveValue(newValue, forKey: "diary") }
-    }
-    
     // 确保在创建时生成UUID
-    @objc func awakeFromInsert() {
+    @objc public override func awakeFromInsert() {
         super.awakeFromInsert()
         
-        if id == nil {
-            id = UUID()
+        if self.primitiveValue(forKey: "id") == nil {
+            self.setPrimitiveValue(UUID(), forKey: "id")
         }
         
-        if createdAt == nil {
-            createdAt = Date()
+        if self.primitiveValue(forKey: "createdAt") == nil {
+            self.setPrimitiveValue(Date(), forKey: "createdAt")
         }
         
-        if updatedAt == nil {
-            updatedAt = Date()
+        if self.primitiveValue(forKey: "updatedAt") == nil {
+            self.setPrimitiveValue(Date(), forKey: "updatedAt")
         }
     }
 }
