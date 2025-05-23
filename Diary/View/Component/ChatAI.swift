@@ -118,9 +118,9 @@ struct ChatAI: View {
                 ScrollView {
                     VStack(alignment: .leading) {
                         createMessageView(
-                            message:"正念小助手: 你好！我是你的正念引导小助手，准备开始今天的练习吗？",
+                            message: "正念小助手: 你好！我是你的正念引导小助手，准备开始今天的练习吗？",
                             isUser: false)
-                            Spacer()
+                        Spacer()
                         ForEach(chatHistory.indices, id: \.self) { index in
                             let message = chatHistory[index]
                             HStack {
@@ -166,7 +166,7 @@ struct ChatAI: View {
                     Text("发送")
                         .fontWeight(.bold)
                 }
-                .softButtonStyle(RoundedRectangle(cornerRadius: 12), darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44)
             }
             .padding(.bottom, 20)
