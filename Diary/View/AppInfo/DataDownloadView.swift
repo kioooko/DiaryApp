@@ -121,7 +121,7 @@ struct DataDownloadView: View {
         Button(action: {
             isExporting = true
             exportProgress = 0
-            downloadData(format: selectedFormat)
+            downloadData()
         }) {
             Text("下载")
                 .fontWeight(.bold)
@@ -131,118 +131,114 @@ struct DataDownloadView: View {
         .disabled(isExporting)
     }
 
-    private func downloadData(format: FileFormat) {
-        DispatchQueue.global(qos: .userInitiated).async {
-            // 1. 从 CoreData 获取所有数据
+    private func downloadData() {
+        isExporting = true
+        exportProgress = 0
+        
+        let workItem = DispatchWorkItem {
             var diaryEntries: [Item] = []
             var savingsGoals: [SavingsGoal] = []
             var contacts: [Contact] = []
-            var expenses: [Expense] = []
+            var expenses: [Item] = []
             var checkListItems: [CheckListItem] = []
             
-            viewContext.performAndWait {
-                do {
-                    // 获取日记数据
-                    let diaryRequest = NSFetchRequest<Item>(entityName: "Item")
-                    diaryRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
-                    diaryEntries = try viewContext.fetch(diaryRequest)
-                    print("✅ 成功获取日记数据: \(diaryEntries.count) 条")
-                    
-                    // 获取储蓄目标数据
-                    let savingsRequest = NSFetchRequest<SavingsGoal>(entityName: "SavingsGoal")
-                    savingsRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
-                    savingsGoals = try viewContext.fetch(savingsRequest)
-                    print("✅ 成功获取储蓄目标数据: \(savingsGoals.count) 条")
-                    
-                    // 获取联系人数据
-                    let contactRequest = NSFetchRequest<Contact>(entityName: "Contact")
-                    contactRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-                    contacts = try viewContext.fetch(contactRequest)
-                    print("✅ 成功获取联系人数据: \(contacts.count) 条")
-                    
-                    // 获取支出数据
-                    if let expenseEntity = NSEntityDescription.entity(forEntityName: "Expense", in: viewContext) {
-                        let expenseRequest = NSFetchRequest<Expense>(entityName: "Expense")
-                        expenseRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
-                        expenses = try viewContext.fetch(expenseRequest)
-                        print("✅ 成功获取支出数据: \(expenses.count) 条")
-                    } else {
-                        print("❌ 无法找到 Expense 实体")
-                    }
-                    
-                    // 获取待办事项数据
-                    let checkListRequest = NSFetchRequest<CheckListItem>(entityName: "CheckListItem")
-                    checkListRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
-                    checkListItems = try viewContext.fetch(checkListRequest)
-                    print("✅ 成功获取待办事项数据: \(checkListItems.count) 条")
-                } catch {
-                    print("❌ 获取数据失败: \(error)")
-                    DispatchQueue.main.async {
-                        bannerState.show(of: .error(message: "获取数据失败：\(error.localizedDescription)"))
-                        isExporting = false
-                        exportProgress = 0
-                    }
-                    return
+            self.viewContext.performAndWait {
+                // 获取日记数据
+                let diaryRequest: NSFetchRequest<Item> = Item.fetchRequest()
+                diaryRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.date, ascending: false)]
+                if let entries = try? self.viewContext.fetch(diaryRequest) {
+                    diaryEntries = entries
+                }
+                
+                // 获取储蓄目标数据
+                let goalRequest: NSFetchRequest<SavingsGoal> = SavingsGoal.fetchRequest()
+                goalRequest.sortDescriptors = [NSSortDescriptor(keyPath: \SavingsGoal.startDate, ascending: false)]
+                if let goals = try? self.viewContext.fetch(goalRequest) {
+                    savingsGoals = goals
+                }
+                
+                // 获取联系人数据
+                let contactRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
+                contactRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Contact.name, ascending: true)]
+                if let fetchedContacts = try? self.viewContext.fetch(contactRequest) {
+                    contacts = fetchedContacts
+                }
+                
+                // 获取记账数据
+                let expenseRequest: NSFetchRequest<Item> = Item.fetchRequest()
+                expenseRequest.predicate = NSPredicate(format: "amount != 0")
+                expenseRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.date, ascending: false)]
+                if let fetchedExpenses = try? self.viewContext.fetch(expenseRequest) {
+                    expenses = fetchedExpenses
+                }
+                
+                // 获取待办事项数据
+                let checkListRequest: NSFetchRequest<CheckListItem> = CheckListItem.fetchRequest()
+                checkListRequest.sortDescriptors = [NSSortDescriptor(keyPath: \CheckListItem.createdAt, ascending: false)]
+                if let items = try? self.viewContext.fetch(checkListRequest) {
+                    checkListItems = items
                 }
             }
             
-            // 2. 将数据转换为指定格式的字符串
-            let fileContent = convertToFileContent(
-                entries: diaryEntries,
-                goals: savingsGoals,
-                contacts: contacts,
-                expenses: expenses,
-                checkListItems: checkListItems,
-                format: format
-            )
-
-            // 3. 保存文件到本地
-            DispatchQueue.main.async {
-                saveFile(content: fileContent, format: format)
-                isExporting = false
-                exportProgress = 0
+            // 转换数据为指定格式
+            let dataString: String
+            switch self.selectedFormat {
+            case .csv:
+                dataString = self.convertToCSV(
+                    entries: diaryEntries,
+                    goals: savingsGoals,
+                    contacts: contacts,
+                    expenses: expenses,
+                    checkListItems: checkListItems
+                )
+            case .txt:
+                dataString = self.convertToTXT(
+                    entries: diaryEntries,
+                    goals: savingsGoals,
+                    contacts: contacts,
+                    expenses: expenses,
+                    checkListItems: checkListItems
+                )
+            }
+            
+            // 保存文件
+            if let data = dataString.data(using: .utf8) {
+                let fileName = "diary_data_\(Date().timeIntervalSince1970).\(self.selectedFormat.rawValue.lowercased())"
+                let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+                
+                do {
+                    try data.write(to: fileURL)
+                    DispatchQueue.main.async {
+                        self.isExporting = false
+                        self.exportProgress = 1.0
+                        self.shareFile(fileURL)
+                    }
+                } catch {
+                    print("保存文件失败: \(error)")
+                    DispatchQueue.main.async {
+                        self.isExporting = false
+                        self.exportProgress = 0
+                    }
+                }
             }
         }
-    }
-
-    private func convertToFileContent(
-        entries: [Item],
-        goals: [SavingsGoal],
-        contacts: [Contact],
-        expenses: [Expense],
-        checkListItems: [CheckListItem],
-        format: FileFormat
-    ) -> String {
-        switch format {
-        case .csv:
-            return convertToCSV(
-                entries: entries,
-                goals: goals,
-                contacts: contacts,
-                expenses: expenses,
-                checkListItems: checkListItems
-            )
-        case .txt:
-            return convertToTXT(
-                entries: entries,
-                goals: goals,
-                contacts: contacts,
-                expenses: expenses,
-                checkListItems: checkListItems
-            )
-        }
+        
+        DispatchQueue.global(qos: .userInitiated).async(execute: workItem)
     }
 
     private func convertToCSV(
         entries: [Item],
         goals: [SavingsGoal],
         contacts: [Contact],
-        expenses: [Expense],
+        expenses: [Item],
         checkListItems: [CheckListItem]
     ) -> String {
         var csvString = ""
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        // 添加 UTF-8 BOM，确保 Excel 正确识别中文
+        csvString += "\u{FEFF}"
         
         // 1. 日记数据
         csvString += "=== 日记数据 ===\n"
@@ -259,7 +255,9 @@ struct DataDownloadView: View {
             fields.append(entry.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             csvString += fields.joined(separator: ",") + "\n"
         }
-        csvString += "\n\n"
+        
+        // 添加表格页分隔符
+        csvString += "\n\n=== 表格页分隔符 ===\n\n"
         
         // 2. 储蓄目标数据
         csvString += "=== 储蓄目标数据 ===\n"
@@ -274,7 +272,9 @@ struct DataDownloadView: View {
             fields.append(goal.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             csvString += fields.joined(separator: ",") + "\n"
         }
-        csvString += "\n\n"
+        
+        // 添加表格页分隔符
+        csvString += "\n\n=== 表格页分隔符 ===\n\n"
         
         // 3. 联系人数据
         csvString += "=== 联系人数据 ===\n"
@@ -291,26 +291,27 @@ struct DataDownloadView: View {
             fields.append(contact.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
             csvString += fields.joined(separator: ",") + "\n"
         }
-        csvString += "\n\n"
         
-        // 4. 支出数据
-        if !expenses.isEmpty {
-            csvString += "=== 支出数据 ===\n"
-            csvString += "标题,金额,是否支出,日期,备注,联系人,创建时间,更新时间\n"
-            for expense in expenses {
-                var fields = [String]()
-                fields.append((expense.title ?? "").replacingOccurrences(of: ",", with: "，"))
-                fields.append(String(expense.amount))
-                fields.append(expense.isExpense ? "是" : "否")
-                fields.append(expense.date.map { dateFormatter.string(from: $0) } ?? "")
-                fields.append((expense.note ?? "").replacingOccurrences(of: ",", with: "，"))
-                fields.append((expense.contact?.name ?? "").replacingOccurrences(of: ",", with: "，"))
-                fields.append(expense.createdAt.map { dateFormatter.string(from: $0) } ?? "")
-                fields.append(expense.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
-                csvString += fields.joined(separator: ",") + "\n"
-            }
-            csvString += "\n\n"
+        // 添加表格页分隔符
+        csvString += "\n\n=== 表格页分隔符 ===\n\n"
+        
+        // 4. 记账数据
+        csvString += "=== 记账数据 ===\n"
+        csvString += "标题,金额,是否支出,日期,备注,创建时间,更新时间\n"
+        for expense in expenses {
+            var fields = [String]()
+            fields.append((expense.title ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(String(expense.amount))
+            fields.append(expense.isExpense ? "是" : "否")
+            fields.append(expense.date.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append((expense.note ?? "").replacingOccurrences(of: ",", with: "，"))
+            fields.append(expense.createdAt.map { dateFormatter.string(from: $0) } ?? "")
+            fields.append(expense.updatedAt.map { dateFormatter.string(from: $0) } ?? "")
+            csvString += fields.joined(separator: ",") + "\n"
         }
+        
+        // 添加表格页分隔符
+        csvString += "\n\n=== 表格页分隔符 ===\n\n"
         
         // 5. 待办事项数据
         csvString += "=== 待办事项数据 ===\n"
@@ -319,7 +320,7 @@ struct DataDownloadView: View {
             var fields = [String]()
             fields.append((item.title ?? "").replacingOccurrences(of: ",", with: "，"))
             fields.append(item.isCompleted ? "是" : "否")
-            if let diary = item.diary?.allObjects.first as? Item {
+            if let diary = item.diary as? Item {
                 fields.append((diary.title ?? "").replacingOccurrences(of: ",", with: "，"))
             } else {
                 fields.append("")
@@ -336,7 +337,7 @@ struct DataDownloadView: View {
         entries: [Item],
         goals: [SavingsGoal],
         contacts: [Contact],
-        expenses: [Expense],
+        expenses: [Item],
         checkListItems: [CheckListItem]
     ) -> String {
         var txtString = ""
@@ -346,131 +347,125 @@ struct DataDownloadView: View {
         // 1. 日记数据
         txtString += "=== 日记数据 ===\n\n"
         for entry in entries {
-            txtString += "标题: \(entry.title ?? "")\n"
-            txtString += "内容: \(entry.body ?? "")\n"
-            txtString += "日期: \(entry.date.map { dateFormatter.string(from: $0) } ?? "")\n"
-            if let weather = entry.weather {
-                txtString += "天气: \(weather)\n"
+            txtString += "标题：\(entry.title ?? "")\n"
+            txtString += "内容：\(entry.body ?? "")\n"
+            if let date = entry.date {
+                txtString += "日期：\(dateFormatter.string(from: date))\n"
             }
-            if entry.isBookmarked {
-                txtString += "已收藏\n"
-            }
+            txtString += "天气：\(entry.weather ?? "")\n"
+            txtString += "是否收藏：\(entry.isBookmarked ? "是" : "否")\n"
             if let imageData = entry.imageData {
-                txtString += "图片: \(imageData.base64EncodedString())\n"
+                txtString += "图片：\(imageData.base64EncodedString())\n"
             }
-            txtString += "创建时间: \(entry.createdAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-            txtString += "更新时间: \(entry.updatedAt.map { dateFormatter.string(from: $0) } ?? "")\n"
+            if let createdAt = entry.createdAt {
+                txtString += "创建时间：\(dateFormatter.string(from: createdAt))\n"
+            }
+            if let updatedAt = entry.updatedAt {
+                txtString += "更新时间：\(dateFormatter.string(from: updatedAt))\n"
+            }
             txtString += "\n"
         }
+        txtString += "\n"
         
         // 2. 储蓄目标数据
         txtString += "=== 储蓄目标数据 ===\n\n"
         for goal in goals {
-            txtString += "标题: \(goal.title ?? "")\n"
-            txtString += "目标金额: \(goal.targetAmount)\n"
-            txtString += "当前金额: \(goal.currentAmount)\n"
+            txtString += "标题：\(goal.title ?? "")\n"
+            txtString += "目标金额：\(goal.targetAmount)\n"
+            txtString += "当前金额：\(goal.currentAmount)\n"
             if let targetDate = goal.targetDate {
-                txtString += "截止日期: \(dateFormatter.string(from: targetDate))\n"
+                txtString += "截止日期：\(dateFormatter.string(from: targetDate))\n"
             }
-            txtString += "创建时间: \(goal.createdAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-            txtString += "更新时间: \(goal.updatedAt.map { dateFormatter.string(from: $0) } ?? "")\n"
+            if let createdAt = goal.createdAt {
+                txtString += "创建时间：\(dateFormatter.string(from: createdAt))\n"
+            }
+            if let updatedAt = goal.updatedAt {
+                txtString += "更新时间：\(dateFormatter.string(from: updatedAt))\n"
+            }
             txtString += "\n"
         }
+        txtString += "\n"
         
         // 3. 联系人数据
         txtString += "=== 联系人数据 ===\n\n"
         for contact in contacts {
-            txtString += "姓名: \(contact.name ?? "")\n"
-            txtString += "关系层级: \(contact.tier)\n"
+            txtString += "姓名：\(contact.name ?? "")\n"
+            txtString += "关系层级：\(contact.tier)\n"
             if let birthday = contact.birthday {
-                txtString += "生日: \(dateFormatter.string(from: birthday))\n"
+                txtString += "生日：\(dateFormatter.string(from: birthday))\n"
             }
-            if let notes = contact.notes {
-                txtString += "备注: \(notes)\n"
-            }
+            txtString += "备注：\(contact.notes ?? "")\n"
             if let lastInteraction = contact.lastInteraction {
-                txtString += "最近联系时间: \(dateFormatter.string(from: lastInteraction))\n"
+                txtString += "最近联系时间：\(dateFormatter.string(from: lastInteraction))\n"
             }
             if let avatar = contact.avatar {
-                txtString += "头像: \(avatar.base64EncodedString())\n"
+                txtString += "头像：\(avatar.base64EncodedString())\n"
             }
-            txtString += "创建时间: \(contact.createdAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-            txtString += "更新时间: \(contact.updatedAt.map { dateFormatter.string(from: $0) } ?? "")\n"
+            if let createdAt = contact.createdAt {
+                txtString += "创建时间：\(dateFormatter.string(from: createdAt))\n"
+            }
+            if let updatedAt = contact.updatedAt {
+                txtString += "更新时间：\(dateFormatter.string(from: updatedAt))\n"
+            }
             txtString += "\n"
         }
+        txtString += "\n"
         
-        // 4. 支出数据
-        if !expenses.isEmpty {
-            txtString += "=== 支出数据 ===\n\n"
-            for expense in expenses {
-                txtString += "标题: \(expense.title ?? "")\n"
-                txtString += "金额: \(expense.amount)\n"
-                txtString += "类型: \(expense.isExpense ? "支出" : "收入")\n"
-                txtString += "日期: \(expense.date.map { dateFormatter.string(from: $0) } ?? "")\n"
-                if let note = expense.note {
-                    txtString += "备注: \(note)\n"
-                }
-                if let contact = expense.contact {
-                    txtString += "联系人: \(contact.name ?? "")\n"
-                }
-                txtString += "创建时间: \(expense.createdAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-                txtString += "更新时间: \(expense.updatedAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-                txtString += "\n"
+        // 4. 记账数据
+        txtString += "=== 记账数据 ===\n\n"
+        for expense in expenses {
+            txtString += "标题：\(expense.title ?? "")\n"
+            txtString += "金额：\(expense.amount)\n"
+            txtString += "是否支出：\(expense.isExpense ? "是" : "否")\n"
+            if let date = expense.date {
+                txtString += "日期：\(dateFormatter.string(from: date))\n"
             }
+            txtString += "备注：\(expense.note ?? "")\n"
+            if let createdAt = expense.createdAt {
+                txtString += "创建时间：\(dateFormatter.string(from: createdAt))\n"
+            }
+            if let updatedAt = expense.updatedAt {
+                txtString += "更新时间：\(dateFormatter.string(from: updatedAt))\n"
+            }
+            txtString += "\n"
         }
+        txtString += "\n"
         
         // 5. 待办事项数据
         txtString += "=== 待办事项数据 ===\n\n"
         for item in checkListItems {
-            txtString += "标题: \(item.title ?? "")\n"
-            txtString += "状态: \(item.isCompleted ? "已完成" : "未完成")\n"
-            if let diary = item.diary?.allObjects.first as? Item {
-                txtString += "所属日记: \(diary.title ?? "")\n"
+            txtString += "标题：\(item.title ?? "")\n"
+            txtString += "是否完成：\(item.isCompleted ? "是" : "否")\n"
+            if let diary = item.diary as? Item {
+                txtString += "日记：\(diary.title ?? "")\n"
+            } else {
+                txtString += "日记：\n"
             }
-            txtString += "创建时间: \(item.createdAt.map { dateFormatter.string(from: $0) } ?? "")\n"
-            txtString += "更新时间: \(item.updatedAt.map { dateFormatter.string(from: $0) } ?? "")\n"
+            if let createdAt = item.createdAt {
+                txtString += "创建时间：\(dateFormatter.string(from: createdAt))\n"
+            }
+            if let updatedAt = item.updatedAt {
+                txtString += "更新时间：\(dateFormatter.string(from: updatedAt))\n"
+            }
             txtString += "\n"
         }
         
         return txtString
     }
 
-    private func saveFile(content: String, format: FileFormat) {
-        let fileName = "DiaryData.\(format.rawValue.lowercased())"
+    private func shareFile(_ fileURL: URL) {
+        let activityVC = UIActivityViewController(
+            activityItems: [fileURL],
+            applicationActivities: nil
+        )
         
-        guard let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            bannerState.show(of: .error(message: "无法访问文档目录"))
-            return
-        }
-        
-        let fileURL = documentsPath.appendingPathComponent(fileName)
-        
-        do {
-            // 添加 UTF-8 BOM，确保文件编码正确
-            let bom = "\u{FEFF}"
-            
-            // 保存文件
-            try (bom + content).write(to: fileURL, atomically: true, encoding: .utf8)
-            
-            print("✅ 文件已保存: \(fileURL)")
-            
-            // 分享文件
-            let activityVC = UIActivityViewController(
-                activityItems: [fileURL],
-                applicationActivities: nil
-            )
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let rootViewController = windowScene.windows.first?.rootViewController {
-                DispatchQueue.main.async {
-                    rootViewController.present(activityVC, animated: true)
-                }
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            DispatchQueue.main.async {
+                rootViewController.present(activityVC, animated: true)
             }
-            
-            bannerState.show(of: .success(message: "导出成功"))
-        } catch {
-            print("❌ 保存文件失败: \(error)")
-            bannerState.show(of: .error(message: "导出失败"))
         }
+        
+        bannerState.show(of: .success(message: "导出成功"))
     }
 }
