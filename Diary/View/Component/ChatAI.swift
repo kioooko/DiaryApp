@@ -166,13 +166,13 @@ struct ChatAI: View {
                     Text("发送")
                         .fontWeight(.bold)
                 }
-                .softButtonStyle(RoundedRectangle(cornerRadius: 12), darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
+                .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44)
             }
             .padding(.bottom, 20)
             .padding(.horizontal)
         }
-        .background(Color.neumorphicLight)
+        .background(Color.Neumorphic.main)
     }
 }
 
