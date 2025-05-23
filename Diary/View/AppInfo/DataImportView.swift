@@ -343,42 +343,47 @@ struct DataImportView: View {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
+        guard let expenseEntity = NSEntityDescription.entity(forEntityName: "Expense", in: viewContext) else {
+            print("❌ 无法找到 Expense 实体")
+            return
+        }
+        
         for row in rows {
             let columns = row.components(separatedBy: ",")
             guard columns.count == headers.count else { continue }
             
-            let expense = Expense(context: viewContext)
+            let expense = NSManagedObject(entity: expenseEntity, insertInto: viewContext)
             
             for (index, header) in headers.enumerated() {
                 let value = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
                 
                 switch header {
                 case "标题":
-                    expense.title = value
+                    expense.setValue(value, forKey: "title")
                 case "金额":
-                    expense.amount = Double(value) ?? 0.0
+                    expense.setValue(Double(value) ?? 0.0, forKey: "amount")
                 case "是否支出":
-                    expense.isExpense = value == "是"
+                    expense.setValue(value == "是", forKey: "isExpense")
                 case "日期":
                     if let date = dateFormatter.date(from: value) {
-                        expense.date = date
+                        expense.setValue(date, forKey: "date")
                     }
                 case "备注":
-                    expense.note = value
+                    expense.setValue(value, forKey: "note")
                 case "联系人":
                     // 查找或创建联系人
-                    let fetchRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
+                    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Contact")
                     fetchRequest.predicate = NSPredicate(format: "name == %@", value)
                     if let contact = try? viewContext.fetch(fetchRequest).first {
-                        expense.contact = contact
+                        expense.setValue(contact, forKey: "contact")
                     }
                 case "创建时间":
                     if let date = dateFormatter.date(from: value) {
-                        expense.createdAt = date
+                        expense.setValue(date, forKey: "createdAt")
                     }
                 case "更新时间":
                     if let date = dateFormatter.date(from: value) {
-                        expense.updatedAt = date
+                        expense.setValue(date, forKey: "updatedAt")
                     }
                 default:
                     break
