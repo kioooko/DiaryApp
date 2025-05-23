@@ -8,8 +8,13 @@ struct ChatAI: View {
     @State private var userInput: String = ""
     @State private var chatHistory: [String] = []
     @State private var navigateToDiaryAppSceneDelegate = false
-
+    @State private var isLoading = false
+    
+    // 使用 NSCache 来缓存消息视图
+    private let messageCache = NSCache<NSString, UIImage>()
+    
     let chatHistoryKey = "chatHistory"
+    private let maxHistoryCount = 50 // 限制历史记录数量
 
     init(apiKeyManager: APIKeyManager) {
         self.apiKeyManager = apiKeyManager
@@ -17,6 +22,9 @@ struct ChatAI: View {
     }
 
     func sendToChatGPT(prompt: String) {
+        guard !prompt.isEmpty else { return }
+        isLoading = true
+        
         let apiKey = apiKeyManager.apiKey
         let url = URL(string: "https://api.x.ai/v1/chat/completions")!
 
@@ -36,15 +44,25 @@ struct ChatAI: View {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
         } catch {
             print("请求编码错误: \(error)")
+            isLoading = false
             return
         }
 
         DispatchQueue.main.async {
             chatHistory.append("You: \(prompt)")
+            if chatHistory.count > maxHistoryCount {
+                chatHistory.removeFirst()
+            }
             saveChatHistory()
         }
         
         URLSession.shared.dataTask(with: request) { data, response, error in
+            defer {
+                DispatchQueue.main.async {
+                    isLoading = false
+                }
+            }
+            
             if let error = error {
                 print("API 请求错误: \(error)")
                 return
@@ -55,10 +73,6 @@ struct ChatAI: View {
                 return
             }
             
-            if let responseString = String(data: data, encoding: .utf8) {
-                print("服务器响应: \(responseString)")
-            }
-            
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                    let choices = json["choices"] as? [[String: Any]],
@@ -67,6 +81,9 @@ struct ChatAI: View {
                    let content = message["content"] as? String {
                     DispatchQueue.main.async {
                         chatHistory.append("你的正念助手: \(content.trimmingCharacters(in: .whitespacesAndNewlines))")
+                        if chatHistory.count > maxHistoryCount {
+                            chatHistory.removeFirst()
+                        }
                         saveChatHistory()
                     }
                 }
@@ -76,7 +93,7 @@ struct ChatAI: View {
         }.resume()
     }
 
-   func saveChatHistory() {
+    func saveChatHistory() {
         do {
             let data = try JSONEncoder().encode(chatHistory)
             UserDefaults.standard.set(data, forKey: chatHistoryKey)
@@ -89,8 +106,13 @@ struct ChatAI: View {
         if let data = UserDefaults.standard.data(forKey: chatHistoryKey) {
             do {
                 chatHistory = try JSONDecoder().decode([String].self, from: data)
+                // 确保历史记录不超过最大限制
+                if chatHistory.count > maxHistoryCount {
+                    chatHistory = Array(chatHistory.suffix(maxHistoryCount))
+                }
             } catch {
                 print("无法加载聊天记录: \(error)")
+                chatHistory = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
             }
         } else {
             chatHistory = ["ChatGPT: 你好！我是正念引导助手，准备开始今天的练习吗？"]
@@ -100,15 +122,15 @@ struct ChatAI: View {
     func createMessageView(message: String, isUser: Bool) -> some View {
         let text = Text(message)
             .padding()
+            .lineLimit(nil)
+            .fixedSize(horizontal: false, vertical: true)
 
         let background = RoundedRectangle(cornerRadius: 12)
             .fill(Color.Neumorphic.main)
             .softInnerShadow(RoundedRectangle(cornerRadius: 12))
 
-        let textWithBackground = text
+        return text
             .background(background)
-
-        return textWithBackground
             .frame(maxWidth: .infinity, alignment: isUser ? .trailing : .leading)
     }
 
@@ -116,7 +138,7 @@ struct ChatAI: View {
         VStack {
             ScrollViewReader { scrollViewProxy in
                 ScrollView {
-                    VStack(alignment: .leading) {
+                    LazyVStack(alignment: .leading) {
                         createMessageView(
                             message:"正念小助手: 你好！我是你的正念引导小助手，准备开始今天的练习吗？",
                             isUser: false)
@@ -124,7 +146,6 @@ struct ChatAI: View {
                         ForEach(chatHistory.indices, id: \.self) { index in
                             let message = chatHistory[index]
                             HStack {
-                                
                                 if message.hasPrefix("You:") {
                                     Spacer()
                                     createMessageView(message: message, isUser: true)
@@ -134,13 +155,12 @@ struct ChatAI: View {
                                 }
                             }
                             .padding(.vertical, 2)
-                            .id(index) // 为每个消息设置唯一的 ID
+                            .id(index)
                         }
                     }
                     .padding()
                 }
                 .onChange(of: chatHistory) { _ in
-                    // 当聊天记录更新时，滚动到最新消息
                     if let lastIndex = chatHistory.indices.last {
                         withAnimation {
                             scrollViewProxy.scrollTo(lastIndex, anchor: .bottom)
@@ -154,20 +174,27 @@ struct ChatAI: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.neumorphicLight)
-                            .softInnerShadow(RoundedRectangle(cornerRadius: 12), darkShadow: Color.neumorphicDark, lightShadow: Color.neumorphicAccent)
+                            .fill(Color.Neumorphic.main)
+                            .softInnerShadow(RoundedRectangle(cornerRadius: 12))
                     )
                     .accentColor(.primary)
+                    .disabled(isLoading)
                 
                 Button(action: {
                     sendToChatGPT(prompt: userInput)
                     userInput = ""
                 }) {
-                    Text("发送")
-                        .fontWeight(.bold)
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                    } else {
+                        Text("发送")
+                            .fontWeight(.bold)
+                    }
                 }
                 .softButtonStyle(RoundedRectangle(cornerRadius: 12))
                 .frame(width: 80, height: 44)
+                .disabled(isLoading || userInput.isEmpty)
             }
             .padding(.bottom, 20)
             .padding(.horizontal)
