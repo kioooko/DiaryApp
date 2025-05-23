@@ -140,57 +140,7 @@ struct DataImportView: View {
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
-                let lines = fileContent.components(separatedBy: .newlines)
-                    .filter { !$0.isEmpty }
-                
-                print("📝 开始导入，总行数: \(lines.count)")
-                
-                DispatchQueue.main.async {
-                    for (index, line) in lines.enumerated() {
-                        let components = line.components(separatedBy: ",")
-                        guard components.count >= 2 else { continue }
-                        
-                        let item = Item(context: viewContext)
-                        
-                        // 设置日期
-                        if let date = DateFormatter.yyyyMMdd.date(from: components[0].trimmingCharacters(in: .whitespaces)) {
-                            item.date = date
-                            item.createdAt = date
-                            item.updatedAt = date
-                        } else {
-                            item.date = Date()
-                            item.createdAt = Date()
-                            item.updatedAt = Date()
-                        }
-                        
-                        // 设置内容
-                        let content = components[1].trimmingCharacters(in: .whitespaces)
-                        item.body = content
-                        
-                        // 设置标题（取内容前10个字符）
-                        item.title = String(content.prefix(10))
-                        
-                        // 设置其他默认值
-                        item.isBookmarked = false
-                        
-                        // 更新进度
-                        importProgress = Double(index + 1) / Double(lines.count)
-                        
-                        // 每处理50条记录保存一次
-                        if (index + 1) % 50 == 0 {
-                            saveContext()
-                        }
-                    }
-                    
-                    // 最后保存一次
-                    saveContext()
-                    
-                    // 完成导入
-                    isImporting = false
-                    selectedFile = nil
-                    importProgress = 0
-                    bannerState.show(of: .success(message: "成功导入 \(lines.count) 条日记"))
-                }
+                importCSVData(fileContent)
             } catch {
                 print("❌ 导入失败: \(error)")
                 DispatchQueue.main.async {
@@ -204,135 +154,43 @@ struct DataImportView: View {
     }
     
     private func importCSVData(_ content: String) {
-        let rows = content.components(separatedBy: .newlines)
-        guard rows.count > 1 else { return }
+        let sections = content.components(separatedBy: "=== ")
+            .filter { !$0.isEmpty }
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
         
-        // 清理表头中的 BOM 标记
-        let rawHeaders = rows[0].components(separatedBy: ",")
-        let headers = rawHeaders.map { header in
-            return header.trimmingCharacters(in: .whitespacesAndNewlines)
-                        .replacingOccurrences(of: "\u{FEFF}", with: "")
-        }
-        
-        print("📝 清理后的CSV表头: \(headers)")
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        var importedCount = 0
-        var failedCount = 0
+        var totalImported = 0
+        var currentSection = ""
+        var headers: [String] = []
+        var rows: [String] = []
         
         viewContext.performAndWait {
-            for row in rows.dropFirst() where !row.isEmpty {
-                let columns = row.components(separatedBy: ",")
-                guard columns.count == headers.count else { continue }
+            for section in sections {
+                let lines = section.components(separatedBy: .newlines)
+                guard !lines.isEmpty else { continue }
                 
-                var rowData: [String: String] = [:]
-                for (index, header) in headers.enumerated() {
-                    rowData[header] = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                currentSection = lines[0].replacingOccurrences(of: " ===", with: "")
+                headers = lines[1].components(separatedBy: ",")
+                rows = Array(lines.dropFirst(2))
+                
+                switch currentSection {
+                case "日记数据":
+                    importDiaryData(headers: headers, rows: rows)
+                case "储蓄目标数据":
+                    importSavingsGoalData(headers: headers, rows: rows)
+                case "联系人数据":
+                    importContactData(headers: headers, rows: rows)
+                case "支出数据":
+                    importExpenseData(headers: headers, rows: rows)
+                case "待办事项数据":
+                    importCheckListItemData(headers: headers, rows: rows)
+                default:
+                    print("⚠️ 未知的数据类型: \(currentSection)")
                 }
                 
-                // 日记数据处理
-                let entry = Item(context: viewContext)
-                
-                // 修复标题处理逻辑
-                print("📝 处理标题字段，原始值: \(rowData["标题"] ?? "nil")")
-                if let title = rowData["标题"], !title.isEmpty {
-                    print("✅ 使用标题: \(title)")
-                    entry.title = title
-                } else {
-                    print("⚠️ 使用默认标题: 未命名记录")
-                    entry.title = "未命名记录"
-                }
-                
-                entry.body = rowData["内容"]
-                
-                // 处理日期
-                if let dateStr = rowData["日期"], let date = dateFormatter.date(from: dateStr) {
-                    entry.date = date
-                } else {
-                    entry.date = Date()
-                }
-                
-                // 处理数值
-                entry.amount = Double(rowData["金额"] ?? "0") ?? 0.0
-                entry.isExpense = (rowData["是否支出"] ?? "否") == "是"
-                
-                // 处理其他文本字段
-                entry.note = rowData["备注"]
-                entry.weather = rowData["天气"]
-                entry.isBookmarked = (rowData["是否收藏"] ?? "否") == "是"
-                
-                // 处理图片数据
-                if let imageStr = rowData["图片"], !imageStr.isEmpty {
-                    if let imageData = Data(base64Encoded: imageStr) {
-                        entry.imageData = imageData
-                    }
-                }
-                
-                // 处理待办事项
-                if let checkListStr = rowData["待办事项"], !checkListStr.isEmpty {
-                    let items = checkListStr.components(separatedBy: "|")
-                    for item in items {
-                        let checkItem = CheckListItem(context: viewContext)
-                        let isCompleted = item.hasPrefix("[✓]")
-                        let title = item.replacingOccurrences(of: "[✓] ", with: "")
-                                       .replacingOccurrences(of: "[ ] ", with: "")
-                        checkItem.title = title
-                        checkItem.isCompleted = isCompleted
-                      //  checkItem.item = entry
-                        checkItem.createdAt = Date()
-                        checkItem.updatedAt = Date()
-                    }
-                }
-                
-                // 处理时间戳
-                if let createdStr = rowData["创建时间"], let created = dateFormatter.date(from: createdStr) {
-                    entry.createdAt = created
-                } else {
-                    entry.createdAt = Date()
-                }
-                
-                if let updatedStr = rowData["更新时间"], let updated = dateFormatter.date(from: updatedStr) {
-                    entry.updatedAt = updated
-                } else {
-                    entry.updatedAt = Date()
-                }
-                
-                importedCount += 1  // 计数日记数据
-                
-                // 联系人数据处理
-                if rowData["联系人姓名"] != nil {
-                    let contact = Contact(context: viewContext)
-                    contact.id = UUID()
-                    contact.name = rowData["联系人姓名"] ?? "未命名"
-                    contact.tier = Int16(rowData["关系层级"] ?? "3") ?? 3
-                    
-                    if let birthdayStr = rowData["生日"],
-                       let birthday = dateFormatter.date(from: birthdayStr) {
-                        contact.birthday = birthday
-                    }
-                    
-                    contact.notes = rowData["备注"]
-                    
-                    if let lastInteractionStr = rowData["最近联系时间"],
-                       let lastInteraction = dateFormatter.date(from: lastInteractionStr) {
-                        contact.lastInteraction = lastInteraction
-                    }
-                    
-                    if let avatarStr = rowData["头像"],
-                       let avatarData = Data(base64Encoded: avatarStr) {
-                        contact.avatar = avatarData
-                    }
-                    
-                    contact.createdAt = Date()
-                    contact.updatedAt = Date()
-                    
-                    importedCount += 1  // 计数联系人数据
-                }
+                totalImported += rows.count
                 
                 // 每处理50条记录保存一次
-                if (importedCount + 1) % 50 == 0 {
+                if totalImported % 50 == 0 {
                     saveContext()
                 }
             }
@@ -341,19 +199,234 @@ struct DataImportView: View {
             saveContext()
             
             // 完成导入
-            bannerState.show(of: .success(message: "成功导入 \(importedCount) 条记录"))
+            DispatchQueue.main.async {
+                isImporting = false
+                selectedFile = nil
+                importProgress = 0
+                bannerState.show(of: .success(message: "成功导入 \(totalImported) 条记录"))
+            }
         }
     }
     
-    private func showImportResult(success: Bool, message: String) {
-        DispatchQueue.main.async {
-            // 即使有验证错误，只要有成功导入的记录就显示成功信息
-            if importedCount > 0 {
-                alertMessage = "成功导入 \(importedCount) 条记录"
-            } else {
-                alertMessage = message
+    private func importDiaryData(headers: [String], rows: [String]) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        for row in rows {
+            let columns = row.components(separatedBy: ",")
+            guard columns.count == headers.count else { continue }
+            
+            let entry = Item(context: viewContext)
+            
+            for (index, header) in headers.enumerated() {
+                let value = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                switch header {
+                case "标题":
+                    entry.title = value
+                case "内容":
+                    entry.body = value
+                case "日期":
+                    if let date = dateFormatter.date(from: value) {
+                        entry.date = date
+                    }
+                case "天气":
+                    entry.weather = value
+                case "是否收藏":
+                    entry.isBookmarked = value == "是"
+                case "图片":
+                    if !value.isEmpty, let imageData = Data(base64Encoded: value) {
+                        entry.imageData = imageData
+                    }
+                case "创建时间":
+                    if let date = dateFormatter.date(from: value) {
+                        entry.createdAt = date
+                    }
+                case "更新时间":
+                    if let date = dateFormatter.date(from: value) {
+                        entry.updatedAt = date
+                    }
+                default:
+                    break
+                }
             }
-            showAlert = true
+        }
+    }
+    
+    private func importSavingsGoalData(headers: [String], rows: [String]) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        for row in rows {
+            let columns = row.components(separatedBy: ",")
+            guard columns.count == headers.count else { continue }
+            
+            let goal = SavingsGoal(context: viewContext)
+            
+            for (index, header) in headers.enumerated() {
+                let value = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                switch header {
+                case "标题":
+                    goal.title = value
+                case "目标金额":
+                    goal.targetAmount = Double(value) ?? 0.0
+                case "当前金额":
+                    goal.currentAmount = Double(value) ?? 0.0
+                case "截止日期":
+                    if let date = dateFormatter.date(from: value) {
+                        goal.targetDate = date
+                    }
+                case "创建时间":
+                    if let date = dateFormatter.date(from: value) {
+                        goal.createdAt = date
+                    }
+                case "更新时间":
+                    if let date = dateFormatter.date(from: value) {
+                        goal.updatedAt = date
+                    }
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    private func importContactData(headers: [String], rows: [String]) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        for row in rows {
+            let columns = row.components(separatedBy: ",")
+            guard columns.count == headers.count else { continue }
+            
+            let contact = Contact(context: viewContext)
+            
+            for (index, header) in headers.enumerated() {
+                let value = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                switch header {
+                case "姓名":
+                    contact.name = value
+                case "关系层级":
+                    contact.tier = Int16(value) ?? 0
+                case "生日":
+                    if let date = dateFormatter.date(from: value) {
+                        contact.birthday = date
+                    }
+                case "备注":
+                    contact.notes = value
+                case "最近联系时间":
+                    if let date = dateFormatter.date(from: value) {
+                        contact.lastInteraction = date
+                    }
+                case "头像":
+                    if !value.isEmpty, let imageData = Data(base64Encoded: value) {
+                        contact.avatar = imageData
+                    }
+                case "创建时间":
+                    if let date = dateFormatter.date(from: value) {
+                        contact.createdAt = date
+                    }
+                case "更新时间":
+                    if let date = dateFormatter.date(from: value) {
+                        contact.updatedAt = date
+                    }
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    private func importExpenseData(headers: [String], rows: [String]) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        for row in rows {
+            let columns = row.components(separatedBy: ",")
+            guard columns.count == headers.count else { continue }
+            
+            let expense = Expense(context: viewContext)
+            
+            for (index, header) in headers.enumerated() {
+                let value = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                switch header {
+                case "标题":
+                    expense.title = value
+                case "金额":
+                    expense.amount = Double(value) ?? 0.0
+                case "是否支出":
+                    expense.isExpense = value == "是"
+                case "日期":
+                    if let date = dateFormatter.date(from: value) {
+                        expense.date = date
+                    }
+                case "备注":
+                    expense.note = value
+                case "联系人":
+                    // 查找或创建联系人
+                    let fetchRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
+                    fetchRequest.predicate = NSPredicate(format: "name == %@", value)
+                    if let contact = try? viewContext.fetch(fetchRequest).first {
+                        expense.contact = contact
+                    }
+                case "创建时间":
+                    if let date = dateFormatter.date(from: value) {
+                        expense.createdAt = date
+                    }
+                case "更新时间":
+                    if let date = dateFormatter.date(from: value) {
+                        expense.updatedAt = date
+                    }
+                default:
+                    break
+                }
+            }
+        }
+    }
+    
+    private func importCheckListItemData(headers: [String], rows: [String]) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        for row in rows {
+            let columns = row.components(separatedBy: ",")
+            guard columns.count == headers.count else { continue }
+            
+            let item = CheckListItem(context: viewContext)
+            
+            for (index, header) in headers.enumerated() {
+                let value = columns[index].trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                switch header {
+                case "标题":
+                    item.title = value
+                case "是否完成":
+                    item.isCompleted = value == "是"
+                case "日记":
+                    // 查找对应的日记
+                    let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+                    fetchRequest.predicate = NSPredicate(format: "title == %@", value)
+                    if let diary = try? viewContext.fetch(fetchRequest).first {
+                        // 创建新的 NSSet 并添加 item
+                        let checkListItems = NSMutableSet()
+                        checkListItems.add(item)
+                        diary.checkListItems = checkListItems
+                    }
+                case "创建时间":
+                    if let date = dateFormatter.date(from: value) {
+                        item.createdAt = date
+                    }
+                case "更新时间":
+                    if let date = dateFormatter.date(from: value) {
+                        item.updatedAt = date
+                    }
+                default:
+                    break
+                }
+            }
         }
     }
     
@@ -365,102 +438,6 @@ struct DataImportView: View {
             bannerState.show(of: .error(message: "保存失败：\(error.localizedDescription)"))
         }
     }
-
-    private func exportCSVData() -> String {
-        // 添加日期格式化器
-        let dateFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            formatter.calendar = Calendar(identifier: .gregorian)
-            formatter.timeZone = TimeZone.current
-            formatter.locale = Locale(identifier: "zh_CN")
-            return formatter
-        }()
-        
-        var csvContent = ""
-        
-        // 1. 日记数据表
-        csvContent += "=== 日记数据 ===\n"
-        csvContent += "标题,内容,日期,金额,是否支出,备注,天气,是否收藏,图片,待办事项,创建时间,更新时间\n"
-        let itemRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        if let items = try? viewContext.fetch(itemRequest) {
-            for item in items {
-                // ... 现有的日记导出代码 ...
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 2. 联系人数据表
-        csvContent += "=== 联系人数据 ===\n"
-        csvContent += "姓名,关系层级,生日,备注,最近联系时间,头像,创建时间,更新时间\n"
-        let contactRequest: NSFetchRequest<Contact> = Contact.fetchRequest()
-        if let contacts = try? viewContext.fetch(contactRequest) {
-            for contact in contacts {
-                let birthdayStr = contact.birthday.map { dateFormatter.string(from: $0) } ?? ""
-                let lastInteractionStr = contact.lastInteraction.map { dateFormatter.string(from: $0) } ?? ""
-                let avatarStr = contact.avatar.map { $0.base64EncodedString() } ?? ""
-                
-                let row = [
-                    contact.name ?? "",
-                    String(contact.tier),
-                    birthdayStr,
-                    contact.notes ?? "",
-                    lastInteractionStr,
-                    avatarStr,
-                //    dateFormatter.string(from: contact.createdAt),
-                //   dateFormatter.string(from: contact.updatedAt)
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 3. 储蓄目标数据表
-        csvContent += "=== 储蓄目标数据 ===\n"
-        csvContent += "标题,目标金额,当前金额,开始日期,目标日期,创建时间,更新时间\n"
-        let goalRequest: NSFetchRequest<SavingsGoal> = SavingsGoal.fetchRequest()
-        if let goals = try? viewContext.fetch(goalRequest) {
-            for goal in goals {
-                let startDateStr = goal.startDate.map { dateFormatter.string(from: $0) } ?? ""
-                let targetDateStr = goal.targetDate.map { dateFormatter.string(from: $0) } ?? ""
-                let createdAtStr = goal.createdAt.map { dateFormatter.string(from: $0) } ?? ""
-                let updatedAtStr = goal.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
-                
-                let row = [
-                    goal.title ?? "",
-                    String(goal.targetAmount),
-                    String(goal.currentAmount),
-                    startDateStr,
-                    targetDateStr,
-                    createdAtStr,
-                    updatedAtStr
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        csvContent += "\n\n"
-        
-        // 4. 清单项目数据表
-        csvContent += "=== 清单项目数据 ===\n"
-        csvContent += "标题,是否完成,创建时间,更新时间\n"
-        let checklistRequest: NSFetchRequest<CheckListItem> = CheckListItem.fetchRequest()
-        if let items = try? viewContext.fetch(checklistRequest) {
-            for item in items {
-                let createdAtStr = item.createdAt.map { dateFormatter.string(from: $0) } ?? ""
-                let updatedAtStr = item.updatedAt.map { dateFormatter.string(from: $0) } ?? ""
-                
-                let row = [
-                    item.title ?? "",
-                    item.isCompleted ? "是" : "否",
-                    createdAtStr,
-                    updatedAtStr
-                ].map { "\"\($0)\"" }.joined(separator: ",")
-                csvContent += row + "\n"
-            }
-        }
-        
-        return csvContent
-    }
 }
 
 // 添加 FilePicker 实现
@@ -470,14 +447,10 @@ struct FilePicker: UIViewControllerRepresentable {
     let onFileSelected: (URL?) -> Void
     
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        // 使用简单的文件类型定义
         let types: [String] = ["public.comma-separated-values-text", "public.plain-text"]
         let picker = UIDocumentPickerViewController(documentTypes: types, in: .import)
-        
-        // 基本配置
         picker.delegate = context.coordinator
         picker.allowsMultipleSelection = false
-        
         return picker
     }
     
