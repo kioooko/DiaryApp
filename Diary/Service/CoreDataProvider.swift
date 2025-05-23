@@ -15,24 +15,21 @@ public class CoreDataProvider: ObservableObject {// 定义一个 CoreDataProvide
     let container: NSPersistentCloudKitContainer
 
     init() {
-        container = NSPersistentCloudKitContainer(name: "Diary")// 创建一个 NSPersistentCloudKitContainer 对象，用于存储 CoreData 数据
-
-        container.loadPersistentStores(completionHandler: { [weak self] (storeDescription, error) in// 加载持久化存储
-            if let self,// 如果 self 存在
-               let error = error as NSError? {// 如果 error 存在
-                 /*
-                 这里的典型错误原因包括：
-                 * 父目录不存在，无法创建或不允许写入。
-                 * 持久化存储不可访问，可能是由于权限或设备锁定时的数据保护。
-                 * 设备空间不足。
-                 * 存储无法迁移到当前模型版本。
-                 检查错误信息以确定实际问题。
-                 */
-                self.coreDataProviderError = .failedToInit(error: error)// 将错误信息传递给 coreDataProviderError
-                print("Failed to load persistent stores: \(error), \(error.userInfo)")// 打印错误信息
+        container = NSPersistentCloudKitContainer(name: "Diary")
+        
+        // 添加详细的错误处理
+        container.loadPersistentStores(completionHandler: { [weak self] (storeDescription, error) in
+            if let error = error as NSError? {
+                print("❌ Core Data 加载失败: \(error), \(error.userInfo)")
+                self?.coreDataProviderError = .failedToInit(error: error)
+            } else {
+                print("✅ Core Data 加载成功")
             }
         })
+        
+        // 启用自动合并
         container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
      // 新增：导出所有 DiaryEntry 数据
     func exportAllDiaryEntries() -> [Item] {
